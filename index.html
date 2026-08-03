@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Cabinetry — Advanced Speaker Design Bench</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -24,23 +24,23 @@
     --sans: 'IBM Plex Sans', sans-serif;
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--sans);}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-tap-highlight-color:transparent;}
   body{
-    padding: 24px 16px 80px;
-    max-width: 760px;
+    padding: 16px 12px 60px;
+    max-width: 740px;
     margin: 0 auto;
     background-image:
       radial-gradient(circle at 15% 0%, rgba(232,163,61,0.05), transparent 40%),
       radial-gradient(circle at 85% 10%, rgba(79,209,197,0.04), transparent 40%);
   }
-  header{margin-bottom:28px;}
+  header{margin-bottom:20px;}
   .eyebrow{
     font-family:var(--mono); font-size:11px; letter-spacing:2px; text-transform:uppercase;
     color:var(--amber); display:flex; align-items:center; gap:8px; margin-bottom:6px;
   }
   .eyebrow::before{content:'';width:6px;height:6px;background:var(--amber);border-radius:50%;box-shadow:0 0 8px var(--amber);}
-  h1{font-family:var(--sans); font-weight:700; font-size:28px; margin:0 0 6px; letter-spacing:-0.02em;}
-  .sub{color:var(--text-dim); font-size:13.5px; line-height:1.5; max-width:60ch;}
+  h1{font-family:var(--sans); font-weight:700; font-size:26px; margin:0 0 6px; letter-spacing:-0.02em;}
+  .sub{color:var(--text-dim); font-size:13px; line-height:1.5; max-width:60ch;}
 
   .module{
     background: var(--panel);
@@ -51,7 +51,7 @@
   }
   .module-head{
     display:flex; align-items:center; justify-content:space-between;
-    padding: 12px 16px;
+    padding: 12px 14px;
     border-bottom: 1px solid var(--line);
     background: linear-gradient(180deg, var(--panel-raised), var(--panel));
   }
@@ -59,46 +59,47 @@
     font-family:var(--mono); font-size:10px; letter-spacing:1.5px; color:var(--text-dim); text-transform:uppercase;
   }
   .module-head h2{font-size:15px; margin:2px 0 0; font-weight:600;}
-  .module-body{padding:16px;}
-  .module-body.tight{padding:12px 16px;}
+  .module-body{padding:14px;}
+  .module-body.tight{padding:10px 14px;}
 
-  .row{display:flex; gap:12px; flex-wrap:wrap;}
-  .field{flex:1; min-width:130px; margin-bottom:12px;}
+  .row{display:flex; gap:10px; flex-wrap:wrap;}
+  .field{flex:1; min-width:120px; margin-bottom:10px;}
   .field label{
-    display:block; font-family:var(--mono); font-size:10.5px; color:var(--text-dim);
+    display:block; font-family:var(--mono); font-size:10px; color:var(--text-dim);
     letter-spacing:0.5px; text-transform:uppercase; margin-bottom:5px;
   }
-  .field .hint{font-size:10.5px; color:var(--text-dim); margin-top:4px; font-family:var(--mono);}
+  .field .hint{font-size:10px; color:var(--text-dim); margin-top:4px; font-family:var(--mono);}
   input[type=number], input[type=text], select{
     width:100%; background:#0F1217; border:1px solid var(--line-bright); color:var(--text);
-    font-family:var(--mono); font-size:14px; padding:9px 10px; border-radius:6px; outline:none;
+    font-family:var(--mono); font-size:14px; padding:10px; border-radius:6px; outline:none;
+    -webkit-appearance: none;
   }
   input[type=number]:focus, select:focus{border-color:var(--amber);}
   select{appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23767C8A'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center;}
 
   .seg{display:flex; border:1px solid var(--line-bright); border-radius:6px; overflow:hidden;}
   .seg button{
-    flex:1; background:#0F1217; color:var(--text-mid); border:none; padding:9px 8px;
-    font-family:var(--mono); font-size:12px; cursor:pointer; letter-spacing:0.4px;
+    flex:1; background:#0F1217; color:var(--text-mid); border:none; padding:10px 6px;
+    font-family:var(--mono); font-size:11.5px; cursor:pointer; letter-spacing:0.4px;
   }
   .seg button.active{background:var(--amber); color:#1A1200; font-weight:600;}
   .seg button + button{border-left:1px solid var(--line-bright);}
 
   .readout{
-    display:grid; grid-template-columns: repeat(auto-fit, minmax(110px,1fr)); gap:10px; margin-top:4px;
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap:8px; margin-top:4px;
   }
   .stat{
-    background:#0F1217; border:1px solid var(--line); border-radius:8px; padding:10px 12px;
+    background:#0F1217; border:1px solid var(--line); border-radius:8px; padding:8px 10px;
   }
-  .stat .k{font-family:var(--mono); font-size:9.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px;}
-  .stat .v{font-family:var(--mono); font-size:18px; color:var(--amber); font-weight:600; margin-top:3px;}
+  .stat .k{font-family:var(--mono); font-size:9px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.8px;}
+  .stat .v{font-family:var(--mono); font-size:17px; color:var(--amber); font-weight:600; margin-top:2px; word-break: break-word;}
   .stat .v.teal{color:var(--teal);}
   .stat .v.red{color:var(--red);}
-  .stat .u{font-size:11px; color:var(--text-dim); margin-left:3px;}
+  .stat .u{font-size:10px; color:var(--text-dim); margin-left:2px;}
 
   .note{
-    font-size:12.5px; color:var(--text-mid); line-height:1.6; background:#0F1217;
-    border-left:2px solid var(--amber-dim); padding:9px 12px; border-radius:0 6px 6px 0; margin-top:10px;
+    font-size:12px; color:var(--text-mid); line-height:1.5; background:#0F1217;
+    border-left:2px solid var(--amber-dim); padding:8px 10px; border-radius:0 6px 6px 0; margin-top:10px;
   }
   .note.warn{border-left-color:var(--red); color:#F0B3A8;}
   .note.teal{border-left-color:var(--teal); color:#D0F5F2;}
@@ -106,70 +107,192 @@
 
   svg.chart{width:100%; height:auto; display:block;}
 
-  .divider{border:none; border-top:1px dashed var(--line); margin:14px 0;}
-  .kicker{font-family:var(--mono); font-size:10.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; margin:0 0 8px;}
+  .divider{border:none; border-top:1px dashed var(--line); margin:12px 0;}
+  .kicker{font-family:var(--mono); font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; margin:0 0 8px;}
 
-  .footer-note{text-align:center; font-size:11.5px; color:var(--text-dim); margin-top:24px; line-height:1.6;}
+  .footer-note{text-align:center; font-size:11px; color:var(--text-dim); margin-top:20px; line-height:1.5;}
+
+  .capbtn{
+    background: var(--amber); color:#1A1200; border:none; border-radius:7px;
+    font-family:var(--mono); font-size:12px; font-weight:700; letter-spacing:0.3px;
+    padding:12px 14px; cursor:pointer; width:100%; touch-action: manipulation;
+  }
+  .capbtn.secondary{background:#0F1217; color:var(--teal); border:1px solid var(--line-bright);}
+  .capbtn:disabled{background:#2B303C; color:var(--text-dim); cursor:not-allowed;}
+  
+  .camwrap{
+    position:relative; width:100%; aspect-ratio: 4/3; background:#000; border-radius:8px;
+    overflow:hidden; border:1px solid var(--line-bright); margin-top: 8px;
+  }
+  .camwrap video{width:100%; height:100%; object-fit:cover;}
+  .crosshair{
+    position:absolute; top:50%; left:50%; width:40px; height:40px; transform:translate(-50%,-50%);
+    border:2px solid var(--amber); border-radius:50%; box-shadow:0 0 0 2000px rgba(0,0,0,0.25);
+    pointer-events:none;
+  }
+  .crosshair::before, .crosshair::after{ content:''; position:absolute; background:var(--amber); }
+  .crosshair::before{ top:50%; left:-8px; right:-8px; height:1px; transform:translateY(-50%);}
+  .crosshair::after{ left:50%; top:-8px; bottom:-8px; width:1px; transform:translateX(-50%);}
+  
+  .angle-readout{
+    position:absolute; bottom:10px; left:50%; transform:translateX(-50%);
+    background:rgba(15,18,23,0.9); color:var(--amber); font-family:var(--mono); font-size:12px;
+    padding:4px 10px; border-radius:20px; border:1px solid var(--line-bright); white-space: nowrap;
+  }
+  .scan-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px;}
+  .cap-item{
+    background:#0F1217; border:1px solid var(--line); border-radius:8px; padding:8px;
+    display:flex; flex-direction:column; gap:4px;
+  }
+  .cap-item .label{font-family:var(--mono); font-size:9.5px; color:var(--text-dim); text-transform:uppercase;}
+  .cap-item .dist{font-family:var(--mono); font-size:15px; color:var(--teal); font-weight:600;}
+  .cap-item button{
+    background:#1A1E26; color:var(--text); border:1px solid var(--line-bright); border-radius:5px;
+    font-family:var(--mono); font-size:11px; padding:8px; cursor:pointer; touch-action: manipulation;
+  }
+  .cap-item.done{border-color:var(--teal);}
+
+  .modelist{display:flex; flex-direction:column; gap:5px; margin-top:6px;}
+  .mode-row{display:flex; align-items:center; gap:6px; font-family:var(--mono); font-size:11px;}
+  .mode-row .ax{width:16px; color:var(--text-dim);}
+  .mode-row .bar{flex:1; height:6px; background:#0F1217; border-radius:3px; position:relative; overflow:hidden;}
+  .mode-row .bar span{position:absolute; top:0; bottom:0; width:3px; background:var(--teal);}
+  .mode-row .f{width:50px; text-anchor:end; text-align:right; color:var(--text-mid);}
 
   .toggle-driver2{
     display:flex; align-items:center; gap:8px; font-family:var(--mono); font-size:11.5px; color:var(--text-mid);
-    cursor:pointer; user-select:none; margin-bottom:12px;
+    cursor:pointer; user-select:none; margin-bottom:10px;
   }
-  .toggle-driver2 input{accent-color:var(--amber);}
+  .toggle-driver2 input{accent-color:var(--amber); width: 16px; height: 16px;}
 
-  .comp-table{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12.5px; margin-top:8px;}
-  .comp-table th{text-align:left; font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.5px; padding:4px 8px; border-bottom:1px solid var(--line);}
-  .comp-table td{padding:6px 8px; border-bottom:1px solid var(--line); color:var(--text-mid);}
+  .comp-table{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:11.5px; margin-top:8px;}
+  .comp-table th{text-align:left; font-size:9.5px; color:var(--text-dim); text-transform:uppercase; padding:4px 6px; border-bottom:1px solid var(--line);}
+  .comp-table td{padding:6px; border-bottom:1px solid var(--line); color:var(--text-mid);}
   .comp-table td.val{color:var(--amber); font-weight:600;}
   .comp-table tr:last-child td{border-bottom:none;}
+
+  @media (max-width:480px){
+    h1{font-size:22px;}
+    .field{min-width:100%;}
+    .scan-grid{grid-template-columns:1fr 1fr;}
+    .readout{grid-template-columns: 1fr 1fr;}
+  }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="eyebrow">Acoustic Workbench</div>
-  <h1>Cabinetry Studio</h1>
-  <div class="sub">Advanced speaker design suite featuring boundary loading dynamics, port velocity aerodynamics, span-based modal panel bracing, and an external tweeter waveguide pod.</div>
+  <div class="eyebrow">Room-in / Box-out</div>
+  <h1>Cabinetry</h1>
+  <div class="sub">A complete speaker design bench: scan your room, pick your drivers, and solve boundary acoustics, cabinet geometry, port velocity, and crossover specs in real time.</div>
 </header>
 
-<!-- BOUNDARY & PLACEMENT MODULE -->
+<!-- ROOM SCAN & BOUNDARY MODULE -->
 <div class="module">
   <div class="module-head">
-    <div><div class="tag">01 · Environment</div><h2>Boundary Loading & Placement</h2></div>
+    <div><div class="tag">01 · Space & Placement</div><h2>Room Scan & Boundary Gain</h2></div>
   </div>
   <div class="module-body">
+    <div class="seg" id="roomInputSeg">
+      <button data-v="scan" class="active">Scan with phone</button>
+      <button data-v="manual">Manual entry</button>
+    </div>
+
+    <!-- CAMERA SCAN MODE -->
+    <div id="scanEntry" style="margin-top:12px;">
+      <div class="note">Uses your device's tilt sensor to estimate room dimensions. Hold phone steady at chest height, aim crosshair at the base of each wall where it meets the floor, and tap <strong>Capture</strong>.</div>
+
+      <div class="row" style="margin-top:10px;">
+        <div class="field">
+          <label>Phone height while aiming</label>
+          <input type="number" id="deviceHeight" value="1.3" step="0.05" min="0.3">
+          <div class="hint">meters — chest height recommended</div>
+        </div>
+      </div>
+
+      <div id="scanStartBlock">
+        <button id="startScanBtn" class="capbtn">Enable camera + tilt sensor</button>
+        <div class="note warn" id="scanPermNote" style="display:none;"></div>
+      </div>
+
+      <div id="scanLiveBlock" style="display:none;">
+        <div class="camwrap">
+          <video id="camVideo" autoplay playsinline muted></video>
+          <div class="crosshair"></div>
+          <div class="angle-readout" id="angleReadout">Tilt phone to start</div>
+        </div>
+
+        <div class="row" style="margin-top:10px;">
+          <button id="calibrateBtn" class="capbtn secondary">1 · Calibrate level horizon</button>
+        </div>
+        <div class="hint" id="calStatus" style="margin:6px 0 10px;">Point phone straight ahead horizontally, then tap Calibrate.</div>
+
+        <div class="scan-grid" id="scanGrid"></div>
+
+        <div class="row" style="margin-top:10px;">
+          <button id="applyScanBtn" class="capbtn" disabled>Apply scanned room dimensions</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MANUAL MODE -->
+    <div id="manualEntry" style="display:none; margin-top:12px;">
+      <div class="row">
+        <div class="field"><label for="roomL">Length (m)</label><input type="number" id="roomL" value="5.2" step="0.1" min="1"></div>
+        <div class="field"><label for="roomW">Width (m)</label><input type="number" id="roomW" value="3.8" step="0.1" min="1"></div>
+        <div class="field"><label for="roomH">Height (m)</label><input type="number" id="roomH" value="2.4" step="0.1" min="1"></div>
+      </div>
+    </div>
+
+    <div class="field" id="scanHeightField" style="margin-top:10px;">
+      <label for="roomH_scan">Ceiling height (m)</label>
+      <input type="number" id="roomH_scan" value="2.4" step="0.1" min="1">
+    </div>
+
+    <hr class="divider">
+
     <div class="row">
       <div class="field">
-        <label>Placement / Boundary</label>
+        <label>Placement / Boundary Loading</label>
         <select id="boundaryMode">
           <option value="4pi">Free Space (4π / Mid-room) [0 dB]</option>
           <option value="2pi" selected>Near Wall (2π / Half-space) [+3 dB]</option>
           <option value="1pi">Corner Placement (π / Quarter-space) [+6 dB]</option>
           <option value="0.5pi">Floor + Corner (π/2 / Eighth-space) [+9 dB]</option>
         </select>
-        <div class="hint">Acoustic reflection boundaries boost low-end response.</div>
+        <div class="hint">Wall reflections reinforce bass frequencies</div>
       </div>
       <div class="field">
-        <label>Boundary Target Compensation</label>
+        <label>Boundary Compensation</label>
         <select id="autoCompensate">
           <option value="yes" selected>Active — Target smaller box (Under-damped)</option>
           <option value="no">Inactive — Standard alignment</option>
         </select>
-        <div class="hint">Adjusts system target Qtc/alignment for room loading.</div>
       </div>
     </div>
+
+    <p class="kicker" style="margin-top:10px;">Axial room modes (First 4 per axis)</p>
+    <div id="modeChart" class="modelist"></div>
+
+    <div class="readout" style="margin-top:12px;">
+      <div class="stat"><div class="k">Schroeder Freq.</div><div class="v" id="schroeder">—</div></div>
+      <div class="stat"><div class="k">Est. RT60</div><div class="v teal" id="rt60">—</div></div>
+      <div class="stat"><div class="k">Listening Pos.</div><div class="v teal" id="listenPos">—</div></div>
+      <div class="stat"><div class="k">Speaker Off-Wall</div><div class="v teal" id="speakerPos">—</div></div>
+    </div>
     <div class="note teal" id="boundaryNote"></div>
+    <div class="note" id="roomNote"></div>
   </div>
 </div>
 
-<!-- DRIVER MODULE -->
+<!-- HARDWARE / DRIVER MODULE -->
 <div class="module">
   <div class="module-head">
-    <div><div class="tag">02 · Transducer</div><h2>Woofer & Midbass Parameters</h2></div>
+    <div><div class="tag">02 · Transducer</div><h2>Woofer / Midbass Driver</h2></div>
   </div>
   <div class="module-body">
     <div class="field">
-      <label for="driverPreset">Preset Driver</label>
+      <label for="driverPreset">Driver Preset</label>
       <select id="driverPreset">
         <option value="custom">Custom Parameters</option>
         <option value="w5">5.25″ Woofer — Qts 0.40, Vas 15L</option>
@@ -188,17 +311,17 @@
       <div class="field"><label>Sd (cm²)</label><input type="number" id="Sd" value="132" step="1"></div>
       <div class="field"><label>Re (Ω)</label><input type="number" id="Re" value="5.5" step="0.1"></div>
     </div>
-    <div class="field" style="max-width:220px;">
+    <div class="field">
       <label>Nominal Dia. (mm)</label>
       <input type="number" id="dia" value="165" step="1">
     </div>
   </div>
 </div>
 
-<!-- ENCLOSURE MODULE -->
+<!-- ENCLOSURE & PORT DYNAMICS -->
 <div class="module">
   <div class="module-head">
-    <div><div class="tag">03 · Enclosure</div><h2>Alignment & Airflow Dynamics</h2></div>
+    <div><div class="tag">03 · Solve</div><h2>Enclosure & Aerodynamics</h2></div>
   </div>
   <div class="module-body">
     <div class="seg" id="boxTypeSeg">
@@ -206,22 +329,23 @@
       <button data-v="vented" class="active">Vented (Ported)</button>
     </div>
 
-    <div id="sealedControls" style="margin-top:14px; display:none;">
-      <div class="field" style="max-width:280px;">
+    <div id="sealedControls" style="margin-top:12px; display:none;">
+      <div class="field">
         <label>Target Nominal Qtc</label>
         <input type="number" id="targetQtc" value="0.707" step="0.01">
+        <div class="hint">0.707 = Maximally flat Butterworth target</div>
       </div>
     </div>
-    <div id="ventedControls" style="margin-top:14px;">
+    <div id="ventedControls" style="margin-top:12px;">
       <div class="row">
-        <div class="field"><label>Port Inner Dia. (cm)</label><input type="number" id="portDia" value="6.5" step="0.5"></div>
+        <div class="field"><label>Port Inner Dia (cm)</label><input type="number" id="portDia" value="6.5" step="0.5"></div>
         <div class="field"><label>Number of Ports</label><input type="number" id="portN" value="1" step="1" min="1"></div>
         <div class="field">
           <label>Port Flare Type</label>
           <select id="portFlare">
             <option value="none">Straight Pipe (Unflared)</option>
-            <option value="single">Single End Flared (Bell-mouth)</option>
-            <option value="double" selected>Double End Precision Flare</option>
+            <option value="single">Single End Flare</option>
+            <option value="double" selected>Double Precision Flare</option>
           </select>
         </div>
       </div>
@@ -235,15 +359,15 @@
   </div>
 </div>
 
-<!-- TWEETER POD MODULE -->
+<!-- TWEETER POD & CROSSOVER MODULE -->
 <div class="module">
   <div class="module-head">
-    <div><div class="tag">04 · External Pod</div><h2>Stacked Waveguide Tweeter</h2></div>
+    <div><div class="tag">04 · External Pod</div><h2>Stacked Tweeter & Crossover</h2></div>
   </div>
   <div class="module-body">
     <label class="toggle-driver2">
       <input type="checkbox" id="useTweeter" checked>
-      Enable Decoupled External Tweeter Pod Assembly
+      Enable External Tweeter Pod Assembly
     </label>
 
     <div id="tweeterBlock">
@@ -291,26 +415,26 @@
 <!-- CABINET & ADAPTIVE BRACING MODULE -->
 <div class="module">
   <div class="module-head">
-    <div><div class="tag">05 · Structural</div><h2>Panel Span, Bracing & Damping</h2></div>
+    <div><div class="tag">05 · Construction</div><h2>Panel Span, Bracing & Materials</h2></div>
   </div>
   <div class="module-body">
     <div class="row">
-      <div class="field" style="max-width:180px;">
+      <div class="field">
         <label>Panel Thickness (mm)</label>
         <input type="number" id="panelThick" value="19" step="1">
       </div>
       <div class="field">
-        <label>Cabinet Aspect Ratio</label>
+        <label>Cabinet Proportions</label>
         <select id="ratioMode">
           <option value="1,1.6,2.6" selected>1 : 1.6 : 2.6 — Golden Ratio</option>
-          <option value="1,1.25,1.6">1 : 1.25 : 1.6 — Compact Bookshelf</option>
-          <option value="1,2.2,1.3">1 : 2.2 : 1.3 — Floorstanding Tower</option>
+          <option value="1,1.25,1.6">1 : 1.25 : 1.6 — Bookshelf</option>
+          <option value="1,2.2,1.3">1 : 2.2 : 1.3 — Tower</option>
         </select>
       </div>
       <div class="field">
         <label>Panel Material</label>
         <select id="material">
-          <option value="mdf" selected>MDF (Medium Density Fiberboard)</option>
+          <option value="mdf" selected>MDF</option>
           <option value="ply">Birch Plywood</option>
           <option value="hardwood">Solid Hardwood</option>
         </select>
@@ -327,11 +451,18 @@
         </select>
       </div>
       <div class="field">
-        <label>Internal Damping Layer</label>
+        <label>Internal Damping</label>
         <select id="dampingMode">
-          <option value="perimeter" selected>Perimeter Wool Lining (Clear Port Path)</option>
-          <option value="full">Full Polyfill Stuffed (+10% Vol Inflation)</option>
+          <option value="perimeter" selected>Perimeter Wool Lining</option>
+          <option value="full">Full Polyfill (+10% Vol Inflation)</option>
           <option value="cld">Constrained Layer Bitumen Mat</option>
+        </select>
+      </div>
+      <div class="field" id="portPlacementField">
+        <label>Port Placement</label>
+        <select id="portPlacement">
+          <option value="front" selected>Front Baffle</option>
+          <option value="rear">Rear Panel</option>
         </select>
       </div>
     </div>
@@ -343,21 +474,21 @@
 <!-- 3D PREVIEW MODULE -->
 <div class="module">
   <div class="module-head">
-    <div><div class="tag">06 · 3D View</div><h2>Interactive CAD Preview</h2></div>
+    <div><div class="tag">06 · 3D Model</div><h2>Interactive CAD Engine</h2></div>
   </div>
   <div class="module-body tight">
     <div class="seg" id="viewModeSeg">
       <button data-v="cutaway" class="active">X-Ray Cutaway</button>
       <button data-v="solid">Solid Exterior</button>
     </div>
-    <div id="threeContainer" style="width:100%; aspect-ratio:4/3; margin-top:12px; border:1px solid var(--line-bright); border-radius:8px; overflow:hidden; background:#0A0C10; position:relative;">
-      <div id="threeHint" style="position:absolute; bottom:8px; left:50%; transform:translateX(-50%); font-family:var(--mono); font-size:10.5px; color:var(--text-dim); background:rgba(15,18,23,0.7); padding:4px 10px; border-radius:12px; pointer-events:none;">drag to rotate · scroll to zoom</div>
+    <div id="threeContainer" style="width:100%; aspect-ratio:4/3; margin-top:10px; border:1px solid var(--line-bright); border-radius:8px; overflow:hidden; background:#0A0C10; position:relative; touch-action: none;">
+      <div id="threeHint" style="position:absolute; bottom:8px; left:50%; transform:translateX(-50%); font-family:var(--mono); font-size:10px; color:var(--text-dim); background:rgba(15,18,23,0.85); padding:4px 10px; border-radius:12px; pointer-events:none; white-space:nowrap;">drag to rotate · pinch to zoom</div>
     </div>
   </div>
 </div>
 
 <div class="footer-note">
-  Engineered with exact Thiele-Small alignment & physical airflow boundaries. Cross-verify with laboratory measurement setups.
+  Cross-verify final CAD outputs with WinISD or VituixCAD prior to panel cutting.
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -389,6 +520,19 @@ $('driverPreset').addEventListener('change', e=>{
   recalcAll();
 });
 
+// UI Mode Toggles
+document.querySelectorAll('#roomInputSeg button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('#roomInputSeg button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    const scanMode = b.dataset.v==='scan';
+    $('scanEntry').style.display = scanMode ? '' : 'none';
+    $('manualEntry').style.display = scanMode ? 'none' : '';
+    $('scanHeightField').style.display = scanMode ? '' : 'none';
+  });
+});
+$('roomH_scan').addEventListener('input', ()=>{ $('roomH').value = $('roomH_scan').value; recalcAll(); });
+
 document.querySelectorAll('#boxTypeSeg button').forEach(b=>{
   b.addEventListener('click', ()=>{
     document.querySelectorAll('#boxTypeSeg button').forEach(x=>x.classList.remove('active'));
@@ -419,15 +563,144 @@ document.querySelectorAll('input, select').forEach(el=>{
 
 function fmt(n, d=2){ if(!isFinite(n)) return '—'; return n.toFixed(d); }
 
-// ---------- ACOUSTIC COMPUTATIONS ----------
+// ---------- ROOM CAMERA SCANNING (TRIG & TILT SENSOR) ----------
+const DIRECTIONS = [
+  {key:'front', label:'Front wall'},
+  {key:'back',  label:'Back wall'},
+  {key:'left',  label:'Left wall'},
+  {key:'right', label:'Right wall'},
+];
+const scanState = { calibBeta: null, liveBeta: null, captures: {} };
 
+function buildScanGrid(){
+  const grid = $('scanGrid');
+  grid.innerHTML = DIRECTIONS.map(d => `
+    <div class="cap-item" id="cap-${d.key}">
+      <div class="label">${d.label}</div>
+      <div class="dist" id="dist-${d.key}">not captured</div>
+      <button data-dir="${d.key}" class="capdirbtn">Capture</button>
+    </div>
+  `).join('');
+  grid.querySelectorAll('.capdirbtn').forEach(btn=>{
+    btn.addEventListener('click', ()=>captureDirection(btn.dataset.dir));
+  });
+}
+buildScanGrid();
+
+$('startScanBtn').addEventListener('click', async ()=>{
+  const noteEl = $('scanPermNote');
+  noteEl.style.display='none';
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}, audio:false});
+    $('camVideo').srcObject = stream;
+
+    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function'){
+      const perm = await DeviceOrientationEvent.requestPermission();
+      if(perm !== 'granted') throw new Error('Motion sensor permission denied.');
+    }
+    window.addEventListener('deviceorientation', onOrientation, true);
+
+    $('scanStartBlock').style.display='none';
+    $('scanLiveBlock').style.display='';
+  }catch(err){
+    noteEl.style.display='';
+    noteEl.innerHTML = `Camera/sensor issue: ${err.message || 'Permission blocked'}. Ensure page is served over HTTPS or use Manual Entry above.`;
+  }
+});
+
+function onOrientation(e){
+  if(e.beta===null || e.beta===undefined) return;
+  scanState.liveBeta = e.beta;
+  if(scanState.calibBeta!==null){
+    const delta = Math.abs(scanState.liveBeta - scanState.calibBeta);
+    $('angleReadout').textContent = delta.toFixed(1)+'° tilt down';
+  } else {
+    $('angleReadout').textContent = 'Sensors active — Calibrate next';
+  }
+}
+
+$('calibrateBtn').addEventListener('click', ()=>{
+  if(scanState.liveBeta===null){
+    $('calStatus').textContent = 'Sensor warming up... move phone slightly and tap again.';
+    return;
+  }
+  scanState.calibBeta = scanState.liveBeta;
+  $('calStatus').textContent = 'Level calibrated. Point crosshair at wall base & capture.';
+});
+
+function captureDirection(dir){
+  if(scanState.calibBeta===null){
+    $('calStatus').textContent = 'Calibrate horizon first before capturing!';
+    return;
+  }
+  const deltaDeg = Math.abs(scanState.liveBeta - scanState.calibBeta);
+  const deltaRad = deltaDeg * Math.PI/180;
+  const h = parseFloat($('deviceHeight').value);
+  if(deltaDeg < 3){
+    $(`dist-${dir}`).textContent = 'tilt lower';
+    return;
+  }
+  const dist = h / Math.tan(deltaRad);
+  scanState.captures[dir] = dist;
+  $(`dist-${dir}`).textContent = dist.toFixed(2)+' m';
+  $(`cap-${dir}`).classList.add('done');
+
+  const allDone = DIRECTIONS.every(d => scanState.captures[d.key]!==undefined);
+  $('applyScanBtn').disabled = !allDone;
+}
+
+$('applyScanBtn').addEventListener('click', ()=>{
+  const c = scanState.captures;
+  const L = c.front + c.back;
+  const W = c.left + c.right;
+  $('roomL').value = L.toFixed(2);
+  $('roomW').value = W.toFixed(2);
+  recalcAll();
+  $('calStatus').textContent = `Applied: L=${L.toFixed(2)}m, W=${W.toFixed(2)}m.`;
+});
+
+// ---------- ACOUSTICS & ROOM MODES ----------
+function computeRoom(){
+  const L = parseFloat($('roomL').value), W = parseFloat($('roomW').value), H = parseFloat($('roomH').value);
+  const V = L*W*H;
+  const RT60 = 0.45; 
+  const schroeder = 2000 * Math.sqrt(RT60 / V);
+
+  const dims = [['L',L],['W',W],['H',H]];
+  const modes = [];
+  dims.forEach(([axis, d])=>{
+    for(let n=1;n<=4;n++){
+      modes.push({axis, n, f: (C_SOUND/2) * (n/d)});
+    }
+  });
+  modes.sort((a,b)=>a.f-b.f);
+
+  const maxF = 200;
+  const list = $('modeChart');
+  list.innerHTML = '';
+  modes.slice(0,6).forEach(m=>{
+    const pct = Math.min(100, (m.f/maxF)*100);
+    const row = document.createElement('div');
+    row.className='mode-row';
+    row.innerHTML = `<span class="ax">${m.axis}${m.n}</span><span class="bar"><span style="left:${pct}%"></span></span><span class="f">${m.f.toFixed(1)} Hz</span>`;
+    list.appendChild(row);
+  });
+
+  $('schroeder').textContent = schroeder.toFixed(0)+' Hz';
+  $('rt60').textContent = RT60.toFixed(2)+' s';
+  $('listenPos').textContent = (L*0.38).toFixed(2)+' m';
+  $('speakerPos').textContent = (L*0.20).toFixed(2)+' m';
+
+  $('roomNote').innerHTML = `Below ${schroeder.toFixed(0)} Hz room modes dictate bass distribution. Placing speakers at 20% room depth minimizes modal cancellations.`;
+}
+
+// ---------- ENCLOSURE MATHEMATICS ----------
 function computeEnclosure(driver){
   const {Fs, Qts, Vas, Xmax, Sd} = driver;
   const boxType = document.querySelector('#boxTypeSeg button.active').dataset.v;
   const boundary = $('boundaryMode').value;
   const autoComp = $('autoCompensate').value === 'yes';
 
-  // Boundary gain offset
   let boundaryGainDb = 0;
   if (boundary === '2pi') boundaryGainDb = 3;
   if (boundary === '1pi') boundaryGainDb = 6;
@@ -435,7 +708,6 @@ function computeEnclosure(driver){
 
   let effectiveQts = Qts;
   if(autoComp && boundaryGainDb > 0){
-    // Target smaller box / lower Qtc to let room boost fill bottom end
     effectiveQts = Qts * Math.pow(10, -boundaryGainDb / 20);
   }
 
@@ -452,7 +724,6 @@ function computeEnclosure(driver){
     const f3 = Fc * Math.sqrt(( (1/ (targetQtc*targetQtc) - 2) + Math.sqrt(Math.pow(1/(targetQtc*targetQtc) - 2, 2) + 4) ) / 2);
     result = {boxType, Vb, Fc, Qtc: targetQtc, f3, boundaryGainDb, plot: f => sealedMagDb(f, Fc, targetQtc) + (f < 100 ? boundaryGainDb * (1 - f/100) : 0)};
   } else {
-    // Vented calculation
     const alpha = 20 * Math.pow(effectiveQts, 3.3);
     const h = 0.8 * Math.pow(effectiveQts, -0.9);
     const Vb = Vas / Math.max(alpha, 0.1);
@@ -463,7 +734,6 @@ function computeEnclosure(driver){
     const portN = parseFloat($('portN').value);
     const flare = $('portFlare').value;
 
-    // Port length with end corrections
     const endCorr = flare === 'double' ? 1.70 : (flare === 'single' ? 1.46 : 1.22);
     const Lv = (23562.5 * Math.pow(portDia, 2) * portN) / (Vb * Math.pow(Fb, 2)) - (endCorr * portDia / 2);
 
@@ -471,7 +741,6 @@ function computeEnclosure(driver){
     const sdM2 = Sd / 10000;
     const xmaxM = Xmax / 1000;
 
-    // Peak Port Air Velocity Calculation
     const peakVolumeVelocity = 2 * Math.PI * Fb * sdM2 * xmaxM;
     let flareFactor = flare === 'double' ? 0.55 : (flare === 'single' ? 0.75 : 1.0);
     const peakAirVelocity = (peakVolumeVelocity / portAreaM2) * flareFactor;
@@ -496,7 +765,7 @@ function ventedMagDb(f, Fs, h, alpha, Qts){
   return 10*Math.log10(Math.pow(O,8)/Math.max(den,1e-12));
 }
 
-// ---------- DRAW GRAPH ----------
+// ---------- GRAPH RENDERING ----------
 function drawChart(plotFn, f3){
   const svg = $('respChart');
   const W=640,H=220, padL=36,padR=10,padT=14,padB=24;
@@ -531,7 +800,7 @@ function drawChart(plotFn, f3){
   `;
 }
 
-// ---------- CABINET & BRACING LOGIC ----------
+// ---------- CABINET & SPAN LOGIC ----------
 function computeCabinet(Vb){
   const t = parseFloat($('panelThick').value)/1000;
   const ratio = $('ratioMode').value.split(',').map(Number);
@@ -544,7 +813,6 @@ function computeCabinet(Vb){
   const int = {w: x*ratio[0], h: x*ratio[1], d: x*ratio[2]};
   const ext = {w: int.w+2*t, h: int.h+2*t, d: int.d+2*t};
 
-  // Find largest panel span
   const spans = [
     { name: 'Side Panels (H x D)', area: int.h * int.d },
     { name: 'Front/Rear Panels (H x W)', area: int.h * int.w },
@@ -555,14 +823,14 @@ function computeCabinet(Vb){
   return {int, ext, t, primarySpan: spans[0]};
 }
 
-// ---------- CROSSOVER & POD ----------
+// ---------- CROSSOVER CALCULATIONS ----------
 function computeCrossover(driver){
   if(!$('useTweeter').checked) return;
   const woofDia = driver.dia/1000;
   const suggestUpper = C_SOUND/(Math.PI*woofDia);
   const twFs = parseFloat($('twFs').value);
   const suggestLower = twFs*2.2;
-  $('fcSuggest').textContent = `Recommended Range: ${suggestLower.toFixed(0)} – ${suggestUpper.toFixed(0)} Hz`;
+  $('fcSuggest').textContent = `Suggested Range: ${suggestLower.toFixed(0)} – ${suggestUpper.toFixed(0)} Hz`;
 
   const fc = parseFloat($('fc').value);
   const order = parseInt($('xoOrder').value);
@@ -574,7 +842,7 @@ function computeCrossover(driver){
     const Lw = Zw/(2*Math.PI*fc);
     const Ct = 1/(2*Math.PI*fc*Zt);
     table.innerHTML = `
-      <tr><th>Filter Component</th><th>Target Driver</th><th>Value</th></tr>
+      <tr><th>Filter Part</th><th>Target</th><th>Value</th></tr>
       <tr><td>Series Inductor L1</td><td class="val">Woofer</td><td class="val">${(Lw*1000).toFixed(2)} mH</td></tr>
       <tr><td>Series Capacitor C1</td><td class="val">Tweeter Pod</td><td class="val">${(Ct*1e6).toFixed(2)} µF</td></tr>
     `;
@@ -584,7 +852,7 @@ function computeCrossover(driver){
     const Ct = 1/(2*Math.PI*fc*Zt*Math.SQRT2);
     const Lt = (Zt*Math.SQRT2)/(2*Math.PI*fc);
     table.innerHTML = `
-      <tr><th>Filter Component</th><th>Target Driver</th><th>Value</th></tr>
+      <tr><th>Filter Part</th><th>Target</th><th>Value</th></tr>
       <tr><td>Series Inductor L1</td><td class="val">Woofer</td><td class="val">${(Lw*1000).toFixed(2)} mH</td></tr>
       <tr><td>Shunt Capacitor C1</td><td class="val">Woofer</td><td class="val">${(Cw*1e6).toFixed(2)} µF</td></tr>
       <tr><td>Series Capacitor C2</td><td class="val">Tweeter Pod</td><td class="val">${(Ct*1e6).toFixed(2)} µF</td></tr>
@@ -606,7 +874,7 @@ function initThree(){
 
   renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
   renderer.setSize(w, h);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   container.appendChild(renderer.domElement);
 
   scene.add(new THREE.AmbientLight(0xffffff, 0.6));
@@ -618,11 +886,24 @@ function initThree(){
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
+    controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
   }
 
   sceneGroup = new THREE.Group();
   scene.add(sceneGroup);
+  
+  window.addEventListener('resize', onThreeResize);
   animateThree();
+}
+
+function onThreeResize(){
+  const container = $('threeContainer');
+  const w = container.clientWidth, h = container.clientHeight;
+  if(!w || !h) return;
+  camera.aspect = w/h;
+  camera.updateMatrixWorld();
+  camera.updateProjectionMatrix();
+  renderer.setSize(w,h);
 }
 
 function animateThree(){
@@ -650,7 +931,7 @@ function rebuildScene(){
   const matDef = MATERIALS[$('material').value];
   const cutaway = viewState.cutaway;
 
-  // Main Cabinet Body
+  // Main Cabinet Box
   const shellMat = new THREE.MeshStandardMaterial({
     color: matDef.color, roughness:0.75,
     transparent: cutaway, opacity: cutaway ? 0.25 : 0.95,
@@ -671,23 +952,25 @@ function rebuildScene(){
   if(enc.boxType === 'vented'){
     const portR = (enc.portDia/100)/2;
     const portL = Math.min(enc.Lv/100, d*0.75);
-    const portGeo = new THREE.CylinderGeometry(portR, portR, portL, 24);
+    const portGeo = new THREE.CylinderGeometry(portR, portR, Math.max(portL, 0.02), 24);
     const portMat = new THREE.MeshStandardMaterial({color:0x8892A3, roughness:0.5});
     const portMesh = new THREE.Mesh(portGeo, portMat);
     portMesh.rotation.x = Math.PI/2;
-    portMesh.position.set(0, -h*0.35, d/2 - portL/2);
+    const placement = $('portPlacement').value;
+    const zPos = placement === 'front' ? d/2 - Math.max(portL,0.02)/2 : -d/2 + Math.max(portL,0.02)/2;
+    portMesh.position.set(0, -h*0.35, zPos);
     sceneGroup.add(portMesh);
 
     if($('portFlare').value !== 'none'){
       const flareGeo = new THREE.ConeGeometry(portR*1.4, t*1.5, 24);
       const flareMesh = new THREE.Mesh(flareGeo, portMat);
-      flareMesh.rotation.x = -Math.PI/2;
-      flareMesh.position.set(0, -h*0.35, d/2);
+      flareMesh.rotation.x = placement === 'front' ? -Math.PI/2 : Math.PI/2;
+      flareMesh.position.set(0, -h*0.35, placement === 'front' ? d/2 : -d/2);
       sceneGroup.add(flareMesh);
     }
   }
 
-  // Adaptive Bracing Visuals
+  // Adaptive Structural Bracing
   const mode = $('bracingMode').value;
   if(mode !== 'none'){
     const braceMat = new THREE.MeshStandardMaterial({color: 0x8A6425, roughness: 0.9});
@@ -704,7 +987,7 @@ function rebuildScene(){
     }
   }
 
-  // Decoupled External Tweeter Pod Assembly
+  // External Decoupled Tweeter Pod Assembly
   if($('useTweeter').checked){
     const podShape = $('podShape').value;
     const podMount = $('podMount').value;
@@ -727,7 +1010,7 @@ function rebuildScene(){
       podGroup.add(cyl);
     }
 
-    // Pod Mount / Decoupler Stand
+    // Pod Decoupling Feet / Base
     const mountGeo = podMount === 'decoupled' 
       ? new THREE.CylinderGeometry(0.01, 0.02, 0.03, 16)
       : new THREE.BoxGeometry(0.015, 0.04, 0.015);
@@ -744,8 +1027,10 @@ function rebuildScene(){
   camera.lookAt(0,0,0);
 }
 
-// ---------- SYSTEM RECALCULATION & UI UPDATE ----------
+// ---------- SYSTEM COMPUTATION ENGINE ----------
 function recalcAll(){
+  computeRoom();
+
   const driver = {
     Fs: parseFloat($('Fs').value), Qts: parseFloat($('Qts').value), Vas: parseFloat($('Vas').value),
     Xmax: parseFloat($('Xmax').value), Sd: parseFloat($('Sd').value), Re: parseFloat($('Re').value),
@@ -757,10 +1042,8 @@ function recalcAll(){
 
   drawChart(enc.plot, enc.f3);
 
-  // Boundary note rendering
-  $('boundaryNote').innerHTML = `Boundary loading applies <strong>+${enc.boundaryGainDb} dB</strong> low-end gain. System compensation is ${$('autoCompensate').value==='yes'?'adjusting volume target smaller':'disabled'}.`;
+  $('boundaryNote').innerHTML = `Boundary loading applies <strong>+${enc.boundaryGainDb} dB</strong> gain boost. System compensation target is ${$('autoCompensate').value==='yes'?'active':'disabled'}.`;
 
-  // Display box readout
   if(enc.boxType === 'sealed'){
     renderStat($('boxReadout'), [
       ['Volume (Vb)', fmt(enc.Vb,1), 'L'],
@@ -768,7 +1051,7 @@ function recalcAll(){
       ['Target Qtc', fmt(enc.Qtc,2), ''],
     ]);
     $('boxNote').className = 'note';
-    $('boxNote').innerHTML = `Sealed enclosure optimized for balanced low-frequency transient roll-off.`;
+    $('boxNote').innerHTML = `Sealed enclosure alignment solved directly for optimal transient accuracy.`;
   } else {
     const vel = enc.peakAirVelocity;
     const velClass = vel > 17 ? 'red' : 'teal';
@@ -780,23 +1063,24 @@ function recalcAll(){
     ]);
 
     let velNote = vel > 17 
-      ? `<strong>Warning: Peak port air velocity exceeds 17 m/s limit.</strong> Chuffing turbulence likely. Increase port diameter or select double flares.`
-      : `Port air velocity is optimal (<17 m/s limit). Chuffing noise controlled.`;
+      ? `<strong>Warning: Port air velocity exceeds 17 m/s limit.</strong> Chuffing noise likely. Increase port diameter or add double flares.`
+      : `Port air velocity is safe (<17 m/s). Minimal turbulence noise.`;
     $('boxNote').className = vel > 17 ? 'note warn' : 'note';
     $('boxNote').innerHTML = velNote;
   }
 
-  // Display cabinet & adaptive bracing specs
   renderStat($('cabReadout'), [
     ['Ext Width', fmt(cab.ext.w*100,1), 'cm'],
     ['Ext Height', fmt(cab.ext.h*100,1), 'cm'],
     ['Ext Depth', fmt(cab.ext.d*100,1), 'cm'],
-    ['Primary Span', cab.primarySpan.name.split(' ')[0], 'Panel', 'teal']
+    ['Max Span', cab.primarySpan.name.split(' ')[0], '', 'teal']
   ]);
 
-  $('braceNote').innerHTML = `Primary resonant risk: <strong>${cab.primarySpan.name}</strong>. ${$('bracingMode').value === 'auto' ? 'Adaptive bracing automatically places structural cross-reinforcement across this primary span.' : 'Manual bracing selected.'}`;
+  $('braceNote').innerHTML = `Primary panel resonance target: <strong>${cab.primarySpan.name}</strong>. ${$('bracingMode').value === 'auto' ? 'Adaptive bracing automatically reinforces this span.' : 'Manual bracing selected.'}`;
 
   computeCrossover(driver);
+
+  $('portPlacementField').style.display = enc.boxType==='vented' ? '' : 'none';
 
   window.__lastCab = cab;
   window.__lastDriver = driver;
@@ -811,7 +1095,7 @@ function renderStat(container, items){
   ).join('');
 }
 
-// Initial Run
+// Initialize Application
 recalcAll();
 </script>
 </body>
