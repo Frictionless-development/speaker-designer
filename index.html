@@ -1,682 +1,818 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Acoustic3D Studio - Professional Enclosure CAD & Acoustic Engine</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  <style>
-    body { 
-      background-color: #090d16; 
-      color: #f1f5f9; 
-      font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; 
-    }
-    .font-mono { font-family: 'JetBrains Mono', monospace; }
-    canvas { display: block; }
-    
-    /* Custom Scrollbar */
-    .custom-scrollbar::-webkit-scrollbar { width: 5px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cabinetry — Advanced Speaker Design Bench</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #12151A;
+    --panel: #1A1E26;
+    --panel-raised: #20242E;
+    --line: #2B303C;
+    --line-bright: #3A4152;
+    --amber: #E8A33D;
+    --amber-dim: #8A6425;
+    --teal: #4FD1C5;
+    --red: #E8664F;
+    --text: #EDEEF0;
+    --text-mid: #B7BCC6;
+    --text-dim: #767C8A;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--sans);}
+  body{
+    padding: 24px 16px 80px;
+    max-width: 760px;
+    margin: 0 auto;
+    background-image:
+      radial-gradient(circle at 15% 0%, rgba(232,163,61,0.05), transparent 40%),
+      radial-gradient(circle at 85% 10%, rgba(79,209,197,0.04), transparent 40%);
+  }
+  header{margin-bottom:28px;}
+  .eyebrow{
+    font-family:var(--mono); font-size:11px; letter-spacing:2px; text-transform:uppercase;
+    color:var(--amber); display:flex; align-items:center; gap:8px; margin-bottom:6px;
+  }
+  .eyebrow::before{content:'';width:6px;height:6px;background:var(--amber);border-radius:50%;box-shadow:0 0 8px var(--amber);}
+  h1{font-family:var(--sans); font-weight:700; font-size:28px; margin:0 0 6px; letter-spacing:-0.02em;}
+  .sub{color:var(--text-dim); font-size:13.5px; line-height:1.5; max-width:60ch;}
 
-    /* Glassmorphism accents */
-    .glass-panel {
-      background: rgba(15, 23, 42, 0.75);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    .glass-card {
-      background: rgba(30, 41, 59, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-  </style>
+  .module{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .module-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(180deg, var(--panel-raised), var(--panel));
+  }
+  .module-head .tag{
+    font-family:var(--mono); font-size:10px; letter-spacing:1.5px; color:var(--text-dim); text-transform:uppercase;
+  }
+  .module-head h2{font-size:15px; margin:2px 0 0; font-weight:600;}
+  .module-body{padding:16px;}
+  .module-body.tight{padding:12px 16px;}
+
+  .row{display:flex; gap:12px; flex-wrap:wrap;}
+  .field{flex:1; min-width:130px; margin-bottom:12px;}
+  .field label{
+    display:block; font-family:var(--mono); font-size:10.5px; color:var(--text-dim);
+    letter-spacing:0.5px; text-transform:uppercase; margin-bottom:5px;
+  }
+  .field .hint{font-size:10.5px; color:var(--text-dim); margin-top:4px; font-family:var(--mono);}
+  input[type=number], input[type=text], select{
+    width:100%; background:#0F1217; border:1px solid var(--line-bright); color:var(--text);
+    font-family:var(--mono); font-size:14px; padding:9px 10px; border-radius:6px; outline:none;
+  }
+  input[type=number]:focus, select:focus{border-color:var(--amber);}
+  select{appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23767C8A'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center;}
+
+  .seg{display:flex; border:1px solid var(--line-bright); border-radius:6px; overflow:hidden;}
+  .seg button{
+    flex:1; background:#0F1217; color:var(--text-mid); border:none; padding:9px 8px;
+    font-family:var(--mono); font-size:12px; cursor:pointer; letter-spacing:0.4px;
+  }
+  .seg button.active{background:var(--amber); color:#1A1200; font-weight:600;}
+  .seg button + button{border-left:1px solid var(--line-bright);}
+
+  .readout{
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(110px,1fr)); gap:10px; margin-top:4px;
+  }
+  .stat{
+    background:#0F1217; border:1px solid var(--line); border-radius:8px; padding:10px 12px;
+  }
+  .stat .k{font-family:var(--mono); font-size:9.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px;}
+  .stat .v{font-family:var(--mono); font-size:18px; color:var(--amber); font-weight:600; margin-top:3px;}
+  .stat .v.teal{color:var(--teal);}
+  .stat .v.red{color:var(--red);}
+  .stat .u{font-size:11px; color:var(--text-dim); margin-left:3px;}
+
+  .note{
+    font-size:12.5px; color:var(--text-mid); line-height:1.6; background:#0F1217;
+    border-left:2px solid var(--amber-dim); padding:9px 12px; border-radius:0 6px 6px 0; margin-top:10px;
+  }
+  .note.warn{border-left-color:var(--red); color:#F0B3A8;}
+  .note.teal{border-left-color:var(--teal); color:#D0F5F2;}
+  .note strong{color:var(--text);}
+
+  svg.chart{width:100%; height:auto; display:block;}
+
+  .divider{border:none; border-top:1px dashed var(--line); margin:14px 0;}
+  .kicker{font-family:var(--mono); font-size:10.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; margin:0 0 8px;}
+
+  .footer-note{text-align:center; font-size:11.5px; color:var(--text-dim); margin-top:24px; line-height:1.6;}
+
+  .toggle-driver2{
+    display:flex; align-items:center; gap:8px; font-family:var(--mono); font-size:11.5px; color:var(--text-mid);
+    cursor:pointer; user-select:none; margin-bottom:12px;
+  }
+  .toggle-driver2 input{accent-color:var(--amber);}
+
+  .comp-table{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12.5px; margin-top:8px;}
+  .comp-table th{text-align:left; font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.5px; padding:4px 8px; border-bottom:1px solid var(--line);}
+  .comp-table td{padding:6px 8px; border-bottom:1px solid var(--line); color:var(--text-mid);}
+  .comp-table td.val{color:var(--amber); font-weight:600;}
+  .comp-table tr:last-child td{border-bottom:none;}
+</style>
 </head>
-<body class="h-screen w-screen flex flex-col overflow-hidden select-none">
+<body>
 
-  <!-- Header -->
-  <header class="bg-slate-950/90 border-b border-slate-800/80 px-6 py-3 flex items-center justify-between z-20 shrink-0">
-    <div class="flex items-center space-x-3">
-      <div class="bg-gradient-to-tr from-indigo-600 to-violet-500 p-2.5 rounded-xl shadow-lg shadow-indigo-500/20">
-        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path>
-        </svg>
+<header>
+  <div class="eyebrow">Acoustic Workbench</div>
+  <h1>Cabinetry Studio</h1>
+  <div class="sub">Advanced speaker design suite featuring boundary loading dynamics, port velocity aerodynamics, span-based modal panel bracing, and an external tweeter waveguide pod.</div>
+</header>
+
+<!-- BOUNDARY & PLACEMENT MODULE -->
+<div class="module">
+  <div class="module-head">
+    <div><div class="tag">01 · Environment</div><h2>Boundary Loading & Placement</h2></div>
+  </div>
+  <div class="module-body">
+    <div class="row">
+      <div class="field">
+        <label>Placement / Boundary</label>
+        <select id="boundaryMode">
+          <option value="4pi">Free Space (4π / Mid-room) [0 dB]</option>
+          <option value="2pi" selected>Near Wall (2π / Half-space) [+3 dB]</option>
+          <option value="1pi">Corner Placement (π / Quarter-space) [+6 dB]</option>
+          <option value="0.5pi">Floor + Corner (π/2 / Eighth-space) [+9 dB]</option>
+        </select>
+        <div class="hint">Acoustic reflection boundaries boost low-end response.</div>
       </div>
-      <div>
-        <div class="flex items-center space-x-2">
-          <h1 class="text-base font-bold text-white tracking-tight">Acoustic3D Studio</h1>
-          <span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider">PRO v2.4</span>
-        </div>
-        <p class="text-xs text-slate-400">Parametric Loudspeaker CAD & Enclosure Simulation Engine</p>
+      <div class="field">
+        <label>Boundary Target Compensation</label>
+        <select id="autoCompensate">
+          <option value="yes" selected>Active — Target smaller box (Under-damped)</option>
+          <option value="no">Inactive — Standard alignment</option>
+        </select>
+        <div class="hint">Adjusts system target Qtc/alignment for room loading.</div>
       </div>
     </div>
+    <div class="note teal" id="boundaryNote"></div>
+  </div>
+</div>
 
-    <!-- Right Header Actions -->
-    <div class="flex items-center space-x-3">
-      <div class="flex bg-slate-900 border border-slate-800 p-1 rounded-lg text-xs">
-        <button id="viewSolid" class="px-3 py-1.5 rounded-md font-medium transition bg-indigo-600 text-white shadow-sm">Solid CAD</button>
-        <button id="viewXray" class="px-3 py-1.5 rounded-md font-medium text-slate-400 hover:text-white transition">X-Ray Internal</button>
-      </div>
-
-      <button id="exportSvgBtn" class="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white px-4 py-2 rounded-lg text-xs font-semibold shadow-lg shadow-indigo-600/25 transition flex items-center space-x-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-        <span>Export CNC Cut Sheet (SVG)</span>
-      </button>
+<!-- DRIVER MODULE -->
+<div class="module">
+  <div class="module-head">
+    <div><div class="tag">02 · Transducer</div><h2>Woofer & Midbass Parameters</h2></div>
+  </div>
+  <div class="module-body">
+    <div class="field">
+      <label for="driverPreset">Preset Driver</label>
+      <select id="driverPreset">
+        <option value="custom">Custom Parameters</option>
+        <option value="w5">5.25″ Woofer — Qts 0.40, Vas 15L</option>
+        <option value="w65" selected>6.5″ Woofer — Qts 0.35, Vas 25L</option>
+        <option value="w8">8″ Sub/Woofer — Qts 0.38, Vas 55L</option>
+        <option value="w10">10″ High-Excursion — Qts 0.42, Vas 80L</option>
+      </select>
     </div>
-  </header>
+    <div class="row">
+      <div class="field"><label>Fs (Hz)</label><input type="number" id="Fs" value="38" step="0.5"></div>
+      <div class="field"><label>Qts</label><input type="number" id="Qts" value="0.35" step="0.01"></div>
+      <div class="field"><label>Vas (L)</label><input type="number" id="Vas" value="25" step="0.5"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>Xmax (mm)</label><input type="number" id="Xmax" value="4.5" step="0.1"></div>
+      <div class="field"><label>Sd (cm²)</label><input type="number" id="Sd" value="132" step="1"></div>
+      <div class="field"><label>Re (Ω)</label><input type="number" id="Re" value="5.5" step="0.1"></div>
+    </div>
+    <div class="field" style="max-width:220px;">
+      <label>Nominal Dia. (mm)</label>
+      <input type="number" id="dia" value="165" step="1">
+    </div>
+  </div>
+</div>
 
-  <!-- Main Container -->
-  <div class="flex flex-1 overflow-hidden">
+<!-- ENCLOSURE MODULE -->
+<div class="module">
+  <div class="module-head">
+    <div><div class="tag">03 · Enclosure</div><h2>Alignment & Airflow Dynamics</h2></div>
+  </div>
+  <div class="module-body">
+    <div class="seg" id="boxTypeSeg">
+      <button data-v="sealed">Sealed</button>
+      <button data-v="vented" class="active">Vented (Ported)</button>
+    </div>
 
-    <!-- Left Sidebar: Controls & Inputs -->
-    <aside class="w-96 bg-slate-950/80 border-r border-slate-800/80 flex flex-col overflow-y-auto custom-scrollbar p-5 space-y-5 shrink-0 z-10">
-      
-      <!-- Section 1: Room & Acoustic Targets -->
-      <section class="space-y-3">
-        <div class="flex items-center justify-between">
-          <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center space-x-1.5">
-            <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
-            <span>1. Room Target Dynamics</span>
-          </h2>
-        </div>
-        <div class="grid grid-cols-2 gap-2.5 text-xs">
-          <div class="glass-card p-2.5 rounded-lg">
-            <label class="block text-slate-400 text-[11px] mb-1">Room Vol ($m^3$)</label>
-            <input type="number" id="roomVolume" value="45" class="w-full bg-slate-900/90 border border-slate-700/70 rounded-md px-2.5 py-1 text-white font-mono focus:outline-none focus:border-indigo-500">
-          </div>
-          <div class="glass-card p-2.5 rounded-lg">
-            <label class="block text-slate-400 text-[11px] mb-1">Target SPL (dB)</label>
-            <input type="number" id="targetSpl" value="102" class="w-full bg-slate-900/90 border border-slate-700/70 rounded-md px-2.5 py-1 text-white font-mono focus:outline-none focus:border-indigo-500">
-          </div>
-        </div>
-      </section>
-
-      <!-- Section 2: Driver Selection & TS Engine -->
-      <section class="space-y-3 border-t border-slate-800/60 pt-4">
-        <div class="flex justify-between items-center">
-          <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center space-x-1.5">
-            <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
-            <span>2. Thiele-Small Driver Engine</span>
-          </h2>
-          <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-medium" id="alignmentStatus">Bass-Reflex (SBB4)</span>
-        </div>
-
-        <div>
-          <label class="block text-slate-400 text-[11px] mb-1">Woofer Driver Model</label>
-          <select id="driverPreset" class="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-1.5 text-white text-xs focus:outline-none focus:border-indigo-500">
-            <option value="dayton_rs180" selected>Dayton Audio RS180-8 (7" Reference)</option>
-            <option value="peerless_830869">Peerless 830869 (8" Nomex Woofer)</option>
-            <option value="sb_acoustic_sb17">SB Acoustics SB17NRXC35-8 (6.5")</option>
-            <option value="custom">Custom Parameters...</option>
+    <div id="sealedControls" style="margin-top:14px; display:none;">
+      <div class="field" style="max-width:280px;">
+        <label>Target Nominal Qtc</label>
+        <input type="number" id="targetQtc" value="0.707" step="0.01">
+      </div>
+    </div>
+    <div id="ventedControls" style="margin-top:14px;">
+      <div class="row">
+        <div class="field"><label>Port Inner Dia. (cm)</label><input type="number" id="portDia" value="6.5" step="0.5"></div>
+        <div class="field"><label>Number of Ports</label><input type="number" id="portN" value="1" step="1" min="1"></div>
+        <div class="field">
+          <label>Port Flare Type</label>
+          <select id="portFlare">
+            <option value="none">Straight Pipe (Unflared)</option>
+            <option value="single">Single End Flared (Bell-mouth)</option>
+            <option value="double" selected>Double End Precision Flare</option>
           </select>
         </div>
-
-        <div class="grid grid-cols-3 gap-2 text-xs">
-          <div class="glass-card p-2 rounded-lg">
-            <label class="block text-slate-400 text-[10px] mb-0.5">$F_s$ (Hz)</label>
-            <input type="number" id="tsFs" value="39" class="w-full bg-slate-900/90 border border-slate-700/70 rounded px-2 py-1 text-white font-mono">
-          </div>
-          <div class="glass-card p-2 rounded-lg">
-            <label class="block text-slate-400 text-[10px] mb-0.5">$Q_{ts}$</label>
-            <input type="number" step="0.01" id="tsQts" value="0.38" class="w-full bg-slate-900/90 border border-slate-700/70 rounded px-2 py-1 text-white font-mono">
-          </div>
-          <div class="glass-card p-2 rounded-lg">
-            <label class="block text-slate-400 text-[10px] mb-0.5">$V_{as}$ (L)</label>
-            <input type="number" id="tsVas" value="28.5" class="w-full bg-slate-900/90 border border-slate-700/70 rounded px-2 py-1 text-white font-mono">
-          </div>
-        </div>
-
-        <!-- Calculated Acoustic Metrics -->
-        <div class="glass-panel p-3.5 rounded-xl space-y-2 border border-slate-800">
-          <div class="text-[11px] font-semibold text-slate-300 border-b border-slate-800/80 pb-1.5 flex justify-between">
-            <span>Acoustic Output Metrics</span>
-            <span class="text-indigo-400 font-mono" id="optRatio">Ratio: 1.62 : 1 : 1.25</span>
-          </div>
-          <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
-            <div class="flex justify-between"><span class="text-slate-400">Net Vol ($V_b$):</span> <span id="calcVb" class="font-mono text-indigo-300 font-semibold">22.4 L</span></div>
-            <div class="flex justify-between"><span class="text-slate-400">Tuning ($f_b$):</span> <span id="calcFb" class="font-mono text-indigo-300 font-semibold">41.2 Hz</span></div>
-            <div class="flex justify-between"><span class="text-slate-400">Port Length:</span> <span id="calcPortLen" class="font-mono text-indigo-300 font-semibold">18.5 cm</span></div>
-            <div class="flex justify-between"><span class="text-slate-400">$-3\text{dB}$ Cutoff:</span> <span id="calcF3" class="font-mono text-emerald-400 font-semibold">42.0 Hz</span></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Section 3: Advanced Enclosure CAD Settings -->
-      <section class="space-y-3 border-t border-slate-800/60 pt-4">
-        <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center space-x-1.5">
-          <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
-          <span>3. Enclosure & Matrix Geometry</span>
-        </h2>
-        
-        <div class="grid grid-cols-2 gap-2.5 text-xs">
-          <div>
-            <label class="block text-slate-400 text-[11px] mb-1">Wood Material</label>
-            <select id="woodThickness" class="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1.5 text-white">
-              <option value="18">18mm Baltic Birch</option>
-              <option value="24" selected>24mm Heavy MDF</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-slate-400 text-[11px] mb-1">Baffle Edge Profile</label>
-            <select id="baffleEdge" class="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1.5 text-white">
-              <option value="chamfer">25mm Bevel Chamfer</option>
-              <option value="rounded">25mm Radius Round</option>
-              <option value="flat">Square Edge</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="glass-card p-3 rounded-xl space-y-2 text-xs">
-          <label class="flex items-center space-x-2.5 cursor-pointer text-slate-300">
-            <input type="checkbox" id="matrixBracing" checked class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-indigo-500/20">
-            <span class="font-medium">Parametric Matrix Window Bracing</span>
-          </label>
-          <label class="flex items-center space-x-2.5 cursor-pointer text-slate-300">
-            <input type="checkbox" id="isolatedChamber" checked class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-indigo-500/20">
-            <span class="font-medium">Isolated Mid/Tweeter Chamber</span>
-          </label>
-          <label class="flex items-center space-x-2.5 cursor-pointer text-slate-300">
-            <input type="checkbox" id="slopedBaffle" checked class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-indigo-500/20">
-            <span class="font-medium">5° Sloped Baffle (Time-Alignment)</span>
-          </label>
-          <label class="flex items-center space-x-2.5 cursor-pointer text-slate-300">
-            <input type="checkbox" id="flushMount" checked class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-indigo-500/20">
-            <span class="font-medium">Flush Driver Counter-Bore Rebates</span>
-          </label>
-        </div>
-      </section>
-
-      <!-- Section 4: Live Frequency Response Plot Canvas -->
-      <section class="space-y-2 border-t border-slate-800/60 pt-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-400">Live Bass Simulation</h2>
-          <span class="text-[10px] text-slate-400 font-mono">20Hz - 200Hz</span>
-        </div>
-        <div class="glass-card p-2 rounded-xl border border-slate-800">
-          <canvas id="freqCanvas" width="320" height="110" class="w-full h-24 rounded-lg bg-slate-950/80"></canvas>
-        </div>
-      </section>
-
-    </aside>
-
-    <!-- Center: Interactive 3D Viewport -->
-    <main class="flex-1 relative bg-slate-950">
-      <div id="webglContainer" class="w-full h-full"></div>
-
-      <!-- Overlays / Badges -->
-      <div class="absolute top-5 left-5 pointer-events-none space-y-2">
-        <div class="glass-panel px-4 py-2 rounded-xl text-xs font-mono text-slate-300 shadow-xl flex items-center space-x-3">
-          <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
-          <span>External Dimensions: </span>
-          <span id="dimReadout" class="text-indigo-400 font-semibold">220W x 420H x 310D mm</span>
-        </div>
-        
-        <div class="glass-panel px-4 py-2 rounded-xl text-xs font-mono text-slate-300 shadow-xl flex items-center space-x-3">
-          <span class="text-amber-400">★ Matrix Resonance Mode:</span>
-          <span class="text-emerald-400 font-semibold">Asymmetric Multi-Window Active</span>
-        </div>
       </div>
+    </div>
 
-      <!-- Viewport Navigation Hint -->
-      <div class="absolute bottom-5 right-5 glass-panel px-4 py-2 rounded-xl text-xs text-slate-400 flex items-center space-x-3 pointer-events-none">
-        <span class="flex items-center space-x-1">
-          <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
-          <span>Left-Click Drag: Rotate</span>
-        </span>
-        <span>•</span>
-        <span>Scroll: Zoom</span>
-        <span>•</span>
-        <span>Right-Click: Pan</span>
-      </div>
-    </main>
+    <hr class="divider">
+    <svg class="chart" id="respChart" viewBox="0 0 640 220" preserveAspectRatio="xMidYMid meet"></svg>
 
+    <div class="readout" id="boxReadout" style="margin-top:6px;"></div>
+    <div class="note" id="boxNote"></div>
   </div>
+</div>
 
-  <script>
-    // --- TS Engine & Application State ---
-    const presets = {
-      dayton_rs180: { fs: 39, qts: 0.38, vas: 28.5 },
-      peerless_830869: { fs: 35, qts: 0.33, vas: 38.0 },
-      sb_acoustic_sb17: { fs: 31, qts: 0.31, vas: 34.0 }
-    };
+<!-- TWEETER POD MODULE -->
+<div class="module">
+  <div class="module-head">
+    <div><div class="tag">04 · External Pod</div><h2>Stacked Waveguide Tweeter</h2></div>
+  </div>
+  <div class="module-body">
+    <label class="toggle-driver2">
+      <input type="checkbox" id="useTweeter" checked>
+      Enable Decoupled External Tweeter Pod Assembly
+    </label>
 
-    let state = {
-      fs: 39, qts: 0.38, vas: 28.5,
-      woodThick: 24,
-      matrixBracing: true,
-      isolatedChamber: true,
-      slopedBaffle: true,
-      flushMount: true,
-      baffleEdge: 'chamfer',
-      viewMode: 'solid',
-      vbLitres: 22.4,
-      fbHz: 41.2,
-      f3Hz: 42.0,
-      extW: 220, extH: 460, extD: 320
-    };
+    <div id="tweeterBlock">
+      <div class="row">
+        <div class="field">
+          <label>Pod Profile</label>
+          <select id="podShape">
+            <option value="teardrop" selected>Aero Teardrop (Decoupled)</option>
+            <option value="cylinder">Cylindrical Capsule</option>
+            <option value="waveguide">Deep Horn Cone</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Isolation Mount</label>
+          <select id="podMount">
+            <option value="decoupled" selected>Elastomer Decoupled Feet</option>
+            <option value="bolted">Rigid Metal Post</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field"><label>Tweeter Dia (mm)</label><input type="number" id="twDia" value="25" step="1"></div>
+        <div class="field"><label>Tweeter Fs (Hz)</label><input type="number" id="twFs" value="1100" step="10"></div>
+        <div class="field"><label>Tweeter Re (Ω)</label><input type="number" id="twRe" value="6" step="0.1"></div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>Crossover Point (Hz)</label>
+          <input type="number" id="fc" value="2300" step="10">
+          <div class="hint" id="fcSuggest"></div>
+        </div>
+        <div class="field">
+          <label>Filter Order</label>
+          <select id="xoOrder">
+            <option value="1">1st Order (6 dB/oct)</option>
+            <option value="2" selected>2nd Order Butterworth (12 dB/oct)</option>
+          </select>
+        </div>
+      </div>
+      <table class="comp-table" id="xoTable"></table>
+    </div>
+  </div>
+</div>
 
-    function recalculateAcoustics() {
-      const vas = parseFloat(document.getElementById('tsVas').value);
-      const qts = parseFloat(document.getElementById('tsQts').value);
-      const fs = parseFloat(document.getElementById('tsFs').value);
+<!-- CABINET & ADAPTIVE BRACING MODULE -->
+<div class="module">
+  <div class="module-head">
+    <div><div class="tag">05 · Structural</div><h2>Panel Span, Bracing & Damping</h2></div>
+  </div>
+  <div class="module-body">
+    <div class="row">
+      <div class="field" style="max-width:180px;">
+        <label>Panel Thickness (mm)</label>
+        <input type="number" id="panelThick" value="19" step="1">
+      </div>
+      <div class="field">
+        <label>Cabinet Aspect Ratio</label>
+        <select id="ratioMode">
+          <option value="1,1.6,2.6" selected>1 : 1.6 : 2.6 — Golden Ratio</option>
+          <option value="1,1.25,1.6">1 : 1.25 : 1.6 — Compact Bookshelf</option>
+          <option value="1,2.2,1.3">1 : 2.2 : 1.3 — Floorstanding Tower</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Panel Material</label>
+        <select id="material">
+          <option value="mdf" selected>MDF (Medium Density Fiberboard)</option>
+          <option value="ply">Birch Plywood</option>
+          <option value="hardwood">Solid Hardwood</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label>Bracing Topology</label>
+        <select id="bracingMode">
+          <option value="auto" selected>Adaptive Span Target (Smart Layout)</option>
+          <option value="window">Full Window Grid Bracing</option>
+          <option value="dowel">Baffle-to-Rear Dowel Tie</option>
+          <option value="none">Unbraced Enclosure</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Internal Damping Layer</label>
+        <select id="dampingMode">
+          <option value="perimeter" selected>Perimeter Wool Lining (Clear Port Path)</option>
+          <option value="full">Full Polyfill Stuffed (+10% Vol Inflation)</option>
+          <option value="cld">Constrained Layer Bitumen Mat</option>
+        </select>
+      </div>
+    </div>
+    <div class="readout" id="cabReadout"></div>
+    <div class="note" id="braceNote"></div>
+  </div>
+</div>
 
-      // Acoustic Alignment Formulas
-      let vb = 20 * Math.pow(qts, 3.3) * vas;
-      if (vb < 5) vb = 5; if (vb > 150) vb = 150;
-      
-      let fb = Math.pow(vas / vb, 0.32) * fs;
-      let f3 = fs * Math.pow(vas / vb, 0.44);
+<!-- 3D PREVIEW MODULE -->
+<div class="module">
+  <div class="module-head">
+    <div><div class="tag">06 · 3D View</div><h2>Interactive CAD Preview</h2></div>
+  </div>
+  <div class="module-body tight">
+    <div class="seg" id="viewModeSeg">
+      <button data-v="cutaway" class="active">X-Ray Cutaway</button>
+      <button data-v="solid">Solid Exterior</button>
+    </div>
+    <div id="threeContainer" style="width:100%; aspect-ratio:4/3; margin-top:12px; border:1px solid var(--line-bright); border-radius:8px; overflow:hidden; background:#0A0C10; position:relative;">
+      <div id="threeHint" style="position:absolute; bottom:8px; left:50%; transform:translateX(-50%); font-family:var(--mono); font-size:10.5px; color:var(--text-dim); background:rgba(15,18,23,0.7); padding:4px 10px; border-radius:12px; pointer-events:none;">drag to rotate · scroll to zoom</div>
+    </div>
+  </div>
+</div>
 
-      const portDiam = 6.8; 
-      const portArea = Math.PI * Math.pow(portDiam / 2, 2);
-      let portLen = ((23600 * portArea) / (Math.pow(fb, 2) * vb)) - (0.825 * portDiam);
-      if (portLen < 5) portLen = 5;
+<div class="footer-note">
+  Engineered with exact Thiele-Small alignment & physical airflow boundaries. Cross-verify with laboratory measurement setups.
+</div>
 
-      state.vbLitres = vb.toFixed(1);
-      state.fbHz = fb.toFixed(1);
-      state.f3Hz = f3.toFixed(1);
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js"></script>
 
-      document.getElementById('calcVb').textContent = `${state.vbLitres} L`;
-      document.getElementById('calcFb').textContent = `${state.fbHz} Hz`;
-      document.getElementById('calcPortLen').textContent = `${portLen.toFixed(1)} cm`;
-      document.getElementById('calcF3').textContent = `${state.f3Hz} Hz`;
+<script>
+const $ = id => document.getElementById(id);
+const C_SOUND = 343; // m/s
 
-      // Dimensions based on golden ratio H:W:D = 1.618 : 1 : 1.25
-      const internalVolCm3 = (vb + 3.8) * 1000;
-      const t = state.woodThick;
-      
-      const internalW = Math.cbrt(internalVolCm3 / (1.618 * 1.25));
-      const internalH = internalW * 1.75; 
-      const internalD = internalW * 1.25;
+const PRESETS = {
+  w5:  {Fs:45, Qts:0.40, Vas:15, Xmax:4.0, Sd:90,  Re:6.0, dia:133},
+  w65: {Fs:38, Qts:0.35, Vas:25, Xmax:4.5, Sd:132, Re:5.5, dia:165},
+  w8:  {Fs:28, Qts:0.38, Vas:55, Xmax:6.0, Sd:210, Re:5.8, dia:200},
+  w10: {Fs:24, Qts:0.42, Vas:80, Xmax:7.5, Sd:330, Re:6.2, dia:255},
+};
 
-      state.extW = Math.round(internalW + (t * 2));
-      state.extH = Math.round(internalH + (t * 2));
-      state.extD = Math.round(internalD + (t * 2));
+const MATERIALS = {
+  mdf:      {label:'MDF',           density:750, color:0xC9A876},
+  ply:      {label:'Birch Plywood', density:650, color:0xE0C79A},
+  hardwood: {label:'Solid Hardwood',density:720, color:0x8B5A2B},
+};
 
-      document.getElementById('dimReadout').textContent = `${state.extW}W x ${state.extH}H x ${state.extD}D mm`;
+$('driverPreset').addEventListener('change', e=>{
+  const v = e.target.value;
+  if(v==='custom') return;
+  const p = PRESETS[v];
+  $('Fs').value=p.Fs; $('Qts').value=p.Qts; $('Vas').value=p.Vas;
+  $('Xmax').value=p.Xmax; $('Sd').value=p.Sd; $('Re').value=p.Re; $('dia').value=p.dia;
+  recalcAll();
+});
 
-      build3DSpeaker();
-      drawFreqResponse();
+document.querySelectorAll('#boxTypeSeg button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('#boxTypeSeg button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    $('sealedControls').style.display = b.dataset.v==='sealed' ? '' : 'none';
+    $('ventedControls').style.display = b.dataset.v==='vented' ? '' : 'none';
+    recalcAll();
+  });
+});
+
+document.querySelectorAll('#viewModeSeg button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('#viewModeSeg button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    viewState.cutaway = b.dataset.v==='cutaway';
+    rebuildScene();
+  });
+});
+
+$('useTweeter').addEventListener('change', ()=>{
+  $('tweeterBlock').style.display = $('useTweeter').checked ? '' : 'none';
+  recalcAll();
+});
+
+document.querySelectorAll('input, select').forEach(el=>{
+  el.addEventListener('input', recalcAll);
+});
+
+function fmt(n, d=2){ if(!isFinite(n)) return '—'; return n.toFixed(d); }
+
+// ---------- ACOUSTIC COMPUTATIONS ----------
+
+function computeEnclosure(driver){
+  const {Fs, Qts, Vas, Xmax, Sd} = driver;
+  const boxType = document.querySelector('#boxTypeSeg button.active').dataset.v;
+  const boundary = $('boundaryMode').value;
+  const autoComp = $('autoCompensate').value === 'yes';
+
+  // Boundary gain offset
+  let boundaryGainDb = 0;
+  if (boundary === '2pi') boundaryGainDb = 3;
+  if (boundary === '1pi') boundaryGainDb = 6;
+  if (boundary === '0.5pi') boundaryGainDb = 9;
+
+  let effectiveQts = Qts;
+  if(autoComp && boundaryGainDb > 0){
+    // Target smaller box / lower Qtc to let room boost fill bottom end
+    effectiveQts = Qts * Math.pow(10, -boundaryGainDb / 20);
+  }
+
+  let result = {};
+
+  if(boxType === 'sealed'){
+    let targetQtc = parseFloat($('targetQtc').value);
+    if(autoComp && boundaryGainDb > 0){
+      targetQtc = Math.max(0.5, targetQtc - (boundaryGainDb * 0.03));
+    }
+    const alpha = Math.pow(targetQtc / effectiveQts, 2) - 1;
+    const Vb = Vas / Math.max(alpha, 0.05);
+    const Fc = Fs * Math.sqrt(1 + alpha);
+    const f3 = Fc * Math.sqrt(( (1/ (targetQtc*targetQtc) - 2) + Math.sqrt(Math.pow(1/(targetQtc*targetQtc) - 2, 2) + 4) ) / 2);
+    result = {boxType, Vb, Fc, Qtc: targetQtc, f3, boundaryGainDb, plot: f => sealedMagDb(f, Fc, targetQtc) + (f < 100 ? boundaryGainDb * (1 - f/100) : 0)};
+  } else {
+    // Vented calculation
+    const alpha = 20 * Math.pow(effectiveQts, 3.3);
+    const h = 0.8 * Math.pow(effectiveQts, -0.9);
+    const Vb = Vas / Math.max(alpha, 0.1);
+    const Fb = Fs * h;
+    const f3 = Fs * Math.pow(effectiveQts, -1.4) * 0.9;
+
+    const portDia = parseFloat($('portDia').value);
+    const portN = parseFloat($('portN').value);
+    const flare = $('portFlare').value;
+
+    // Port length with end corrections
+    const endCorr = flare === 'double' ? 1.70 : (flare === 'single' ? 1.46 : 1.22);
+    const Lv = (23562.5 * Math.pow(portDia, 2) * portN) / (Vb * Math.pow(Fb, 2)) - (endCorr * portDia / 2);
+
+    const portAreaM2 = portN * Math.PI * Math.pow((portDia / 100) / 2, 2);
+    const sdM2 = Sd / 10000;
+    const xmaxM = Xmax / 1000;
+
+    // Peak Port Air Velocity Calculation
+    const peakVolumeVelocity = 2 * Math.PI * Fb * sdM2 * xmaxM;
+    let flareFactor = flare === 'double' ? 0.55 : (flare === 'single' ? 0.75 : 1.0);
+    const peakAirVelocity = (peakVolumeVelocity / portAreaM2) * flareFactor;
+
+    result = {boxType, Vb, Fb, f3, Lv, portDia, portN, peakAirVelocity, boundaryGainDb, plot: f => ventedMagDb(f, Fs, h, alpha, effectiveQts) + (f < 100 ? boundaryGainDb * (1 - f/100) : 0)};
+  }
+  return result;
+}
+
+function sealedMagDb(f, Fc, Qtc){
+  const O = f/Fc;
+  const num = Math.pow(O,4);
+  const den = Math.pow(O*O-1,2) + (O*O)/(Qtc*Qtc);
+  return 10*Math.log10(num/Math.max(den, 1e-12));
+}
+
+function ventedMagDb(f, Fs, h, alpha, Qts){
+  const O = f/Fs;
+  const term1 = Math.pow(O,4) - (1+alpha+h*h)*O*O + h*h;
+  const term2 = (O*O/(Qts*Qts)) * Math.pow(O*O-h*h,2);
+  const den = term1*term1 + term2;
+  return 10*Math.log10(Math.pow(O,8)/Math.max(den,1e-12));
+}
+
+// ---------- DRAW GRAPH ----------
+function drawChart(plotFn, f3){
+  const svg = $('respChart');
+  const W=640,H=220, padL=36,padR=10,padT=14,padB=24;
+  const fMin=15, fMax=400, dbMin=-24, dbMax=12;
+  const x = f => padL + (Math.log10(f)-Math.log10(fMin))/(Math.log10(fMax)-Math.log10(fMin)) * (W-padL-padR);
+  const y = db => padT + (dbMax-db)/(dbMax-dbMin) * (H-padT-padB);
+
+  let path = '';
+  for(let i=0;i<=120;i++){
+    const f = fMin*Math.pow(fMax/fMin, i/120);
+    const db = Math.min(dbMax, Math.max(dbMin, plotFn(f)));
+    path += (i===0?'M':'L') + x(f).toFixed(1) + ' ' + y(db).toFixed(1) + ' ';
+  }
+
+  let gridlines='', labels='';
+  [20,50,100,200].forEach(f=>{
+    gridlines += `<line x1="${x(f)}" y1="${padT}" x2="${x(f)}" y2="${H-padB}" stroke="#2B303C" stroke-width="1"/>`;
+    labels += `<text x="${x(f)}" y="${H-6}" fill="#767C8A" font-family="IBM Plex Mono" font-size="9" text-anchor="middle">${f}</text>`;
+  });
+  [6,0,-6,-12,-18].forEach(db=>{
+    gridlines += `<line x1="${padL}" y1="${y(db)}" x2="${W-padR}" y2="${y(db)}" stroke="#2B303C" stroke-width="1"/>`;
+    labels += `<text x="${padL-6}" y="${y(db)+3}" fill="#767C8A" font-family="IBM Plex Mono" font-size="9" text-anchor="end">${db}</text>`;
+  });
+
+  const f3x = x(f3);
+  svg.innerHTML = `
+    ${gridlines}
+    <line x1="${f3x}" y1="${padT}" x2="${f3x}" y2="${H-padB}" stroke="#E8664F" stroke-width="1" stroke-dasharray="3,3"/>
+    <path d="${path}" fill="none" stroke="#E8A33D" stroke-width="2.2"/>
+    ${labels}
+    <text x="${f3x}" y="${padT+10}" fill="#E8664F" font-family="IBM Plex Mono" font-size="9" text-anchor="middle">f3 ${f3.toFixed(0)}Hz</text>
+  `;
+}
+
+// ---------- CABINET & BRACING LOGIC ----------
+function computeCabinet(Vb){
+  const t = parseFloat($('panelThick').value)/1000;
+  const ratio = $('ratioMode').value.split(',').map(Number);
+  const damp = $('dampingMode').value;
+  const volMult = damp === 'full' ? 1.10 : 1.0;
+
+  const VbM3 = (Vb / volMult) / 1000;
+  const k = ratio[0]*ratio[1]*ratio[2];
+  const x = Math.cbrt(VbM3/k);
+  const int = {w: x*ratio[0], h: x*ratio[1], d: x*ratio[2]};
+  const ext = {w: int.w+2*t, h: int.h+2*t, d: int.d+2*t};
+
+  // Find largest panel span
+  const spans = [
+    { name: 'Side Panels (H x D)', area: int.h * int.d },
+    { name: 'Front/Rear Panels (H x W)', area: int.h * int.w },
+    { name: 'Top/Bottom Panels (W x D)', area: int.w * int.d }
+  ];
+  spans.sort((a,b) => b.area - a.area);
+
+  return {int, ext, t, primarySpan: spans[0]};
+}
+
+// ---------- CROSSOVER & POD ----------
+function computeCrossover(driver){
+  if(!$('useTweeter').checked) return;
+  const woofDia = driver.dia/1000;
+  const suggestUpper = C_SOUND/(Math.PI*woofDia);
+  const twFs = parseFloat($('twFs').value);
+  const suggestLower = twFs*2.2;
+  $('fcSuggest').textContent = `Recommended Range: ${suggestLower.toFixed(0)} – ${suggestUpper.toFixed(0)} Hz`;
+
+  const fc = parseFloat($('fc').value);
+  const order = parseInt($('xoOrder').value);
+  const Zw = driver.Re;
+  const Zt = parseFloat($('twRe').value);
+
+  const table = $('xoTable');
+  if(order===1){
+    const Lw = Zw/(2*Math.PI*fc);
+    const Ct = 1/(2*Math.PI*fc*Zt);
+    table.innerHTML = `
+      <tr><th>Filter Component</th><th>Target Driver</th><th>Value</th></tr>
+      <tr><td>Series Inductor L1</td><td class="val">Woofer</td><td class="val">${(Lw*1000).toFixed(2)} mH</td></tr>
+      <tr><td>Series Capacitor C1</td><td class="val">Tweeter Pod</td><td class="val">${(Ct*1e6).toFixed(2)} µF</td></tr>
+    `;
+  } else {
+    const Lw = (Zw*Math.SQRT2)/(2*Math.PI*fc);
+    const Cw = 1/(2*Math.PI*fc*Zw*Math.SQRT2);
+    const Ct = 1/(2*Math.PI*fc*Zt*Math.SQRT2);
+    const Lt = (Zt*Math.SQRT2)/(2*Math.PI*fc);
+    table.innerHTML = `
+      <tr><th>Filter Component</th><th>Target Driver</th><th>Value</th></tr>
+      <tr><td>Series Inductor L1</td><td class="val">Woofer</td><td class="val">${(Lw*1000).toFixed(2)} mH</td></tr>
+      <tr><td>Shunt Capacitor C1</td><td class="val">Woofer</td><td class="val">${(Cw*1e6).toFixed(2)} µF</td></tr>
+      <tr><td>Series Capacitor C2</td><td class="val">Tweeter Pod</td><td class="val">${(Ct*1e6).toFixed(2)} µF</td></tr>
+      <tr><td>Shunt Inductor L2</td><td class="val">Tweeter Pod</td><td class="val">${(Lt*1000).toFixed(2)} mH</td></tr>
+    `;
+  }
+}
+
+// ---------- THREE.JS CAD ENGINE ----------
+let scene, camera, renderer, controls, sceneGroup;
+const viewState = {cutaway: true};
+
+function initThree(){
+  const container = $('threeContainer');
+  const w = container.clientWidth, h = container.clientHeight;
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(35, w/h, 0.01, 50);
+  camera.position.set(0.8, 0.6, 1.2);
+
+  renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+  renderer.setSize(w, h);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  container.appendChild(renderer.domElement);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+  const d1 = new THREE.DirectionalLight(0xffffff, 0.8);
+  d1.position.set(2,3,2);
+  scene.add(d1);
+
+  if (typeof THREE.OrbitControls === 'function'){
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+  }
+
+  sceneGroup = new THREE.Group();
+  scene.add(sceneGroup);
+  animateThree();
+}
+
+function animateThree(){
+  requestAnimationFrame(animateThree);
+  if(controls) controls.update();
+  if(renderer) renderer.render(scene, camera);
+}
+
+function clearGroup(g){
+  while(g.children.length){
+    const c = g.children.pop();
+    if(c.geometry) c.geometry.dispose();
+    if(c.material) c.material.dispose();
+  }
+}
+
+function rebuildScene(){
+  if(!sceneGroup) return;
+  clearGroup(sceneGroup);
+
+  const cab = window.__lastCab, driver = window.__lastDriver, enc = window.__lastEnc;
+  if(!cab) return;
+
+  const w = cab.ext.w, h = cab.ext.h, d = cab.ext.d, t = cab.t;
+  const matDef = MATERIALS[$('material').value];
+  const cutaway = viewState.cutaway;
+
+  // Main Cabinet Body
+  const shellMat = new THREE.MeshStandardMaterial({
+    color: matDef.color, roughness:0.75,
+    transparent: cutaway, opacity: cutaway ? 0.25 : 0.95,
+    side: THREE.DoubleSide
+  });
+  const shellGeo = new THREE.BoxGeometry(w,h,d);
+  sceneGroup.add(new THREE.Mesh(shellGeo, shellMat));
+  sceneGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(shellGeo), new THREE.LineBasicMaterial({color:0x3A4152})));
+
+  // Woofer Cutout
+  const woofR = (driver.dia/1000)/2;
+  const woofMesh = new THREE.Mesh(new THREE.CylinderGeometry(woofR, woofR, t*1.2, 32), new THREE.MeshStandardMaterial({color:0x4FD1C5}));
+  woofMesh.rotation.x = Math.PI/2;
+  woofMesh.position.set(0, -h*0.1, d/2);
+  sceneGroup.add(woofMesh);
+
+  // Vented Port Construction
+  if(enc.boxType === 'vented'){
+    const portR = (enc.portDia/100)/2;
+    const portL = Math.min(enc.Lv/100, d*0.75);
+    const portGeo = new THREE.CylinderGeometry(portR, portR, portL, 24);
+    const portMat = new THREE.MeshStandardMaterial({color:0x8892A3, roughness:0.5});
+    const portMesh = new THREE.Mesh(portGeo, portMat);
+    portMesh.rotation.x = Math.PI/2;
+    portMesh.position.set(0, -h*0.35, d/2 - portL/2);
+    sceneGroup.add(portMesh);
+
+    if($('portFlare').value !== 'none'){
+      const flareGeo = new THREE.ConeGeometry(portR*1.4, t*1.5, 24);
+      const flareMesh = new THREE.Mesh(flareGeo, portMat);
+      flareMesh.rotation.x = -Math.PI/2;
+      flareMesh.position.set(0, -h*0.35, d/2);
+      sceneGroup.add(flareMesh);
+    }
+  }
+
+  // Adaptive Bracing Visuals
+  const mode = $('bracingMode').value;
+  if(mode !== 'none'){
+    const braceMat = new THREE.MeshStandardMaterial({color: 0x8A6425, roughness: 0.9});
+    if(mode === 'window' || mode === 'auto'){
+      const ring = new THREE.Mesh(new THREE.BoxGeometry(w - 2.5*t, t*0.8, d - 2.5*t), braceMat);
+      ring.position.set(0, 0, 0);
+      sceneGroup.add(ring);
+    }
+    if(mode === 'dowel' || mode === 'auto'){
+      const dowel = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, d - 2*t, 16), braceMat);
+      dowel.rotation.x = Math.PI/2;
+      dowel.position.set(0, -h*0.1, 0);
+      sceneGroup.add(dowel);
+    }
+  }
+
+  // Decoupled External Tweeter Pod Assembly
+  if($('useTweeter').checked){
+    const podShape = $('podShape').value;
+    const podMount = $('podMount').value;
+    const twR = (parseFloat($('twDia').value)/1000)/2;
+
+    const podGroup = new THREE.Group();
+    const podMat = new THREE.MeshStandardMaterial({color: 0xE8A33D, roughness: 0.3, metalness: 0.2});
+
+    if(podShape === 'teardrop'){
+      const sphere = new THREE.Mesh(new THREE.SphereGeometry(twR*1.8, 32, 16), podMat);
+      sphere.scale.set(1, 1, 2.2);
+      podGroup.add(sphere);
+    } else if(podShape === 'waveguide'){
+      const horn = new THREE.Mesh(new THREE.ConeGeometry(twR*2.5, twR*3, 32), podMat);
+      horn.rotation.x = Math.PI/2;
+      podGroup.add(horn);
+    } else {
+      const cyl = new THREE.Mesh(new THREE.CylinderGeometry(twR*1.6, twR*1.6, twR*3, 32), podMat);
+      cyl.rotation.x = Math.PI/2;
+      podGroup.add(cyl);
     }
 
-    // --- Frequency Response Canvas Renderer ---
-    function drawFreqResponse() {
-      const canvas = document.getElementById('freqCanvas');
-      const ctx = canvas.getContext('2d');
-      const w = canvas.width;
-      const h = canvas.height;
+    // Pod Mount / Decoupler Stand
+    const mountGeo = podMount === 'decoupled' 
+      ? new THREE.CylinderGeometry(0.01, 0.02, 0.03, 16)
+      : new THREE.BoxGeometry(0.015, 0.04, 0.015);
+    const mountMesh = new THREE.Mesh(mountGeo, new THREE.MeshStandardMaterial({color: 0x4FD1C5}));
+    mountMesh.position.set(0, -twR*1.8, 0);
+    podGroup.add(mountMesh);
 
-      ctx.clearRect(0, 0, w, h);
+    podGroup.position.set(0, h/2 + twR*2.2 + 0.03, 0);
+    sceneGroup.add(podGroup);
+  }
 
-      // Grid Lines
-      ctx.strokeStyle = 'rgba(51, 65, 85, 0.4)';
-      ctx.lineWidth = 1;
-      for (let x = 0; x < w; x += 40) {
-        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
-      }
-      ctx.beginPath(); ctx.moveTo(0, h/2); ctx.lineTo(w, h/2); ctx.stroke(); // 0dB line
+  const maxDim = Math.max(w,h,d);
+  camera.position.set(maxDim*1.2, maxDim*0.9, maxDim*1.6);
+  camera.lookAt(0,0,0);
+}
 
-      // Curve Plotting
-      ctx.beginPath();
-      ctx.strokeStyle = '#6366f1';
-      ctx.lineWidth = 2.5;
+// ---------- SYSTEM RECALCULATION & UI UPDATE ----------
+function recalcAll(){
+  const driver = {
+    Fs: parseFloat($('Fs').value), Qts: parseFloat($('Qts').value), Vas: parseFloat($('Vas').value),
+    Xmax: parseFloat($('Xmax').value), Sd: parseFloat($('Sd').value), Re: parseFloat($('Re').value),
+    dia: parseFloat($('dia').value)
+  };
 
-      const f3 = parseFloat(state.f3Hz);
-      for (let px = 0; px < w; px++) {
-        const freq = 10 + (px / w) * 190; // 10Hz to 200Hz
-        // 4th order highpass roll-off simulation for bass-reflex
-        const response = 1 / Math.sqrt(1 + Math.pow(f3 / freq, 8));
-        const db = 20 * Math.log10(response);
-        const py = (h / 2) - (db * 3); // Scale
+  const enc = computeEnclosure(driver);
+  const cab = computeCabinet(enc.Vb);
 
-        if (px === 0) ctx.moveTo(px, py);
-        else ctx.lineTo(px, py);
-      }
-      ctx.stroke();
+  drawChart(enc.plot, enc.f3);
 
-      // -3dB Indicator
-      ctx.fillStyle = '#10b981';
-      ctx.font = '10px JetBrains Mono';
-      ctx.fillText(`f3: ${state.f3Hz}Hz`, 15, h - 12);
-    }
+  // Boundary note rendering
+  $('boundaryNote').innerHTML = `Boundary loading applies <strong>+${enc.boundaryGainDb} dB</strong> low-end gain. System compensation is ${$('autoCompensate').value==='yes'?'adjusting volume target smaller':'disabled'}.`;
 
-    // --- 3D Three.js Studio Engine ---
-    let scene, camera, renderer, controls;
-    let speakerGroup;
+  // Display box readout
+  if(enc.boxType === 'sealed'){
+    renderStat($('boxReadout'), [
+      ['Volume (Vb)', fmt(enc.Vb,1), 'L'],
+      ['Cutoff (f3)', fmt(enc.f3,0), 'Hz', 'teal'],
+      ['Target Qtc', fmt(enc.Qtc,2), ''],
+    ]);
+    $('boxNote').className = 'note';
+    $('boxNote').innerHTML = `Sealed enclosure optimized for balanced low-frequency transient roll-off.`;
+  } else {
+    const vel = enc.peakAirVelocity;
+    const velClass = vel > 17 ? 'red' : 'teal';
+    renderStat($('boxReadout'), [
+      ['Volume (Vb)', fmt(enc.Vb,1), 'L'],
+      ['Tuning (Fb)', fmt(enc.Fb,1), 'Hz'],
+      ['Port Length', fmt(enc.Lv,1), 'cm'],
+      ['Air Velocity', fmt(vel,1), 'm/s', velClass],
+    ]);
 
-    function init3D() {
-      const container = document.getElementById('webglContainer');
-      scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x090d16);
+    let velNote = vel > 17 
+      ? `<strong>Warning: Peak port air velocity exceeds 17 m/s limit.</strong> Chuffing turbulence likely. Increase port diameter or select double flares.`
+      : `Port air velocity is optimal (<17 m/s limit). Chuffing noise controlled.`;
+    $('boxNote').className = vel > 17 ? 'note warn' : 'note';
+    $('boxNote').innerHTML = velNote;
+  }
 
-      camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 10, 5000);
-      camera.position.set(550, 420, 750);
+  // Display cabinet & adaptive bracing specs
+  renderStat($('cabReadout'), [
+    ['Ext Width', fmt(cab.ext.w*100,1), 'cm'],
+    ['Ext Height', fmt(cab.ext.h*100,1), 'cm'],
+    ['Ext Depth', fmt(cab.ext.d*100,1), 'cm'],
+    ['Primary Span', cab.primarySpan.name.split(' ')[0], 'Panel', 'teal']
+  ]);
 
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-      renderer.setSize(container.clientWidth, container.clientHeight);
-      renderer.setPixelRatio(window.devicePixelRatio);
-      renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-      container.appendChild(renderer.domElement);
+  $('braceNote').innerHTML = `Primary resonant risk: <strong>${cab.primarySpan.name}</strong>. ${$('bracingMode').value === 'auto' ? 'Adaptive bracing automatically places structural cross-reinforcement across this primary span.' : 'Manual bracing selected.'}`;
 
-      controls = new THREE.OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.05;
+  computeCrossover(driver);
 
-      // Studio Lighting
-      const ambient = new THREE.AmbientLight(0xffffff, 0.7);
-      scene.add(ambient);
+  window.__lastCab = cab;
+  window.__lastDriver = driver;
+  window.__lastEnc = enc;
+  if(!scene) initThree();
+  rebuildScene();
+}
 
-      const keyLight = new THREE.DirectionalLight(0xffffff, 0.9);
-      keyLight.position.set(400, 600, 500);
-      keyLight.castShadow = true;
-      keyLight.shadow.mapSize.width = 2048;
-      keyLight.shadow.mapSize.height = 2048;
-      scene.add(keyLight);
+function renderStat(container, items){
+  container.innerHTML = items.map(([k,v,u,cls])=>
+    `<div class="stat"><div class="k">${k}</div><div class="v ${cls||''}">${v}<span class="u">${u||''}</span></div></div>`
+  ).join('');
+}
 
-      const fillLight = new THREE.DirectionalLight(0x818cf8, 0.5);
-      fillLight.position.set(-400, 100, -300);
-      scene.add(fillLight);
-
-      const rimLight = new THREE.DirectionalLight(0xa7f3d0, 0.3);
-      rimLight.position.set(0, -400, -500);
-      scene.add(rimLight);
-
-      const grid = new THREE.GridHelper(1600, 32, 0x1e293b, 0x0f172a);
-      grid.position.y = -220;
-      scene.add(grid);
-
-      speakerGroup = new THREE.Group();
-      scene.add(speakerGroup);
-
-      window.addEventListener('resize', onWindowResize);
-      animate();
-    }
-
-    function build3DSpeaker() {
-      while(speakerGroup.children.length > 0){ 
-        speakerGroup.remove(speakerGroup.children[0]); 
-      }
-
-      const w = state.extW;
-      const h = state.extH;
-      const d = state.extD;
-      const t = state.woodThick;
-
-      const isXray = state.viewMode === 'xray';
-      
-      // Premium Cabinet Materials
-      const woodMat = new THREE.MeshStandardMaterial({
-        color: isXray ? 0x818cf8 : 0x1e293b,
-        roughness: 0.35,
-        metalness: 0.1,
-        transparent: isXray,
-        opacity: isXray ? 0.22 : 1.0
-      });
-
-      const braceMat = new THREE.MeshStandardMaterial({
-        color: 0xf59e0b,
-        roughness: 0.4,
-        transparent: isXray,
-        opacity: isXray ? 0.75 : 0.95
-      });
-
-      const driverBasketMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.2, metalness: 0.8 });
-      const coneMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.5 });
-      const surroundMat = new THREE.MeshStandardMaterial({ color: 0x020617, roughness: 0.1 });
-
-      const enclosure = new THREE.Group();
-      const slopeAngle = state.slopedBaffle ? (5 * Math.PI / 180) : 0;
-
-      // Outer Shell Mesh
-      const cabinetMesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), woodMat);
-      cabinetMesh.castShadow = true;
-      cabinetMesh.receiveShadow = true;
-      enclosure.add(cabinetMesh);
-
-      // Chamfer Edge Bevel Simulation
-      if (state.baffleEdge === 'chamfer' && !isXray) {
-        const chamferGeo = new THREE.CylinderGeometry(14, 14, h, 4);
-        const chamferMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.3 });
-        const leftChamfer = new THREE.Mesh(chamferGeo, chamferMat);
-        leftChamfer.position.set(-w/2 + 4, 0, d/2 - 4);
-        leftChamfer.rotation.y = Math.PI / 4;
-        enclosure.add(leftChamfer);
-
-        const rightChamfer = leftChamfer.clone();
-        rightChamfer.position.set(w/2 - 4, 0, d/2 - 4);
-        enclosure.add(rightChamfer);
-      }
-
-      // Matrix Window Bracing Panels
-      if (state.matrixBracing) {
-        const braceCount = 2;
-        const braceSpacing = (h - (t * 2)) / (braceCount + 1);
-        
-        for (let i = 1; i <= braceCount; i++) {
-          const yPos = -h/2 + t + (i * braceSpacing);
-          const braceShape = new THREE.Shape();
-          const bw = w - (t * 2);
-          const bd = d - (t * 2);
-          
-          braceShape.moveTo(-bw/2, -bd/2);
-          braceShape.lineTo(bw/2, -bd/2);
-          braceShape.lineTo(bw/2, bd/2);
-          braceShape.lineTo(-bw/2, bd/2);
-          braceShape.closePath();
-
-          // Cutout Windows
-          const hole1 = new THREE.Path();
-          hole1.absellipse(-bw/4, -bd/4, bw/4.5, bd/4.5, 0, Math.PI * 2, true);
-          braceShape.holes.push(hole1);
-
-          const hole2 = new THREE.Path();
-          hole2.absellipse(bw/4, bd/4, bw/5.5, bd/5.5, 0, Math.PI * 2, true);
-          braceShape.holes.push(hole2);
-
-          const braceGeo = new THREE.ExtrudeGeometry(braceShape, { depth: t, bevelEnabled: false });
-          const braceMesh = new THREE.Mesh(braceGeo, braceMat);
-          braceMesh.rotation.x = Math.PI / 2;
-          braceMesh.position.set(0, yPos, 0);
-          enclosure.add(braceMesh);
-        }
-      }
-
-      // Midrange / Tweeter Acoustic Chamber
-      if (state.isolatedChamber) {
-        const chamberH = 120;
-        const chamberD = 140;
-        const chamberMesh = new THREE.Mesh(new THREE.BoxGeometry(w - (t * 2), chamberH, chamberD), braceMat);
-        chamberMesh.position.set(0, h/2 - t - (chamberH/2) - 10, d/2 - (chamberD/2) - t);
-        enclosure.add(chamberMesh);
-      }
-
-      // Woofer Assembly
-      const wooferRadius = 82;
-      const wooferBasket = new THREE.Mesh(new THREE.CylinderGeometry(wooferRadius, wooferRadius*0.75, 45, 32), driverBasketMat);
-      wooferBasket.rotation.x = Math.PI / 2;
-      wooferBasket.position.set(0, -h/6, d/2 + (state.flushMount ? -4 : 8));
-      
-      const wooferSurround = new THREE.Mesh(new THREE.TorusGeometry(wooferRadius*0.9, 8, 16, 32), surroundMat);
-      wooferSurround.position.set(0, -h/6, d/2 + (state.flushMount ? 2 : 12));
-
-      const wooferCone = new THREE.Mesh(new THREE.ConeGeometry(wooferRadius*0.75, 25, 32), coneMat);
-      wooferCone.rotation.x = -Math.PI / 2;
-      wooferCone.position.set(0, -h/6, d/2 + 8);
-      enclosure.add(wooferBasket, wooferSurround, wooferCone);
-
-      // Tweeter Dome
-      const tweeterRadius = 35;
-      const tweeterMesh = new THREE.Mesh(new THREE.CylinderGeometry(tweeterRadius, tweeterRadius*0.85, 18, 32), driverBasketMat);
-      tweeterMesh.rotation.x = Math.PI / 2;
-      tweeterMesh.position.set(0, h/4, d/2 + (state.flushMount ? -2 : 4));
-      
-      const tweeterDome = new THREE.Mesh(new THREE.SphereGeometry(14, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), surroundMat);
-      tweeterDome.position.set(0, h/4, d/2 + (state.flushMount ? 4 : 10));
-      tweeterDome.rotation.x = Math.PI / 2;
-      enclosure.add(tweeterMesh, tweeterDome);
-
-      // Aerodynamic Bass Reflex Port Tube
-      const portMesh = new THREE.Mesh(new THREE.CylinderGeometry(34, 30, 180, 32), driverBasketMat);
-      portMesh.rotation.x = Math.PI / 2;
-      portMesh.position.set(0, -h/3, -d/2 + 90);
-      enclosure.add(portMesh);
-
-      if (state.slopedBaffle) {
-        enclosure.rotation.x = slopeAngle;
-      }
-
-      speakerGroup.add(enclosure);
-    }
-
-    function onWindowResize() {
-      const container = document.getElementById('webglContainer');
-      camera.aspect = container.clientWidth / container.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
-    }
-
-    function animate() {
-      requestAnimationFrame(animate);
-      controls.update();
-      renderer.render(scene, camera);
-    }
-
-    // --- CNC SVG Cut Sheet Generator ---
-    function exportCncSvg() {
-      const w = state.extW;
-      const h = state.extH;
-      const d = state.extD;
-      const t = state.woodThick;
-
-      const sideW = d;
-      const sideH = h;
-      const frontW = w - (2 * t);
-      const frontH = h - (2 * t);
-      const topW = w - (2 * t);
-      const topD = d;
-
-      const svgContent = `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 850" width="1200" height="850" style="background:#090d16; color:#f1f5f9; font-family:'Plus Jakarta Sans', sans-serif;">
-          <style>
-            .panel { fill: #1e293b; stroke: #6366f1; stroke-width: 2.5; rx: 4; }
-            .cutout { fill: #090d16; stroke: #f59e0b; stroke-width: 2; stroke-dasharray: 4; }
-            .text { fill: #94a3b8; font-size: 11px; font-family: monospace; }
-            .title { fill: #f8fafc; font-size: 20px; font-weight: bold; }
-          </style>
-
-          <text x="35" y="45" class="title">Acoustic3D Studio Cut Sheet - ${w}x${h}x${d}mm (Stock: ${t}mm)</text>
-          
-          <!-- Side Left -->
-          <g transform="translate(35, 80)">
-            <rect width="${sideW}" height="${sideH}" class="panel" />
-            <text x="12" y="28" class="text">LEFT SIDE PANEL (${sideW}x${sideH}mm)</text>
-          </g>
-
-          <!-- Side Right -->
-          <g transform="translate(${sideW + 55}, 80)">
-            <rect width="${sideW}" height="${sideH}" class="panel" />
-            <text x="12" y="28" class="text">RIGHT SIDE PANEL (${sideW}x${sideH}mm)</text>
-          </g>
-
-          <!-- Front Baffle -->
-          <g transform="translate(${sideW * 2 + 75}, 80)">
-            <rect width="${frontW}" height="${frontH}" class="panel" />
-            <circle cx="${frontW/2}" cy="${frontH * 0.28}" r="35" class="cutout" />
-            <circle cx="${frontW/2}" cy="${frontH * 0.65}" r="82" class="cutout" />
-            <text x="12" y="28" class="text">FRONT BAFFLE (${frontW}x${frontH}mm)</text>
-            <text x="12" y="45" class="text">Dual Rebate Counter-Bores</text>
-          </g>
-
-          <!-- Rear Panel -->
-          <g transform="translate(35, ${sideH + 110})">
-            <rect width="${frontW}" height="${frontH}" class="panel" />
-            <circle cx="${frontW/2}" cy="${frontH * 0.75}" r="34" class="cutout" />
-            <text x="12" y="28" class="text">REAR PANEL (${frontW}x${frontH}mm)</text>
-          </g>
-
-          <!-- Top / Bottom Caps -->
-          <g transform="translate(${frontW + 65}, ${sideH + 110})">
-            <rect width="${topW}" height="${topD}" class="panel" />
-            <text x="12" y="28" class="text">TOP CAP (${topW}x${topD}mm)</text>
-
-            <rect y="${topD + 25}" width="${topW}" height="${topD}" class="panel" />
-            <text x="12" y="${topD + 53}" class="text">BOTTOM CAP (${topW}x${topD}mm)</text>
-          </g>
-        </svg>
-      `;
-
-      const blob = new Blob([svgContent], { type: 'image/svg+xml' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `acoustic3d_cutsheet_${w}x${h}x${d}mm.svg`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-
-    // --- Bindings & Setup ---
-    function setupEvents() {
-      ['tsFs', 'tsQts', 'tsVas', 'roomVolume', 'targetSpl'].forEach(id => {
-        document.getElementById(id).addEventListener('input', recalculateAcoustics);
-      });
-
-      document.getElementById('driverPreset').addEventListener('change', (e) => {
-        const val = e.target.value;
-        if (presets[val]) {
-          document.getElementById('tsFs').value = presets[val].fs;
-          document.getElementById('tsQts').value = presets[val].qts;
-          document.getElementById('tsVas').value = presets[val].vas;
-          recalculateAcoustics();
-        }
-      });
-
-      document.getElementById('woodThickness').addEventListener('change', (e) => {
-        state.woodThick = parseFloat(e.target.value);
-        recalculateAcoustics();
-      });
-
-      document.getElementById('baffleEdge').addEventListener('change', (e) => {
-        state.baffleEdge = e.target.value;
-        build3DSpeaker();
-      });
-
-      ['matrixBracing', 'isolatedChamber', 'slopedBaffle', 'flushMount'].forEach(id => {
-        document.getElementById(id).addEventListener('change', (e) => {
-          state[id] = e.target.checked;
-          build3DSpeaker();
-        });
-      });
-
-      document.getElementById('viewSolid').addEventListener('click', () => {
-        state.viewMode = 'solid';
-        document.getElementById('viewSolid').className = "px-3 py-1.5 rounded-md font-medium transition bg-indigo-600 text-white shadow-sm";
-        document.getElementById('viewXray').className = "px-3 py-1.5 rounded-md font-medium text-slate-400 hover:text-white transition";
-        build3DSpeaker();
-      });
-
-      document.getElementById('viewXray').addEventListener('click', () => {
-        state.viewMode = 'xray';
-        document.getElementById('viewXray').className = "px-3 py-1.5 rounded-md font-medium transition bg-indigo-600 text-white shadow-sm";
-        document.getElementById('viewSolid').className = "px-3 py-1.5 rounded-md font-medium text-slate-400 hover:text-white transition";
-        build3DSpeaker();
-      });
-
-      document.getElementById('exportSvgBtn').addEventListener('click', exportCncSvg);
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      init3D();
-      setupEvents();
-      recalculateAcoustics();
-    });
-  </script>
+// Initial Run
+recalcAll();
+</script>
 </body>
 </html>
