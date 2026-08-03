@@ -409,9 +409,80 @@
   </div>
 </div>
 
+<!-- MATERIALS / CONSTRUCTION MODULE -->
+<div class="module">
+  <div class="module-head">
+    <div><div class="tag">06 · Construction</div><h2>Materials &amp; build-out</h2></div>
+  </div>
+  <div class="module-body">
+    <div class="row">
+      <div class="field">
+        <label>Panel material</label>
+        <select id="material">
+          <option value="mdf" selected>MDF</option>
+          <option value="ply">Plywood (birch)</option>
+          <option value="hardwood">Solid hardwood</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Bracing</label>
+        <select id="bracing">
+          <option value="none">None</option>
+          <option value="single" selected>Single shelf brace</option>
+          <option value="cross">Cross brace (window pane)</option>
+          <option value="multi">Multiple shelf braces</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label>Tweeter mounting</label>
+        <select id="twMount">
+          <option value="flush" selected>Flush-mounted (recessed)</option>
+          <option value="surface">Surface-mounted (on baffle)</option>
+        </select>
+      </div>
+      <div class="field" id="portPlacementField">
+        <label>Port placement</label>
+        <select id="portPlacement">
+          <option value="front" selected>Front baffle</option>
+          <option value="rear">Rear panel</option>
+        </select>
+      </div>
+    </div>
+    <div class="readout" id="materialReadout"></div>
+    <div class="note" id="materialNote"></div>
+  </div>
+</div>
+
+<!-- 3D PREVIEW MODULE -->
+<div class="module">
+  <div class="module-head">
+    <div><div class="tag">07 · Preview</div><h2>3D cabinet model</h2></div>
+  </div>
+  <div class="module-body tight">
+    <div class="seg" id="viewModeSeg">
+      <button data-v="solid" class="active">Exterior</button>
+      <button data-v="cutaway">Cutaway (see inside)</button>
+    </div>
+    <div id="threeContainer" style="width:100%; aspect-ratio:4/3; margin-top:12px; border:1px solid var(--line-bright); border-radius:8px; overflow:hidden; background:#0A0C10; position:relative;">
+      <div id="threeHint" style="position:absolute; bottom:8px; left:50%; transform:translateX(-50%); font-family:var(--mono); font-size:10.5px; color:var(--text-dim); background:rgba(15,18,23,0.7); padding:4px 10px; border-radius:12px; pointer-events:none;">drag to rotate · scroll/pinch to zoom</div>
+    </div>
+    <div class="row" style="margin-top:10px;">
+      <div class="stat" style="flex:1;"><div class="k" style="display:flex; align-items:center; gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:#4FD1C5;display:inline-block;"></span>Woofer cutout</div></div>
+      <div class="stat" style="flex:1;"><div class="k" style="display:flex; align-items:center; gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:#E8A33D;display:inline-block;"></span>Tweeter cutout</div></div>
+      <div class="stat" style="flex:1;"><div class="k" style="display:flex; align-items:center; gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:#8892A3;display:inline-block;"></span>Port</div></div>
+    </div>
+    <div class="note">Illustrative geometry — driver/port positions use standard layout rules (tweeter upper third, port clear of the woofer basket), not a stress or airflow simulation. Confirm baffle clearances against your actual driver's cutout diameter and mounting depth before drilling.</div>
+  </div>
+</div>
+
 <div class="footer-note">
   Estimator, not a substitute for measurement. Cross-check final designs in WinISD, Hornresp, or VituixCAD before building.
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js"></script>
 
 <script>
 const $ = id => document.getElementById(id);
@@ -538,6 +609,228 @@ $('applyScanBtn').addEventListener('click', ()=>{
   $('roomW').value = W.toFixed(2);
   recalcAll();
   $('calStatus').textContent = `Applied: length ${L.toFixed(2)}m, width ${W.toFixed(2)}m. Re-scan any wall and hit Apply again to update.`;
+});
+
+// ---------- MATERIALS ----------
+const MATERIALS = {
+  mdf:      {label:'MDF',              density:750, color:0xC9A876, note:"Dense, uniform, easy to cut cleanly — the standard choice for sealed/vented hi-fi cabinets. Heavier and less stiff per kg than plywood."},
+  ply:      {label:'Birch plywood',    density:650, color:0xE0C79A, note:"Better stiffness-to-weight than MDF, holds screws better, resists moisture better — costs more and shows grain if left unveneered."},
+  hardwood: {label:'Solid hardwood',   density:720, color:0x8B5A2B, note:"Best looks and edge-detailing, but seasonal movement (expansion/contraction) needs to be designed for — usually used as veneer over MDF/ply rather than solid panels for full cabinets."},
+};
+
+function computeMaterial(cabExt, t){
+  const mat = MATERIALS[$('material').value];
+  // approximate panel surface area (6 sides) - 2*(wh+wd+hd), times thickness times density
+  const area = 2*(cabExt.w*cabExt.h + cabExt.w*cabExt.d + cabExt.h*cabExt.d);
+  const volumeM3 = area * t;
+  const massKg = volumeM3 * mat.density;
+  return {mat, massKg};
+}
+
+document.querySelectorAll('#viewModeSeg button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('#viewModeSeg button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    viewState.cutaway = b.dataset.v==='cutaway';
+    rebuildScene();
+  });
+});
+
+// ---------- THREE.JS SCENE ----------
+let scene, camera, renderer, controls, sceneGroup;
+const viewState = {cutaway:false};
+
+function initThree(){
+  const container = $('threeContainer');
+  const w = container.clientWidth, h = container.clientHeight;
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(35, w/h, 0.01, 50);
+  camera.position.set(0.9, 0.7, 1.3);
+  renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+  renderer.setSize(w, h);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  container.insertBefore(renderer.domElement, container.firstChild);
+
+  const amb = new THREE.AmbientLight(0xffffff, 0.55);
+  scene.add(amb);
+  const dir = new THREE.DirectionalLight(0xffffff, 0.8);
+  dir.position.set(2,3,2);
+  scene.add(dir);
+  const dir2 = new THREE.DirectionalLight(0x4fd1c5, 0.25);
+  dir2.position.set(-2,-1,-2);
+  scene.add(dir2);
+
+  if (typeof THREE.OrbitControls === 'function'){
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+    controls.minDistance = 0.3;
+    controls.maxDistance = 4;
+  }
+
+  sceneGroup = new THREE.Group();
+  scene.add(sceneGroup);
+
+  window.addEventListener('resize', onThreeResize);
+  animateThree();
+}
+
+function onThreeResize(){
+  const container = $('threeContainer');
+  const w = container.clientWidth, h = container.clientHeight;
+  if(!w || !h) return;
+  camera.aspect = w/h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w,h);
+}
+
+function animateThree(){
+  requestAnimationFrame(animateThree);
+  if(controls) controls.update();
+  if(renderer) renderer.render(scene, camera);
+}
+
+function clearGroup(g){
+  while(g.children.length){
+    const c = g.children.pop();
+    if(c.geometry) c.geometry.dispose();
+    if(c.material) c.material.dispose();
+  }
+}
+
+function makeBraceFrame(width, depth, y, thickness, group, color){
+  // rectangular ring brace made of 4 box segments, sitting at height y inside the cabinet
+  const barW = Math.min(width, depth) * 0.12;
+  const mat = new THREE.MeshStandardMaterial({color, roughness:0.85});
+  const segs = [
+    {w: width, d: barW, x:0, z: depth/2 - barW/2},
+    {w: width, d: barW, x:0, z: -(depth/2 - barW/2)},
+    {w: barW, d: depth - 2*barW, x: width/2 - barW/2, z:0},
+    {w: barW, d: depth - 2*barW, x: -(width/2 - barW/2), z:0},
+  ];
+  segs.forEach(s=>{
+    const geo = new THREE.BoxGeometry(s.w, thickness, s.d);
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(s.x, y, s.z);
+    group.add(mesh);
+  });
+}
+
+function rebuildScene(){
+  if(!sceneGroup) return;
+  clearGroup(sceneGroup);
+
+  const cab = window.__lastCab, driver = window.__lastDriver, enc = window.__lastEnc;
+  if(!cab) return;
+
+  const w = cab.ext.w, h = cab.ext.h, d = cab.ext.d, t = cab.t;
+  const matDef = MATERIALS[$('material').value];
+  const useTweeter = $('useTweeter').checked;
+  const cutaway = viewState.cutaway;
+
+  // --- outer shell ---
+  const shellMat = new THREE.MeshStandardMaterial({
+    color: matDef.color, roughness:0.75, metalness:0.05,
+    transparent: cutaway, opacity: cutaway ? 0.25 : 1,
+    side: THREE.DoubleSide,
+  });
+  const shellGeo = new THREE.BoxGeometry(w,h,d);
+  const shell = new THREE.Mesh(shellGeo, shellMat);
+  sceneGroup.add(shell);
+
+  const edges = new THREE.LineSegments(new THREE.EdgesGeometry(shellGeo), new THREE.LineBasicMaterial({color:0x0A0C10, linewidth:1}));
+  sceneGroup.add(edges);
+
+  // --- driver layout on baffle (front = +z face) ---
+  const woofDia = driver.dia/1000; // m
+  const twDia = useTweeter ? parseFloat($('twDia').value)/1000 : 0;
+  const twMount = $('twMount').value;
+
+  const twY = useTweeter ? h*0.5 - h*0.30 : 0;
+  const woofY = useTweeter ? -h*0.5 + h*0.30 : 0;
+  const frontZ = d/2;
+
+  function addDriverCutout(radius, y, color, depthInset){
+    const ringMat = new THREE.MeshStandardMaterial({color, roughness:0.5});
+    const ring = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, t*0.6, 32), ringMat);
+    ring.rotation.x = Math.PI/2;
+    ring.position.set(0, y, frontZ - depthInset);
+    sceneGroup.add(ring);
+    // basket cone suggestion (darker inner circle)
+    const cone = new THREE.Mesh(new THREE.CylinderGeometry(radius*0.55, radius*0.55, t*0.3, 24), new THREE.MeshStandardMaterial({color:0x14161B, roughness:0.9}));
+    cone.rotation.x = Math.PI/2;
+    cone.position.set(0, y, frontZ - depthInset + t*0.18);
+    sceneGroup.add(cone);
+  }
+
+  addDriverCutout(woofDia/2, woofY, 0x4FD1C5, t*0.1);
+  if(useTweeter){
+    const inset = twMount==='flush' ? t*0.35 : -t*0.05; // flush sits recessed, surface sits proud
+    addDriverCutout(twDia/2, twY, 0xE8A33D, inset);
+  }
+
+  // --- port ---
+  if(enc && enc.boxType==='vented'){
+    const portR = (enc.portDia/100)/2; // cm -> m
+    const placement = $('portPlacement').value;
+    const portY = -h*0.5 + h*0.10;
+    const portMat = new THREE.MeshStandardMaterial({color:0x8892A3, roughness:0.6});
+    const portLen = Math.min(enc.Lv/100, d*0.8); // cm -> m, clamp
+    const portMesh = new THREE.Mesh(new THREE.CylinderGeometry(portR, portR, Math.max(portLen,0.02), 24), portMat);
+    portMesh.rotation.x = Math.PI/2;
+    if(placement==='front'){
+      portMesh.position.set(w*0.28, portY, d/2 - (Math.max(portLen,0.02))/2);
+    } else {
+      portMesh.position.set(0, portY, -d/2 + (Math.max(portLen,0.02))/2);
+    }
+    sceneGroup.add(portMesh);
+  }
+
+  // --- bracing (only visible / meaningful in cutaway) ---
+  const bracing = $('bracing').value;
+  const innerW = w - 2*t, innerD = d - 2*t;
+  const braceColor = 0x2B303C;
+  if(bracing==='single'){
+    makeBraceFrame(innerW, innerD, 0, t*0.8, sceneGroup, braceColor);
+  } else if(bracing==='cross'){
+    makeBraceFrame(innerW, innerD, 0, t*0.8, sceneGroup, braceColor);
+    // vertical brace as a frame rotated conceptually: approximate with a vertical panel pair
+    const vMat = new THREE.MeshStandardMaterial({color:braceColor, roughness:0.85});
+    const vGeo = new THREE.BoxGeometry(t*0.8, h - 2*t, innerD*0.12);
+    const vMesh = new THREE.Mesh(vGeo, vMat);
+    vMesh.position.set(0,0,0);
+    sceneGroup.add(vMesh);
+  } else if(bracing==='multi'){
+    makeBraceFrame(innerW, innerD, h*0.18, t*0.8, sceneGroup, braceColor);
+    makeBraceFrame(innerW, innerD, -h*0.18, t*0.8, sceneGroup, braceColor);
+  }
+
+  // scale camera target roughly to cabinet size
+  if(controls){
+    controls.target.set(0,0,0);
+  }
+  const maxDim = Math.max(w,h,d);
+  camera.position.set(maxDim*1.1, maxDim*0.85, maxDim*1.5);
+  camera.lookAt(0,0,0);
+}
+
+function update3D(cab, driver, enc){
+  window.__lastCab = cab;
+  window.__lastDriver = driver;
+  window.__lastEnc = enc;
+  if(!scene) initThree();
+  rebuildScene();
+
+  const matResult = computeMaterial(cab.ext, cab.t);
+  renderStat($('materialReadout'), [
+    ['Est. panel weight', fmt(matResult.massKg,1), 'kg'],
+    ['Panel thickness', fmt(cab.t*1000,0), 'mm'],
+  ]);
+  $('materialNote').textContent = matResult.mat.note;
+}
+
+document.querySelectorAll('#material, #bracing, #twMount, #portPlacement').forEach(el=>{
+  el.addEventListener('change', recalcAll);
 });
 
 document.querySelectorAll('#boxTypeSeg button').forEach(b=>{
@@ -833,6 +1126,9 @@ function recalcAll(){
   ]);
 
   computeCrossover(driver);
+
+  $('portPlacementField').style.display = enc.boxType==='vented' ? '' : 'none';
+  update3D(cab, driver, enc);
 }
 
 recalcAll();
