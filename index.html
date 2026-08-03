@@ -3,35 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Acoustic3D - Parametric Speaker & Enclosure CAD Generator</title>
+  <title>Acoustic3D Studio - Professional Enclosure CAD & Acoustic Engine</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    body { background-color: #0f172a; color: #f8fafc; font-family: ui-sans-serif, system-ui, sans-serif; }
+    body { 
+      background-color: #090d16; 
+      color: #f1f5f9; 
+      font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; 
+    }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
     canvas { display: block; }
-    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: #1e293b; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+    
+    /* Custom Scrollbar */
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+    /* Glassmorphism accents */
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
   </style>
 </head>
-<body class="h-screen w-screen flex flex-col overflow-hidden">
+<body class="h-screen w-screen flex flex-col overflow-hidden select-none">
 
   <!-- Header -->
-  <header class="bg-slate-900 border-b border-slate-800 px-6 py-3 flex items-center justify-between z-10 shrink-0">
+  <header class="bg-slate-950/90 border-b border-slate-800/80 px-6 py-3 flex items-center justify-between z-20 shrink-0">
     <div class="flex items-center space-x-3">
-      <div class="bg-indigo-600 p-2 rounded-lg">
-        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
+      <div class="bg-gradient-to-tr from-indigo-600 to-violet-500 p-2.5 rounded-xl shadow-lg shadow-indigo-500/20">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path>
+        </svg>
       </div>
       <div>
-        <h1 class="text-lg font-bold text-white tracking-wide">Acoustic3D CAD Studio</h1>
-        <p class="text-xs text-slate-400">Parametric Enclosure & CNC Flat-Pack Designer</p>
+        <div class="flex items-center space-x-2">
+          <h1 class="text-base font-bold text-white tracking-tight">Acoustic3D Studio</h1>
+          <span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider">PRO v2.4</span>
+        </div>
+        <p class="text-xs text-slate-400">Parametric Loudspeaker CAD & Enclosure Simulation Engine</p>
       </div>
     </div>
-    <div class="flex space-x-3">
-      <button id="exportSvgBtn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center space-x-2">
+
+    <!-- Right Header Actions -->
+    <div class="flex items-center space-x-3">
+      <div class="flex bg-slate-900 border border-slate-800 p-1 rounded-lg text-xs">
+        <button id="viewSolid" class="px-3 py-1.5 rounded-md font-medium transition bg-indigo-600 text-white shadow-sm">Solid CAD</button>
+        <button id="viewXray" class="px-3 py-1.5 rounded-md font-medium text-slate-400 hover:text-white transition">X-Ray Internal</button>
+      </div>
+
+      <button id="exportSvgBtn" class="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white px-4 py-2 rounded-lg text-xs font-semibold shadow-lg shadow-indigo-600/25 transition flex items-center space-x-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-        <span>Export CNC SVG Cut Sheet</span>
+        <span>Export CNC Cut Sheet (SVG)</span>
       </button>
     </div>
   </header>
@@ -40,142 +74,171 @@
   <div class="flex flex-1 overflow-hidden">
 
     <!-- Left Sidebar: Controls & Inputs -->
-    <aside class="w-96 bg-slate-900 border-r border-slate-800 flex flex-col overflow-y-auto custom-scrollbar p-5 space-y-6 shrink-0">
+    <aside class="w-96 bg-slate-950/80 border-r border-slate-800/80 flex flex-col overflow-y-auto custom-scrollbar p-5 space-y-5 shrink-0 z-10">
       
-      <!-- Room & Directivity Parameters -->
+      <!-- Section 1: Room & Acoustic Targets -->
       <section class="space-y-3">
-        <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-400">1. Room & Acoustic Requirements</h2>
-        <div class="grid grid-cols-2 gap-3 text-sm">
-          <div>
-            <label class="block text-slate-400 text-xs mb-1">Room Vol ($m^3$)</label>
-            <input type="number" id="roomVolume" value="45" class="w-full bg-slate-800 border border-slate-700 rounded px-3 py-1.5 text-white focus:outline-none focus:border-indigo-500">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center space-x-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+            <span>1. Room Target Dynamics</span>
+          </h2>
+        </div>
+        <div class="grid grid-cols-2 gap-2.5 text-xs">
+          <div class="glass-card p-2.5 rounded-lg">
+            <label class="block text-slate-400 text-[11px] mb-1">Room Vol ($m^3$)</label>
+            <input type="number" id="roomVolume" value="45" class="w-full bg-slate-900/90 border border-slate-700/70 rounded-md px-2.5 py-1 text-white font-mono focus:outline-none focus:border-indigo-500">
           </div>
-          <div>
-            <label class="block text-slate-400 text-xs mb-1">Target SPL (dB)</label>
-            <input type="number" id="targetSpl" value="102" class="w-full bg-slate-800 border border-slate-700 rounded px-3 py-1.5 text-white focus:outline-none focus:border-indigo-500">
+          <div class="glass-card p-2.5 rounded-lg">
+            <label class="block text-slate-400 text-[11px] mb-1">Target SPL (dB)</label>
+            <input type="number" id="targetSpl" value="102" class="w-full bg-slate-900/90 border border-slate-700/70 rounded-md px-2.5 py-1 text-white font-mono focus:outline-none focus:border-indigo-500">
           </div>
         </div>
       </section>
 
-      <!-- Driver Selection & Thiele-Small Engine -->
-      <section class="space-y-3 border-t border-slate-800 pt-4">
+      <!-- Section 2: Driver Selection & TS Engine -->
+      <section class="space-y-3 border-t border-slate-800/60 pt-4">
         <div class="flex justify-between items-center">
-          <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-400">2. Driver & T/S Alignment</h2>
-          <span class="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded" id="alignmentStatus">Bass-Reflex</span>
+          <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center space-x-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+            <span>2. Thiele-Small Driver Engine</span>
+          </h2>
+          <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-medium" id="alignmentStatus">Bass-Reflex (SBB4)</span>
         </div>
 
         <div>
-          <label class="block text-slate-400 text-xs mb-1">Woofer Preset</label>
-          <select id="driverPreset" class="w-full bg-slate-800 border border-slate-700 rounded px-3 py-1.5 text-white text-sm focus:outline-none focus:border-indigo-500">
-            <option value="custom">Custom T/S Parameters</option>
+          <label class="block text-slate-400 text-[11px] mb-1">Woofer Driver Model</label>
+          <select id="driverPreset" class="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-1.5 text-white text-xs focus:outline-none focus:border-indigo-500">
             <option value="dayton_rs180" selected>Dayton Audio RS180-8 (7" Reference)</option>
             <option value="peerless_830869">Peerless 830869 (8" Nomex Woofer)</option>
             <option value="sb_acoustic_sb17">SB Acoustics SB17NRXC35-8 (6.5")</option>
+            <option value="custom">Custom Parameters...</option>
           </select>
         </div>
 
         <div class="grid grid-cols-3 gap-2 text-xs">
-          <div>
-            <label class="block text-slate-400 mb-1">$F_s$ (Hz)</label>
-            <input type="number" id="tsFs" value="39" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-white">
+          <div class="glass-card p-2 rounded-lg">
+            <label class="block text-slate-400 text-[10px] mb-0.5">$F_s$ (Hz)</label>
+            <input type="number" id="tsFs" value="39" class="w-full bg-slate-900/90 border border-slate-700/70 rounded px-2 py-1 text-white font-mono">
           </div>
-          <div>
-            <label class="block text-slate-400 mb-1">$Q_{ts}$</label>
-            <input type="number" step="0.01" id="tsQts" value="0.38" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-white">
+          <div class="glass-card p-2 rounded-lg">
+            <label class="block text-slate-400 text-[10px] mb-0.5">$Q_{ts}$</label>
+            <input type="number" step="0.01" id="tsQts" value="0.38" class="w-full bg-slate-900/90 border border-slate-700/70 rounded px-2 py-1 text-white font-mono">
           </div>
-          <div>
-            <label class="block text-slate-400 mb-1">$V_{as}$ (L)</label>
-            <input type="number" id="tsVas" value="28.5" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-white">
+          <div class="glass-card p-2 rounded-lg">
+            <label class="block text-slate-400 text-[10px] mb-0.5">$V_{as}$ (L)</label>
+            <input type="number" id="tsVas" value="28.5" class="w-full bg-slate-900/90 border border-slate-700/70 rounded px-2 py-1 text-white font-mono">
           </div>
         </div>
 
         <!-- Calculated Acoustic Metrics -->
-        <div class="bg-slate-800/60 p-3 rounded-lg border border-slate-700/50 space-y-1 text-xs">
-          <div class="flex justify-between"><span class="text-slate-400">Net Vol ($V_b$):</span> <span id="calcVb" class="font-mono text-indigo-300">22.4 L</span></div>
-          <div class="flex justify-between"><span class="text-slate-400">Tuning ($f_b$):</span> <span id="calcFb" class="font-mono text-indigo-300">41.2 Hz</span></div>
-          <div class="flex justify-between"><span class="text-slate-400">Port Length (Flared):</span> <span id="calcPortLen" class="font-mono text-indigo-300">18.5 cm</span></div>
-          <div class="flex justify-between"><span class="text-slate-400">$-3\text{dB}$ Cutoff ($f_3$):</span> <span id="calcF3" class="font-mono text-indigo-300">42.0 Hz</span></div>
+        <div class="glass-panel p-3.5 rounded-xl space-y-2 border border-slate-800">
+          <div class="text-[11px] font-semibold text-slate-300 border-b border-slate-800/80 pb-1.5 flex justify-between">
+            <span>Acoustic Output Metrics</span>
+            <span class="text-indigo-400 font-mono" id="optRatio">Ratio: 1.62 : 1 : 1.25</span>
+          </div>
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
+            <div class="flex justify-between"><span class="text-slate-400">Net Vol ($V_b$):</span> <span id="calcVb" class="font-mono text-indigo-300 font-semibold">22.4 L</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Tuning ($f_b$):</span> <span id="calcFb" class="font-mono text-indigo-300 font-semibold">41.2 Hz</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Port Length:</span> <span id="calcPortLen" class="font-mono text-indigo-300 font-semibold">18.5 cm</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">$-3\text{dB}$ Cutoff:</span> <span id="calcF3" class="font-mono text-emerald-400 font-semibold">42.0 Hz</span></div>
+          </div>
         </div>
       </section>
 
-      <!-- Advanced Cabinet CAD Configuration -->
-      <section class="space-y-3 border-t border-slate-800 pt-4">
-        <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-400">3. Enclosure Geometry & Bracing</h2>
+      <!-- Section 3: Advanced Enclosure CAD Settings -->
+      <section class="space-y-3 border-t border-slate-800/60 pt-4">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center space-x-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+          <span>3. Enclosure & Matrix Geometry</span>
+        </h2>
         
-        <div class="grid grid-cols-2 gap-3 text-xs">
+        <div class="grid grid-cols-2 gap-2.5 text-xs">
           <div>
-            <label class="block text-slate-400 mb-1">Wood Thickness</label>
-            <select id="woodThickness" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-white">
-              <option value="18">18mm (3/4" MDF/Birch)</option>
-              <option value="24" selected>24mm (1" Heavy MDF)</option>
+            <label class="block text-slate-400 text-[11px] mb-1">Wood Material</label>
+            <select id="woodThickness" class="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1.5 text-white">
+              <option value="18">18mm Baltic Birch</option>
+              <option value="24" selected>24mm Heavy MDF</option>
             </select>
           </div>
           <div>
-            <label class="block text-slate-400 mb-1">Baffle Edge</label>
-            <select id="baffleEdge" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-white">
-              <option value="chamfer">25mm Bevel / Chamfer</option>
-              <option value="rounded">25mm Roundover</option>
+            <label class="block text-slate-400 text-[11px] mb-1">Baffle Edge Profile</label>
+            <select id="baffleEdge" class="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1.5 text-white">
+              <option value="chamfer">25mm Bevel Chamfer</option>
+              <option value="rounded">25mm Radius Round</option>
               <option value="flat">Square Edge</option>
             </select>
           </div>
         </div>
 
-        <div class="space-y-2 text-xs">
-          <label class="flex items-center space-x-2 text-slate-300">
-            <input type="checkbox" id="matrixBracing" checked class="rounded border-slate-700 bg-slate-800 text-indigo-600 focus:ring-indigo-500">
-            <span>Parametric Window Matrix Bracing</span>
+        <div class="glass-card p-3 rounded-xl space-y-2 text-xs">
+          <label class="flex items-center space-x-2.5 cursor-pointer text-slate-300">
+            <input type="checkbox" id="matrixBracing" checked class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-indigo-500/20">
+            <span class="font-medium">Parametric Matrix Window Bracing</span>
           </label>
-          <label class="flex items-center space-x-2 text-slate-300">
-            <input type="checkbox" id="isolatedChamber" checked class="rounded border-slate-700 bg-slate-800 text-indigo-600 focus:ring-indigo-500">
-            <span>Isolated Midrange/Tweeter Chamber</span>
+          <label class="flex items-center space-x-2.5 cursor-pointer text-slate-300">
+            <input type="checkbox" id="isolatedChamber" checked class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-indigo-500/20">
+            <span class="font-medium">Isolated Mid/Tweeter Chamber</span>
           </label>
-          <label class="flex items-center space-x-2 text-slate-300">
-            <input type="checkbox" id="slopedBaffle" checked class="rounded border-slate-700 bg-slate-800 text-indigo-600 focus:ring-indigo-500">
-            <span>5° Sloped Baffle (Time-Alignment)</span>
+          <label class="flex items-center space-x-2.5 cursor-pointer text-slate-300">
+            <input type="checkbox" id="slopedBaffle" checked class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-indigo-500/20">
+            <span class="font-medium">5° Sloped Baffle (Time-Alignment)</span>
           </label>
-          <label class="flex items-center space-x-2 text-slate-300">
-            <input type="checkbox" id="flushMount" checked class="rounded border-slate-700 bg-slate-800 text-indigo-600 focus:ring-indigo-500">
-            <span>Flush-Mount Driver Rebates</span>
+          <label class="flex items-center space-x-2.5 cursor-pointer text-slate-300">
+            <input type="checkbox" id="flushMount" checked class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-indigo-500/20">
+            <span class="font-medium">Flush Driver Counter-Bore Rebates</span>
           </label>
         </div>
       </section>
 
-      <!-- Visualiser Controls -->
-      <section class="space-y-3 border-t border-slate-800 pt-4">
-        <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-400">4. Display Mode</h2>
-        <div class="grid grid-cols-2 gap-2 text-xs">
-          <button id="viewSolid" class="bg-indigo-600 text-white py-1.5 rounded font-medium">Solid Rendering</button>
-          <button id="viewXray" class="bg-slate-800 hover:bg-slate-700 text-slate-300 py-1.5 rounded font-medium">X-Ray Internal</button>
+      <!-- Section 4: Live Frequency Response Plot Canvas -->
+      <section class="space-y-2 border-t border-slate-800/60 pt-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-400">Live Bass Simulation</h2>
+          <span class="text-[10px] text-slate-400 font-mono">20Hz - 200Hz</span>
+        </div>
+        <div class="glass-card p-2 rounded-xl border border-slate-800">
+          <canvas id="freqCanvas" width="320" height="110" class="w-full h-24 rounded-lg bg-slate-950/80"></canvas>
         </div>
       </section>
 
     </aside>
 
-    <!-- Center: 3D CAD Viewport -->
+    <!-- Center: Interactive 3D Viewport -->
     <main class="flex-1 relative bg-slate-950">
       <div id="webglContainer" class="w-full h-full"></div>
 
-      <!-- Viewport Overlay Badges -->
-      <div class="absolute top-4 left-4 pointer-events-none space-y-1">
-        <div class="bg-slate-900/80 backdrop-blur border border-slate-800 px-3 py-1.5 rounded-lg text-xs font-mono text-slate-300 shadow">
-          <span>Dimensions: </span><span id="dimReadout" class="text-indigo-400">220W x 420H x 310D mm</span>
+      <!-- Overlays / Badges -->
+      <div class="absolute top-5 left-5 pointer-events-none space-y-2">
+        <div class="glass-panel px-4 py-2 rounded-xl text-xs font-mono text-slate-300 shadow-xl flex items-center space-x-3">
+          <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+          <span>External Dimensions: </span>
+          <span id="dimReadout" class="text-indigo-400 font-semibold">220W x 420H x 310D mm</span>
         </div>
-        <div class="bg-slate-900/80 backdrop-blur border border-slate-800 px-3 py-1.5 rounded-lg text-xs font-mono text-slate-300 shadow">
-          <span>Resonance Control: </span><span class="text-emerald-400">Matrix Multi-Window Asymmetric</span>
+        
+        <div class="glass-panel px-4 py-2 rounded-xl text-xs font-mono text-slate-300 shadow-xl flex items-center space-x-3">
+          <span class="text-amber-400">★ Matrix Resonance Mode:</span>
+          <span class="text-emerald-400 font-semibold">Asymmetric Multi-Window Active</span>
         </div>
       </div>
 
-      <div class="absolute bottom-4 right-4 bg-slate-900/80 backdrop-blur border border-slate-800 px-3 py-1.5 rounded-lg text-xs text-slate-400 flex items-center space-x-2">
-        <span>Click & Drag to Rotate</span>
+      <!-- Viewport Navigation Hint -->
+      <div class="absolute bottom-5 right-5 glass-panel px-4 py-2 rounded-xl text-xs text-slate-400 flex items-center space-x-3 pointer-events-none">
+        <span class="flex items-center space-x-1">
+          <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
+          <span>Left-Click Drag: Rotate</span>
+        </span>
         <span>•</span>
-        <span>Scroll to Zoom</span>
+        <span>Scroll: Zoom</span>
+        <span>•</span>
+        <span>Right-Click: Pan</span>
       </div>
     </main>
 
   </div>
 
   <script>
-    // --- Application State & TS Calculations Engine ---
+    // --- TS Engine & Application State ---
     const presets = {
       dayton_rs180: { fs: 39, qts: 0.38, vas: 28.5 },
       peerless_830869: { fs: 35, qts: 0.33, vas: 38.0 },
@@ -184,54 +247,51 @@
 
     let state = {
       fs: 39, qts: 0.38, vas: 28.5,
-      woodThick: 24, // mm
+      woodThick: 24,
       matrixBracing: true,
       isolatedChamber: true,
       slopedBaffle: true,
       flushMount: true,
       baffleEdge: 'chamfer',
-      viewMode: 'solid', // solid, xray
-      // Derived CAD Specs (mm)
+      viewMode: 'solid',
       vbLitres: 22.4,
       fbHz: 41.2,
+      f3Hz: 42.0,
       extW: 220, extH: 460, extD: 320
     };
 
     function recalculateAcoustics() {
-      // Extended SBB4 / BB4 Bass-Reflex Alignment formulas
       const vas = parseFloat(document.getElementById('tsVas').value);
       const qts = parseFloat(document.getElementById('tsQts').value);
       const fs = parseFloat(document.getElementById('tsFs').value);
 
-      // Vb = 20 * Qts^3.3 * Vas
+      // Acoustic Alignment Formulas
       let vb = 20 * Math.pow(qts, 3.3) * vas;
       if (vb < 5) vb = 5; if (vb > 150) vb = 150;
       
-      // Tuning Frequency fb = (Vas / Vb)^0.32 * fs
       let fb = Math.pow(vas / vb, 0.32) * fs;
       let f3 = fs * Math.pow(vas / vb, 0.44);
 
-      // Port Calculation for 68mm internal diameter flared port
-      const portDiam = 6.8; // cm
+      const portDiam = 6.8; 
       const portArea = Math.PI * Math.pow(portDiam / 2, 2);
       let portLen = ((23600 * portArea) / (Math.pow(fb, 2) * vb)) - (0.825 * portDiam);
       if (portLen < 5) portLen = 5;
 
       state.vbLitres = vb.toFixed(1);
       state.fbHz = fb.toFixed(1);
+      state.f3Hz = f3.toFixed(1);
 
       document.getElementById('calcVb').textContent = `${state.vbLitres} L`;
       document.getElementById('calcFb').textContent = `${state.fbHz} Hz`;
       document.getElementById('calcPortLen').textContent = `${portLen.toFixed(1)} cm`;
-      document.getElementById('calcF3').textContent = `${f3.toFixed(1)} Hz`;
+      document.getElementById('calcF3').textContent = `${state.f3Hz} Hz`;
 
-      // Update Enclosure External Dimensions based on Vb (including internal displacements)
-      const internalVolCm3 = (vb + 3.5) * 1000; // Add 3.5L for drivers/bracing displacement
+      // Dimensions based on golden ratio H:W:D = 1.618 : 1 : 1.25
+      const internalVolCm3 = (vb + 3.8) * 1000;
       const t = state.woodThick;
       
-      // Proportional ratio: H:W:D = 1.618 : 1 : 1.2
-      const internalW = Math.cbrt(internalVolCm3 / (1.618 * 1.2));
-      const internalH = internalW * 1.8; // Elevated slightly for isolated chamber
+      const internalW = Math.cbrt(internalVolCm3 / (1.618 * 1.25));
+      const internalH = internalW * 1.75; 
       const internalD = internalW * 1.25;
 
       state.extW = Math.round(internalW + (t * 2));
@@ -241,45 +301,94 @@
       document.getElementById('dimReadout').textContent = `${state.extW}W x ${state.extH}H x ${state.extD}D mm`;
 
       build3DSpeaker();
+      drawFreqResponse();
     }
 
-    // --- Three.js 3D Viewport Engine ---
+    // --- Frequency Response Canvas Renderer ---
+    function drawFreqResponse() {
+      const canvas = document.getElementById('freqCanvas');
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Grid Lines
+      ctx.strokeStyle = 'rgba(51, 65, 85, 0.4)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < w; x += 40) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+      }
+      ctx.beginPath(); ctx.moveTo(0, h/2); ctx.lineTo(w, h/2); ctx.stroke(); // 0dB line
+
+      // Curve Plotting
+      ctx.beginPath();
+      ctx.strokeStyle = '#6366f1';
+      ctx.lineWidth = 2.5;
+
+      const f3 = parseFloat(state.f3Hz);
+      for (let px = 0; px < w; px++) {
+        const freq = 10 + (px / w) * 190; // 10Hz to 200Hz
+        // 4th order highpass roll-off simulation for bass-reflex
+        const response = 1 / Math.sqrt(1 + Math.pow(f3 / freq, 8));
+        const db = 20 * Math.log10(response);
+        const py = (h / 2) - (db * 3); // Scale
+
+        if (px === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+
+      // -3dB Indicator
+      ctx.fillStyle = '#10b981';
+      ctx.font = '10px JetBrains Mono';
+      ctx.fillText(`f3: ${state.f3Hz}Hz`, 15, h - 12);
+    }
+
+    // --- 3D Three.js Studio Engine ---
     let scene, camera, renderer, controls;
     let speakerGroup;
 
     function init3D() {
       const container = document.getElementById('webglContainer');
       scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x020617);
+      scene.background = new THREE.Color(0x090d16);
 
-      camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 10, 5000);
-      camera.position.set(500, 400, 700);
+      camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 10, 5000);
+      camera.position.set(550, 420, 750);
 
-      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setSize(container.clientWidth, container.clientHeight);
       renderer.setPixelRatio(window.devicePixelRatio);
       renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       container.appendChild(renderer.domElement);
 
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
       controls.dampingFactor = 0.05;
 
-      // Lights
-      const ambient = new THREE.AmbientLight(0xffffff, 0.6);
+      // Studio Lighting
+      const ambient = new THREE.AmbientLight(0xffffff, 0.7);
       scene.add(ambient);
 
-      const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-      dirLight.position.set(300, 500, 400);
-      dirLight.castShadow = true;
-      scene.add(dirLight);
+      const keyLight = new THREE.DirectionalLight(0xffffff, 0.9);
+      keyLight.position.set(400, 600, 500);
+      keyLight.castShadow = true;
+      keyLight.shadow.mapSize.width = 2048;
+      keyLight.shadow.mapSize.height = 2048;
+      scene.add(keyLight);
 
-      const fillLight = new THREE.DirectionalLight(0x6366f1, 0.4);
-      fillLight.position.set(-300, -100, -400);
+      const fillLight = new THREE.DirectionalLight(0x818cf8, 0.5);
+      fillLight.position.set(-400, 100, -300);
       scene.add(fillLight);
 
-      const grid = new THREE.GridHelper(2000, 40, 0x334155, 0x1e293b);
-      grid.position.y = -250;
+      const rimLight = new THREE.DirectionalLight(0xa7f3d0, 0.3);
+      rimLight.position.set(0, -400, -500);
+      scene.add(rimLight);
+
+      const grid = new THREE.GridHelper(1600, 32, 0x1e293b, 0x0f172a);
+      grid.position.y = -220;
       scene.add(grid);
 
       speakerGroup = new THREE.Group();
@@ -300,59 +409,57 @@
       const t = state.woodThick;
 
       const isXray = state.viewMode === 'xray';
+      
+      // Premium Cabinet Materials
       const woodMat = new THREE.MeshStandardMaterial({
-        color: isXray ? 0x6366f1 : 0x334155,
-        roughness: 0.4,
+        color: isXray ? 0x818cf8 : 0x1e293b,
+        roughness: 0.35,
         metalness: 0.1,
-        wireframe: false,
         transparent: isXray,
-        opacity: isXray ? 0.25 : 1.0
+        opacity: isXray ? 0.22 : 1.0
       });
 
       const braceMat = new THREE.MeshStandardMaterial({
         color: 0xf59e0b,
-        roughness: 0.5,
+        roughness: 0.4,
         transparent: isXray,
-        opacity: isXray ? 0.6 : 0.95
+        opacity: isXray ? 0.75 : 0.95
       });
 
-      const driverMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.2 });
-      const coneMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.3 });
+      const driverBasketMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.2, metalness: 0.8 });
+      const coneMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.5 });
+      const surroundMat = new THREE.MeshStandardMaterial({ color: 0x020617, roughness: 0.1 });
 
-      // Outer Shell Group
       const enclosure = new THREE.Group();
-
-      // Sloped Baffle Transformation Angle
       const slopeAngle = state.slopedBaffle ? (5 * Math.PI / 180) : 0;
 
-      // 1. External Cabinet Geometry
-      const cabGeo = new THREE.BoxGeometry(w, h, d);
-      const cabinetMesh = new THREE.Mesh(cabGeo, woodMat);
+      // Outer Shell Mesh
+      const cabinetMesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), woodMat);
+      cabinetMesh.castShadow = true;
+      cabinetMesh.receiveShadow = true;
       enclosure.add(cabinetMesh);
 
-      // 2. Beveled / Chamfered Edge Emulation (Front Baffle)
+      // Chamfer Edge Bevel Simulation
       if (state.baffleEdge === 'chamfer' && !isXray) {
-        const chamferGeo = new THREE.CylinderGeometry(15, 15, h, 4);
-        const chamferMat = new THREE.MeshStandardMaterial({ color: 0x1e293b });
+        const chamferGeo = new THREE.CylinderGeometry(14, 14, h, 4);
+        const chamferMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.3 });
         const leftChamfer = new THREE.Mesh(chamferGeo, chamferMat);
-        leftChamfer.position.set(-w/2 + 5, 0, d/2 - 5);
+        leftChamfer.position.set(-w/2 + 4, 0, d/2 - 4);
         leftChamfer.rotation.y = Math.PI / 4;
         enclosure.add(leftChamfer);
 
         const rightChamfer = leftChamfer.clone();
-        rightChamfer.position.set(w/2 - 5, 0, d/2 - 5);
+        rightChamfer.position.set(w/2 - 4, 0, d/2 - 4);
         enclosure.add(rightChamfer);
       }
 
-      // 3. Parametric Window Matrix Bracing Panels
+      // Matrix Window Bracing Panels
       if (state.matrixBracing) {
         const braceCount = 2;
         const braceSpacing = (h - (t * 2)) / (braceCount + 1);
         
         for (let i = 1; i <= braceCount; i++) {
           const yPos = -h/2 + t + (i * braceSpacing);
-          
-          // Horizontal Matrix Board with asymmetric window cutouts
           const braceShape = new THREE.Shape();
           const bw = w - (t * 2);
           const bd = d - (t * 2);
@@ -363,17 +470,16 @@
           braceShape.lineTo(-bw/2, bd/2);
           braceShape.closePath();
 
-          // Asymmetric cutout windows
+          // Cutout Windows
           const hole1 = new THREE.Path();
-          hole1.absellipse(-bw/4, -bd/4, bw/5, bd/5, 0, Math.PI * 2, true);
+          hole1.absellipse(-bw/4, -bd/4, bw/4.5, bd/4.5, 0, Math.PI * 2, true);
           braceShape.holes.push(hole1);
 
           const hole2 = new THREE.Path();
-          hole2.absellipse(bw/4, bd/4, bw/6, bd/6, 0, Math.PI * 2, true);
+          hole2.absellipse(bw/4, bd/4, bw/5.5, bd/5.5, 0, Math.PI * 2, true);
           braceShape.holes.push(hole2);
 
-          const extrudeSettings = { depth: t, bevelEnabled: false };
-          const braceGeo = new THREE.ExtrudeGeometry(braceShape, extrudeSettings);
+          const braceGeo = new THREE.ExtrudeGeometry(braceShape, { depth: t, bevelEnabled: false });
           const braceMesh = new THREE.Mesh(braceGeo, braceMat);
           braceMesh.rotation.x = Math.PI / 2;
           braceMesh.position.set(0, yPos, 0);
@@ -381,45 +487,46 @@
         }
       }
 
-      // 4. Isolated Midrange / Tweeter Acoustic Chamber
+      // Midrange / Tweeter Acoustic Chamber
       if (state.isolatedChamber) {
-        const chamberW = w - (t * 2);
         const chamberH = 120;
         const chamberD = 140;
-
-        const chamberGeo = new THREE.BoxGeometry(chamberW, chamberH, chamberD);
-        const chamberMesh = new THREE.Mesh(chamberGeo, braceMat);
+        const chamberMesh = new THREE.Mesh(new THREE.BoxGeometry(w - (t * 2), chamberH, chamberD), braceMat);
         chamberMesh.position.set(0, h/2 - t - (chamberH/2) - 10, d/2 - (chamberD/2) - t);
         enclosure.add(chamberMesh);
       }
 
-      // 5. Driver Cutouts & Cones
-      // Woofer
-      const wooferRadius = 85;
-      const wooferMesh = new THREE.Mesh(new THREE.CylinderGeometry(wooferRadius, wooferRadius*0.7, 40, 32), driverMat);
-      wooferMesh.rotation.x = Math.PI / 2;
-      wooferMesh.position.set(0, -h/6, d/2 + (state.flushMount ? -5 : 10));
+      // Woofer Assembly
+      const wooferRadius = 82;
+      const wooferBasket = new THREE.Mesh(new THREE.CylinderGeometry(wooferRadius, wooferRadius*0.75, 45, 32), driverBasketMat);
+      wooferBasket.rotation.x = Math.PI / 2;
+      wooferBasket.position.set(0, -h/6, d/2 + (state.flushMount ? -4 : 8));
       
-      const wooferCone = new THREE.Mesh(new THREE.ConeGeometry(wooferRadius*0.8, 25, 32), coneMat);
+      const wooferSurround = new THREE.Mesh(new THREE.TorusGeometry(wooferRadius*0.9, 8, 16, 32), surroundMat);
+      wooferSurround.position.set(0, -h/6, d/2 + (state.flushMount ? 2 : 12));
+
+      const wooferCone = new THREE.Mesh(new THREE.ConeGeometry(wooferRadius*0.75, 25, 32), coneMat);
       wooferCone.rotation.x = -Math.PI / 2;
-      wooferCone.position.set(0, -h/6, d/2 + 10);
-      enclosure.add(wooferMesh, wooferCone);
+      wooferCone.position.set(0, -h/6, d/2 + 8);
+      enclosure.add(wooferBasket, wooferSurround, wooferCone);
 
-      // Tweeter
+      // Tweeter Dome
       const tweeterRadius = 35;
-      const tweeterMesh = new THREE.Mesh(new THREE.CylinderGeometry(tweeterRadius, tweeterRadius*0.8, 20, 32), driverMat);
+      const tweeterMesh = new THREE.Mesh(new THREE.CylinderGeometry(tweeterRadius, tweeterRadius*0.85, 18, 32), driverBasketMat);
       tweeterMesh.rotation.x = Math.PI / 2;
-      tweeterMesh.position.set(0, h/4, d/2 + (state.flushMount ? -2 : 5));
-      enclosure.add(tweeterMesh);
+      tweeterMesh.position.set(0, h/4, d/2 + (state.flushMount ? -2 : 4));
+      
+      const tweeterDome = new THREE.Mesh(new THREE.SphereGeometry(14, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), surroundMat);
+      tweeterDome.position.set(0, h/4, d/2 + (state.flushMount ? 4 : 10));
+      tweeterDome.rotation.x = Math.PI / 2;
+      enclosure.add(tweeterMesh, tweeterDome);
 
-      // Flared Bass Reflex Port Tube
-      const portGeo = new THREE.CylinderGeometry(35, 30, 180, 32);
-      const portMesh = new THREE.Mesh(portGeo, driverMat);
+      // Aerodynamic Bass Reflex Port Tube
+      const portMesh = new THREE.Mesh(new THREE.CylinderGeometry(34, 30, 180, 32), driverBasketMat);
       portMesh.rotation.x = Math.PI / 2;
       portMesh.position.set(0, -h/3, -d/2 + 90);
       enclosure.add(portMesh);
 
-      // Apply Sloped Baffle tilt if active
       if (state.slopedBaffle) {
         enclosure.rotation.x = slopeAngle;
       }
@@ -447,7 +554,6 @@
       const d = state.extD;
       const t = state.woodThick;
 
-      // Calculate Net Panel Dimensions
       const sideW = d;
       const sideH = h;
       const frontW = w - (2 * t);
@@ -456,51 +562,51 @@
       const topD = d;
 
       const svgContent = `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" style="background:#0f172a; color:#f8fafc; font-family:sans-serif;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 850" width="1200" height="850" style="background:#090d16; color:#f1f5f9; font-family:'Plus Jakarta Sans', sans-serif;">
           <style>
-            .panel { fill: #1e293b; stroke: #6366f1; stroke-width: 2; }
-            .cutout { fill: #0f172a; stroke: #f59e0b; stroke-width: 2; stroke-dasharray: 4; }
-            .text { fill: #94a3b8; font-size: 12px; font-family: monospace; }
-            .title { fill: #f8fafc; font-size: 18px; font-weight: bold; }
+            .panel { fill: #1e293b; stroke: #6366f1; stroke-width: 2.5; rx: 4; }
+            .cutout { fill: #090d16; stroke: #f59e0b; stroke-width: 2; stroke-dasharray: 4; }
+            .text { fill: #94a3b8; font-size: 11px; font-family: monospace; }
+            .title { fill: #f8fafc; font-size: 20px; font-weight: bold; }
           </style>
 
-          <text x="30" y="40" class="title">Acoustic3D CNC Flat-Pack Cut Sheet - ${w}x${h}x${d}mm (Stock: ${t}mm)</text>
+          <text x="35" y="45" class="title">Acoustic3D Studio Cut Sheet - ${w}x${h}x${d}mm (Stock: ${t}mm)</text>
           
-          <!-- Side Panel Left -->
-          <g transform="translate(30, 70)">
+          <!-- Side Left -->
+          <g transform="translate(35, 80)">
             <rect width="${sideW}" height="${sideH}" class="panel" />
-            <text x="10" y="25" class="text">LEFT SIDE (${sideW}x${sideH}mm)</text>
+            <text x="12" y="28" class="text">LEFT SIDE PANEL (${sideW}x${sideH}mm)</text>
           </g>
 
-          <!-- Side Panel Right -->
-          <g transform="translate(${sideW + 50}, 70)">
+          <!-- Side Right -->
+          <g transform="translate(${sideW + 55}, 80)">
             <rect width="${sideW}" height="${sideH}" class="panel" />
-            <text x="10" y="25" class="text">RIGHT SIDE (${sideW}x${sideH}mm)</text>
+            <text x="12" y="28" class="text">RIGHT SIDE PANEL (${sideW}x${sideH}mm)</text>
           </g>
 
-          <!-- Front Baffle with Driver Rebates -->
-          <g transform="translate(${sideW * 2 + 70}, 70)">
+          <!-- Front Baffle -->
+          <g transform="translate(${sideW * 2 + 75}, 80)">
             <rect width="${frontW}" height="${frontH}" class="panel" />
-            <circle cx="${frontW/2}" cy="${frontH * 0.3}" r="35" class="cutout" />
-            <circle cx="${frontW/2}" cy="${frontH * 0.65}" r="85" class="cutout" />
-            <text x="10" y="25" class="text">FRONT BAFFLE (${frontW}x${frontH}mm)</text>
-            <text x="10" y="40" class="text">Dual Rebate Counter-Bores</text>
+            <circle cx="${frontW/2}" cy="${frontH * 0.28}" r="35" class="cutout" />
+            <circle cx="${frontW/2}" cy="${frontH * 0.65}" r="82" class="cutout" />
+            <text x="12" y="28" class="text">FRONT BAFFLE (${frontW}x${frontH}mm)</text>
+            <text x="12" y="45" class="text">Dual Rebate Counter-Bores</text>
           </g>
 
-          <!-- Rear Panel with Port Cutout -->
-          <g transform="translate(30, ${sideH + 100})">
+          <!-- Rear Panel -->
+          <g transform="translate(35, ${sideH + 110})">
             <rect width="${frontW}" height="${frontH}" class="panel" />
-            <circle cx="${frontW/2}" cy="${frontH * 0.75}" r="35" class="cutout" />
-            <text x="10" y="25" class="text">REAR PANEL (${frontW}x${frontH}mm)</text>
+            <circle cx="${frontW/2}" cy="${frontH * 0.75}" r="34" class="cutout" />
+            <text x="12" y="28" class="text">REAR PANEL (${frontW}x${frontH}mm)</text>
           </g>
 
-          <!-- Top/Bottom Panels & Matrix Braces -->
-          <g transform="translate(${frontW + 60}, ${sideH + 100})">
+          <!-- Top / Bottom Caps -->
+          <g transform="translate(${frontW + 65}, ${sideH + 110})">
             <rect width="${topW}" height="${topD}" class="panel" />
-            <text x="10" y="25" class="text">TOP CAP (${topW}x${topD}mm)</text>
+            <text x="12" y="28" class="text">TOP CAP (${topW}x${topD}mm)</text>
 
-            <rect y="${topD + 20}" width="${topW}" height="${topD}" class="panel" />
-            <text x="10" y="${topD + 45}" class="text">BOTTOM CAP (${topW}x${topD}mm)</text>
+            <rect y="${topD + 25}" width="${topW}" height="${topD}" class="panel" />
+            <text x="12" y="${topD + 53}" class="text">BOTTOM CAP (${topW}x${topD}mm)</text>
           </g>
         </svg>
       `;
@@ -509,16 +615,15 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `speaker_cnc_cutsheet_${w}x${h}x${d}.svg`;
+      a.download = `acoustic3d_cutsheet_${w}x${h}x${d}mm.svg`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     }
 
-    // --- Event Listeners & Binding ---
+    // --- Bindings & Setup ---
     function setupEvents() {
-      // Inputs
       ['tsFs', 'tsQts', 'tsVas', 'roomVolume', 'targetSpl'].forEach(id => {
         document.getElementById(id).addEventListener('input', recalculateAcoustics);
       });
@@ -550,25 +655,23 @@
         });
       });
 
-      // View Buttons
       document.getElementById('viewSolid').addEventListener('click', () => {
         state.viewMode = 'solid';
-        document.getElementById('viewSolid').className = "bg-indigo-600 text-white py-1.5 rounded font-medium";
-        document.getElementById('viewXray').className = "bg-slate-800 hover:bg-slate-700 text-slate-300 py-1.5 rounded font-medium";
+        document.getElementById('viewSolid').className = "px-3 py-1.5 rounded-md font-medium transition bg-indigo-600 text-white shadow-sm";
+        document.getElementById('viewXray').className = "px-3 py-1.5 rounded-md font-medium text-slate-400 hover:text-white transition";
         build3DSpeaker();
       });
 
       document.getElementById('viewXray').addEventListener('click', () => {
         state.viewMode = 'xray';
-        document.getElementById('viewXray').className = "bg-indigo-600 text-white py-1.5 rounded font-medium";
-        document.getElementById('viewSolid').className = "bg-slate-800 hover:bg-slate-700 text-slate-300 py-1.5 rounded font-medium";
+        document.getElementById('viewXray').className = "px-3 py-1.5 rounded-md font-medium transition bg-indigo-600 text-white shadow-sm";
+        document.getElementById('viewSolid').className = "px-3 py-1.5 rounded-md font-medium text-slate-400 hover:text-white transition";
         build3DSpeaker();
       });
 
       document.getElementById('exportSvgBtn').addEventListener('click', exportCncSvg);
     }
 
-    // --- Initialization ---
     window.addEventListener('DOMContentLoaded', () => {
       init3D();
       setupEvents();
