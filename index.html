@@ -1,1137 +1,579 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cabinetry — Speaker Design Bench</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg: #12151A;
-    --panel: #1A1E26;
-    --panel-raised: #20242E;
-    --line: #2B303C;
-    --line-bright: #3A4152;
-    --amber: #E8A33D;
-    --amber-dim: #8A6425;
-    --teal: #4FD1C5;
-    --red: #E8664F;
-    --text: #EDEEF0;
-    --text-mid: #B7BCC6;
-    --text-dim: #767C8A;
-    --mono: 'IBM Plex Mono', monospace;
-    --sans: 'IBM Plex Sans', sans-serif;
-  }
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--sans);}
-  body{
-    padding: 24px 16px 80px;
-    max-width: 720px;
-    margin: 0 auto;
-    background-image:
-      radial-gradient(circle at 15% 0%, rgba(232,163,61,0.05), transparent 40%),
-      radial-gradient(circle at 85% 10%, rgba(79,209,197,0.04), transparent 40%);
-  }
-  header{margin-bottom:28px;}
-  .eyebrow{
-    font-family:var(--mono); font-size:11px; letter-spacing:2px; text-transform:uppercase;
-    color:var(--amber); display:flex; align-items:center; gap:8px; margin-bottom:6px;
-  }
-  .eyebrow::before{content:'';width:6px;height:6px;background:var(--amber);border-radius:50%;box-shadow:0 0 8px var(--amber);}
-  h1{font-family:var(--sans); font-weight:700; font-size:28px; margin:0 0 6px; letter-spacing:-0.02em;}
-  .sub{color:var(--text-dim); font-size:13.5px; line-height:1.5; max-width:56ch;}
-
-  .module{
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    margin-bottom: 16px;
-    overflow: hidden;
-  }
-  .module-head{
-    display:flex; align-items:center; justify-content:space-between;
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--line);
-    background: linear-gradient(180deg, var(--panel-raised), var(--panel));
-  }
-  .module-head .tag{
-    font-family:var(--mono); font-size:10px; letter-spacing:1.5px; color:var(--text-dim); text-transform:uppercase;
-  }
-  .module-head h2{font-size:15px; margin:2px 0 0; font-weight:600;}
-  .module-body{padding:16px;}
-  .module-body.tight{padding:12px 16px;}
-
-  .row{display:flex; gap:12px; flex-wrap:wrap;}
-  .field{flex:1; min-width:120px; margin-bottom:12px;}
-  .field label{
-    display:block; font-family:var(--mono); font-size:10.5px; color:var(--text-dim);
-    letter-spacing:0.5px; text-transform:uppercase; margin-bottom:5px;
-  }
-  .field .hint{font-size:10.5px; color:var(--text-dim); margin-top:4px; font-family:var(--mono);}
-  input[type=number], input[type=text], select{
-    width:100%; background:#0F1217; border:1px solid var(--line-bright); color:var(--text);
-    font-family:var(--mono); font-size:14px; padding:9px 10px; border-radius:6px; outline:none;
-  }
-  input[type=number]:focus, select:focus{border-color:var(--amber);}
-  select{appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23767C8A'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center;}
-
-  .seg{display:flex; border:1px solid var(--line-bright); border-radius:6px; overflow:hidden;}
-  .seg button{
-    flex:1; background:#0F1217; color:var(--text-mid); border:none; padding:9px 8px;
-    font-family:var(--mono); font-size:12px; cursor:pointer; letter-spacing:0.4px;
-  }
-  .seg button.active{background:var(--amber); color:#1A1200; font-weight:600;}
-  .seg button + button{border-left:1px solid var(--line-bright);}
-
-  .readout{
-    display:grid; grid-template-columns: repeat(auto-fit, minmax(110px,1fr)); gap:10px; margin-top:4px;
-  }
-  .stat{
-    background:#0F1217; border:1px solid var(--line); border-radius:8px; padding:10px 12px;
-  }
-  .stat .k{font-family:var(--mono); font-size:9.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px;}
-  .stat .v{font-family:var(--mono); font-size:19px; color:var(--amber); font-weight:600; margin-top:3px;}
-  .stat .v.teal{color:var(--teal);}
-  .stat .u{font-size:11px; color:var(--text-dim); margin-left:3px;}
-
-  .note{
-    font-size:12.5px; color:var(--text-mid); line-height:1.6; background:#0F1217;
-    border-left:2px solid var(--amber-dim); padding:9px 12px; border-radius:0 6px 6px 0; margin-top:10px;
-  }
-  .note.warn{border-left-color:var(--red); color:#F0B3A8;}
-  .note strong{color:var(--text);}
-
-  svg.chart{width:100%; height:auto; display:block;}
-  .modelist{display:flex; flex-direction:column; gap:6px; margin-top:8px;}
-  .mode-row{display:flex; align-items:center; gap:8px; font-family:var(--mono); font-size:11.5px;}
-  .mode-row .ax{width:14px; color:var(--text-dim);}
-  .mode-row .bar{flex:1; height:6px; background:#0F1217; border-radius:3px; position:relative; overflow:hidden;}
-  .mode-row .bar span{position:absolute; top:0; bottom:0; width:3px; background:var(--teal);}
-  .mode-row .f{width:56px; text-align:right; color:var(--text-mid);}
-
-  .divider{border:none; border-top:1px dashed var(--line); margin:14px 0;}
-  .kicker{font-family:var(--mono); font-size:10.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; margin:0 0 8px;}
-
-  .footer-note{text-align:center; font-size:11.5px; color:var(--text-dim); margin-top:24px; line-height:1.6;}
-  .footer-note a{color:var(--teal);}
-
-  .capbtn{
-    background: var(--amber); color:#1A1200; border:none; border-radius:7px;
-    font-family:var(--mono); font-size:12.5px; font-weight:700; letter-spacing:0.3px;
-    padding:11px 14px; cursor:pointer; width:100%;
-  }
-  .capbtn.secondary{background:#0F1217; color:var(--teal); border:1px solid var(--line-bright);}
-  .capbtn:disabled{background:#2B303C; color:var(--text-dim); cursor:not-allowed;}
-  .camwrap{
-    position:relative; width:100%; aspect-ratio: 4/3; background:#000; border-radius:8px;
-    overflow:hidden; border:1px solid var(--line-bright);
-  }
-  .camwrap video{width:100%; height:100%; object-fit:cover;}
-  .crosshair{
-    position:absolute; top:50%; left:50%; width:44px; height:44px; transform:translate(-50%,-50%);
-    border:2px solid var(--amber); border-radius:50%; box-shadow:0 0 0 2000px rgba(0,0,0,0.15);
-    pointer-events:none;
-  }
-  .crosshair::before, .crosshair::after{
-    content:''; position:absolute; background:var(--amber);
-  }
-  .crosshair::before{ top:50%; left:-8px; right:-8px; height:1px; transform:translateY(-50%);}
-  .crosshair::after{ left:50%; top:-8px; bottom:-8px; width:1px; transform:translateX(-50%);}
-  .angle-readout{
-    position:absolute; bottom:10px; left:50%; transform:translateX(-50%);
-    background:rgba(15,18,23,0.85); color:var(--amber); font-family:var(--mono); font-size:13px;
-    padding:5px 12px; border-radius:20px; border:1px solid var(--line-bright);
-  }
-  .scan-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px;}
-  .cap-item{
-    background:#0F1217; border:1px solid var(--line); border-radius:8px; padding:10px;
-    display:flex; flex-direction:column; gap:6px;
-  }
-  .cap-item .label{font-family:var(--mono); font-size:10.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.5px;}
-  .cap-item .dist{font-family:var(--mono); font-size:16px; color:var(--teal); font-weight:600;}
-  .cap-item button{
-    background:#1A1E26; color:var(--text); border:1px solid var(--line-bright); border-radius:5px;
-    font-family:var(--mono); font-size:11px; padding:7px; cursor:pointer;
-  }
-  .cap-item.done{border-color:var(--teal);}
-
-  .toggle-driver2{
-    display:flex; align-items:center; gap:8px; font-family:var(--mono); font-size:11.5px; color:var(--text-mid);
-    cursor:pointer; user-select:none; margin-bottom:12px;
-  }
-  .toggle-driver2 input{accent-color:var(--amber);}
-
-  .comp-table{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12.5px; margin-top:8px;}
-  .comp-table th{text-align:left; font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.5px; padding:4px 8px; border-bottom:1px solid var(--line);}
-  .comp-table td{padding:6px 8px; border-bottom:1px solid var(--line); color:var(--text-mid);}
-  .comp-table td.val{color:var(--amber); font-weight:600;}
-  .comp-table tr:last-child td{border-bottom:none;}
-
-  @media (max-width:420px){
-    h1{font-size:23px;}
-    .stat .v{font-size:17px;}
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acoustic3D - Parametric Speaker & Enclosure CAD Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #0f172a; color: #f8fafc; font-family: ui-sans-serif, system-ui, sans-serif; }
+    canvas { display: block; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #1e293b; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+  </style>
 </head>
-<body>
+<body class="h-screen w-screen flex flex-col overflow-hidden">
 
-<header>
-  <div class="eyebrow">Room-in / Box-out</div>
-  <h1>Cabinetry</h1>
-  <div class="sub">A speaker design bench: type in your room, pick a driver, and it solves the enclosure, cabinet dimensions, and crossover in real time. Manual geometry entry for now — camera-based room capture comes in the mobile build.</div>
-</header>
-
-<!-- ROOM MODULE -->
-<div class="module">
-  <div class="module-head">
-    <div><div class="tag">01 · Space</div><h2>Room geometry</h2></div>
-  </div>
-  <div class="module-body">
-
-    <div class="seg" id="roomInputSeg">
-      <button data-v="scan" class="active">Scan with phone</button>
-      <button data-v="manual">Manual entry</button>
+  <!-- Header -->
+  <header class="bg-slate-900 border-b border-slate-800 px-6 py-3 flex items-center justify-between z-10 shrink-0">
+    <div class="flex items-center space-x-3">
+      <div class="bg-indigo-600 p-2 rounded-lg">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
+      </div>
+      <div>
+        <h1 class="text-lg font-bold text-white tracking-wide">Acoustic3D CAD Studio</h1>
+        <p class="text-xs text-slate-400">Parametric Enclosure & CNC Flat-Pack Designer</p>
+      </div>
     </div>
+    <div class="flex space-x-3">
+      <button id="exportSvgBtn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center space-x-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+        <span>Export CNC SVG Cut Sheet</span>
+      </button>
+    </div>
+  </header>
 
-    <!-- SCAN MODE -->
-    <div id="scanEntry" style="margin-top:14px;">
-      <div class="note">Uses your phone's tilt sensor, not a 3D camera scan. Hold the phone at a fixed height, aim down at where each wall meets the floor, and it solves the distance from the angle — real trig, no LiDAR needed. Works best opened directly in your phone's browser (tap ⋯ → Open in Browser) rather than an embedded preview, since camera/motion permissions need a real page.</div>
+  <!-- Main Container -->
+  <div class="flex flex-1 overflow-hidden">
 
-      <div class="row" style="margin-top:12px;">
-        <div class="field" style="max-width:220px;">
-          <label>Phone height while aiming</label>
-          <input type="number" id="deviceHeight" value="1.3" step="0.05" min="0.3">
-          <div class="hint">meters — chest height is easiest to hold steady</div>
+    <!-- Left Sidebar: Controls & Inputs -->
+    <aside class="w-96 bg-slate-900 border-r border-slate-800 flex flex-col overflow-y-auto custom-scrollbar p-5 space-y-6 shrink-0">
+      
+      <!-- Room & Directivity Parameters -->
+      <section class="space-y-3">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-400">1. Room & Acoustic Requirements</h2>
+        <div class="grid grid-cols-2 gap-3 text-sm">
+          <div>
+            <label class="block text-slate-400 text-xs mb-1">Room Vol ($m^3$)</label>
+            <input type="number" id="roomVolume" value="45" class="w-full bg-slate-800 border border-slate-700 rounded px-3 py-1.5 text-white focus:outline-none focus:border-indigo-500">
+          </div>
+          <div>
+            <label class="block text-slate-400 text-xs mb-1">Target SPL (dB)</label>
+            <input type="number" id="targetSpl" value="102" class="w-full bg-slate-800 border border-slate-700 rounded px-3 py-1.5 text-white focus:outline-none focus:border-indigo-500">
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div id="scanStartBlock">
-        <button id="startScanBtn" class="capbtn">Enable camera + tilt sensor</button>
-        <div class="note" id="scanPermNote" style="display:none;"></div>
-      </div>
-
-      <div id="scanLiveBlock" style="display:none;">
-        <div class="camwrap">
-          <video id="camVideo" autoplay playsinline muted></video>
-          <div class="crosshair"></div>
-          <div class="angle-readout" id="angleReadout">— °</div>
+      <!-- Driver Selection & Thiele-Small Engine -->
+      <section class="space-y-3 border-t border-slate-800 pt-4">
+        <div class="flex justify-between items-center">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-400">2. Driver & T/S Alignment</h2>
+          <span class="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded" id="alignmentStatus">Bass-Reflex</span>
         </div>
 
-        <div class="row" style="margin-top:10px;">
-          <button id="calibrateBtn" class="capbtn secondary">1 · Calibrate level</button>
-        </div>
-        <div class="hint" id="calStatus" style="margin:6px 0 12px;">Point the phone straight ahead (not tilted), then tap Calibrate.</div>
-
-        <div class="scan-grid" id="scanGrid"></div>
-
-        <div class="row" style="margin-top:12px;">
-          <button id="applyScanBtn" class="capbtn" disabled>Use these measurements</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- MANUAL MODE -->
-    <div id="manualEntry" style="display:none; margin-top:14px;">
-      <div class="row">
-        <div class="field">
-          <label for="roomL">Length</label>
-          <input type="number" id="roomL" value="5.2" step="0.1" min="1">
-        </div>
-        <div class="field">
-          <label for="roomW">Width</label>
-          <input type="number" id="roomW" value="3.8" step="0.1" min="1">
-        </div>
-        <div class="field">
-          <label for="roomH">Height</label>
-          <input type="number" id="roomH" value="2.4" step="0.1" min="1">
-        </div>
-      </div>
-    </div>
-
-    <div class="field" id="scanHeightField" style="max-width:260px; display:none;">
-      <label for="roomH_scan">Ceiling height</label>
-      <input type="number" id="roomH_scan" value="2.4" step="0.1" min="1">
-      <div class="hint">measured by hand for now — floor-to-ceiling scan comes later</div>
-    </div>
-
-    <div class="field" style="max-width:260px;">
-      <label>Surfaces</label>
-      <select id="roomFurnish">
-        <option value="0.9">Hard / mostly empty (tile, bare walls)</option>
-        <option value="0.55" selected>Lightly furnished</option>
-        <option value="0.35">Well furnished, carpeted</option>
-        <option value="0.2">Acoustically treated</option>
-      </select>
-      <div class="hint">Sets the RT60 estimate used below. Units in meters.</div>
-    </div>
-
-    <hr class="divider">
-    <p class="kicker">Axial room modes (first 4 per axis)</p>
-    <div id="modeChart" class="modelist"></div>
-
-    <div class="readout" style="margin-top:14px;">
-      <div class="stat"><div class="k">Schroeder freq.</div><div class="v" id="schroeder">—</div></div>
-      <div class="stat"><div class="k">Est. RT60</div><div class="v teal" id="rt60">—</div></div>
-      <div class="stat"><div class="k">Listening pos.</div><div class="v teal" id="listenPos">—</div><div class="u" style="display:block;margin-top:2px;">from front wall</div></div>
-      <div class="stat"><div class="k">Speaker pull-out</div><div class="v teal" id="speakerPos">—</div><div class="u" style="display:block;margin-top:2px;">from front wall</div></div>
-    </div>
-    <div class="note" id="roomNote"></div>
-  </div>
-</div>
-
-<!-- DRIVER MODULE -->
-<div class="module">
-  <div class="module-head">
-    <div><div class="tag">02 · Hardware</div><h2>Driver — woofer / midbass</h2></div>
-  </div>
-  <div class="module-body">
-    <div class="field">
-      <label for="driverPreset">Preset</label>
-      <select id="driverPreset">
-        <option value="custom">Custom (enter your own T/S params)</option>
-        <option value="w5">5.25″ woofer — generic, Qts 0.40</option>
-        <option value="w65" selected>6.5″ woofer — generic, Qts 0.35</option>
-        <option value="w8">8″ woofer — generic, Qts 0.38</option>
-        <option value="w10">10″ woofer — generic, Qts 0.42</option>
-      </select>
-    </div>
-    <div class="row">
-      <div class="field"><label>Fs (Hz)</label><input type="number" id="Fs" value="38" step="0.5"></div>
-      <div class="field"><label>Qts</label><input type="number" id="Qts" value="0.35" step="0.01"></div>
-      <div class="field"><label>Vas (L)</label><input type="number" id="Vas" value="25" step="0.5"></div>
-    </div>
-    <div class="row">
-      <div class="field"><label>Xmax (mm, one-way)</label><input type="number" id="Xmax" value="4.5" step="0.1"></div>
-      <div class="field"><label>Sd (cm²)</label><input type="number" id="Sd" value="132" step="1"></div>
-      <div class="field"><label>Re (Ω)</label><input type="number" id="Re" value="5.5" step="0.1"></div>
-    </div>
-    <div class="field" style="max-width:220px;">
-      <label>Nominal diameter (mm)</label>
-      <input type="number" id="dia" value="165" step="1">
-    </div>
-  </div>
-</div>
-
-<!-- ENCLOSURE MODULE -->
-<div class="module">
-  <div class="module-head">
-    <div><div class="tag">03 · Solve</div><h2>Enclosure</h2></div>
-  </div>
-  <div class="module-body">
-    <div class="seg" id="boxTypeSeg">
-      <button data-v="sealed" class="active">Sealed</button>
-      <button data-v="vented">Vented</button>
-    </div>
-
-    <div id="sealedControls" style="margin-top:14px;">
-      <div class="field" style="max-width:280px;">
-        <label>Target Qtc</label>
-        <input type="number" id="targetQtc" value="0.707" step="0.01">
-        <div class="hint">0.707 = maximally flat (Butterworth). Lower = tighter/smaller box, higher rolloff.</div>
-      </div>
-    </div>
-    <div id="ventedControls" style="margin-top:14px; display:none;">
-      <div class="note">Solves numerically for the flattest (lowest-ripple) alignment given this driver's Qts, then extends the ports.</div>
-      <div class="row" style="margin-top:10px;">
-        <div class="field"><label>Port diameter (cm)</label><input type="number" id="portDia" value="7" step="0.5"></div>
-        <div class="field"><label>Number of ports</label><input type="number" id="portN" value="1" step="1" min="1"></div>
-      </div>
-    </div>
-
-    <hr class="divider">
-    <svg class="chart" id="respChart" viewBox="0 0 640 220" preserveAspectRatio="xMidYMid meet"></svg>
-
-    <div class="readout" id="boxReadout" style="margin-top:6px;"></div>
-    <div class="note" id="boxNote"></div>
-  </div>
-</div>
-
-<!-- CABINET MODULE -->
-<div class="module">
-  <div class="module-head">
-    <div><div class="tag">04 · Build</div><h2>Cabinet dimensions</h2></div>
-  </div>
-  <div class="module-body">
-    <div class="row">
-      <div class="field" style="max-width:200px;">
-        <label>Panel thickness (mm)</label>
-        <input type="number" id="panelThick" value="19" step="1">
-      </div>
-      <div class="field" style="max-width:220px;">
-        <label>Proportion (W : H : D)</label>
-        <select id="ratioMode">
-          <option value="1,1.6,2.6" selected>1 : 1.6 : 2.6 — golden-ish, avoids coincident modes</option>
-          <option value="1,1.25,1.6">1 : 1.25 : 1.6 — compact bookshelf</option>
-          <option value="1,2.2,1.3">1 : 2.2 : 1.3 — tall tower</option>
-        </select>
-      </div>
-    </div>
-    <div class="readout" id="cabReadout"></div>
-    <div class="note">Internal volume includes driver and port/bracing displacement only loosely — add ~3–6% to external volume for real wall thickness and bracing when you're cutting panels.</div>
-  </div>
-</div>
-
-<!-- CROSSOVER MODULE -->
-<div class="module">
-  <div class="module-head">
-    <div><div class="tag">05 · Blend</div><h2>Crossover</h2></div>
-  </div>
-  <div class="module-body">
-    <label class="toggle-driver2">
-      <input type="checkbox" id="useTweeter" checked>
-      Add a tweeter and compute a 2-way crossover
-    </label>
-
-    <div id="tweeterBlock">
-      <div class="row">
-        <div class="field"><label>Tweeter diameter (mm)</label><input type="number" id="twDia" value="25" step="1"></div>
-        <div class="field"><label>Tweeter Fs (Hz)</label><input type="number" id="twFs" value="1200" step="10"></div>
-        <div class="field"><label>Tweeter Re (Ω)</label><input type="number" id="twRe" value="6" step="0.1"></div>
-      </div>
-      <div class="row">
-        <div class="field">
-          <label>Crossover point (Hz)</label>
-          <input type="number" id="fc" value="2200" step="10">
-          <div class="hint" id="fcSuggest"></div>
-        </div>
-        <div class="field">
-          <label>Order / slope</label>
-          <select id="xoOrder">
-            <option value="1">1st order — 6 dB/oct</option>
-            <option value="2" selected>2nd order Butterworth — 12 dB/oct</option>
+        <div>
+          <label class="block text-slate-400 text-xs mb-1">Woofer Preset</label>
+          <select id="driverPreset" class="w-full bg-slate-800 border border-slate-700 rounded px-3 py-1.5 text-white text-sm focus:outline-none focus:border-indigo-500">
+            <option value="custom">Custom T/S Parameters</option>
+            <option value="dayton_rs180" selected>Dayton Audio RS180-8 (7" Reference)</option>
+            <option value="peerless_830869">Peerless 830869 (8" Nomex Woofer)</option>
+            <option value="sb_acoustic_sb17">SB Acoustics SB17NRXC35-8 (6.5")</option>
           </select>
         </div>
+
+        <div class="grid grid-cols-3 gap-2 text-xs">
+          <div>
+            <label class="block text-slate-400 mb-1">$F_s$ (Hz)</label>
+            <input type="number" id="tsFs" value="39" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-white">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1">$Q_{ts}$</label>
+            <input type="number" step="0.01" id="tsQts" value="0.38" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-white">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1">$V_{as}$ (L)</label>
+            <input type="number" id="tsVas" value="28.5" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-white">
+          </div>
+        </div>
+
+        <!-- Calculated Acoustic Metrics -->
+        <div class="bg-slate-800/60 p-3 rounded-lg border border-slate-700/50 space-y-1 text-xs">
+          <div class="flex justify-between"><span class="text-slate-400">Net Vol ($V_b$):</span> <span id="calcVb" class="font-mono text-indigo-300">22.4 L</span></div>
+          <div class="flex justify-between"><span class="text-slate-400">Tuning ($f_b$):</span> <span id="calcFb" class="font-mono text-indigo-300">41.2 Hz</span></div>
+          <div class="flex justify-between"><span class="text-slate-400">Port Length (Flared):</span> <span id="calcPortLen" class="font-mono text-indigo-300">18.5 cm</span></div>
+          <div class="flex justify-between"><span class="text-slate-400">$-3\text{dB}$ Cutoff ($f_3$):</span> <span id="calcF3" class="font-mono text-indigo-300">42.0 Hz</span></div>
+        </div>
+      </section>
+
+      <!-- Advanced Cabinet CAD Configuration -->
+      <section class="space-y-3 border-t border-slate-800 pt-4">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-400">3. Enclosure Geometry & Bracing</h2>
+        
+        <div class="grid grid-cols-2 gap-3 text-xs">
+          <div>
+            <label class="block text-slate-400 mb-1">Wood Thickness</label>
+            <select id="woodThickness" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-white">
+              <option value="18">18mm (3/4" MDF/Birch)</option>
+              <option value="24" selected>24mm (1" Heavy MDF)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1">Baffle Edge</label>
+            <select id="baffleEdge" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-white">
+              <option value="chamfer">25mm Bevel / Chamfer</option>
+              <option value="rounded">25mm Roundover</option>
+              <option value="flat">Square Edge</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-xs">
+          <label class="flex items-center space-x-2 text-slate-300">
+            <input type="checkbox" id="matrixBracing" checked class="rounded border-slate-700 bg-slate-800 text-indigo-600 focus:ring-indigo-500">
+            <span>Parametric Window Matrix Bracing</span>
+          </label>
+          <label class="flex items-center space-x-2 text-slate-300">
+            <input type="checkbox" id="isolatedChamber" checked class="rounded border-slate-700 bg-slate-800 text-indigo-600 focus:ring-indigo-500">
+            <span>Isolated Midrange/Tweeter Chamber</span>
+          </label>
+          <label class="flex items-center space-x-2 text-slate-300">
+            <input type="checkbox" id="slopedBaffle" checked class="rounded border-slate-700 bg-slate-800 text-indigo-600 focus:ring-indigo-500">
+            <span>5° Sloped Baffle (Time-Alignment)</span>
+          </label>
+          <label class="flex items-center space-x-2 text-slate-300">
+            <input type="checkbox" id="flushMount" checked class="rounded border-slate-700 bg-slate-800 text-indigo-600 focus:ring-indigo-500">
+            <span>Flush-Mount Driver Rebates</span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Visualiser Controls -->
+      <section class="space-y-3 border-t border-slate-800 pt-4">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-400">4. Display Mode</h2>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <button id="viewSolid" class="bg-indigo-600 text-white py-1.5 rounded font-medium">Solid Rendering</button>
+          <button id="viewXray" class="bg-slate-800 hover:bg-slate-700 text-slate-300 py-1.5 rounded font-medium">X-Ray Internal</button>
+        </div>
+      </section>
+
+    </aside>
+
+    <!-- Center: 3D CAD Viewport -->
+    <main class="flex-1 relative bg-slate-950">
+      <div id="webglContainer" class="w-full h-full"></div>
+
+      <!-- Viewport Overlay Badges -->
+      <div class="absolute top-4 left-4 pointer-events-none space-y-1">
+        <div class="bg-slate-900/80 backdrop-blur border border-slate-800 px-3 py-1.5 rounded-lg text-xs font-mono text-slate-300 shadow">
+          <span>Dimensions: </span><span id="dimReadout" class="text-indigo-400">220W x 420H x 310D mm</span>
+        </div>
+        <div class="bg-slate-900/80 backdrop-blur border border-slate-800 px-3 py-1.5 rounded-lg text-xs font-mono text-slate-300 shadow">
+          <span>Resonance Control: </span><span class="text-emerald-400">Matrix Multi-Window Asymmetric</span>
+        </div>
       </div>
-      <table class="comp-table" id="xoTable"></table>
-      <div class="note">Component values use each driver's DC resistance as a constant load — real drivers' impedance rises with frequency, so verify in XSim or VituixCAD with your drivers' measured impedance curves before cutting parts.</div>
-    </div>
-  </div>
-</div>
 
-<!-- MATERIALS / CONSTRUCTION MODULE -->
-<div class="module">
-  <div class="module-head">
-    <div><div class="tag">06 · Construction</div><h2>Materials &amp; build-out</h2></div>
-  </div>
-  <div class="module-body">
-    <div class="row">
-      <div class="field">
-        <label>Panel material</label>
-        <select id="material">
-          <option value="mdf" selected>MDF</option>
-          <option value="ply">Plywood (birch)</option>
-          <option value="hardwood">Solid hardwood</option>
-        </select>
+      <div class="absolute bottom-4 right-4 bg-slate-900/80 backdrop-blur border border-slate-800 px-3 py-1.5 rounded-lg text-xs text-slate-400 flex items-center space-x-2">
+        <span>Click & Drag to Rotate</span>
+        <span>•</span>
+        <span>Scroll to Zoom</span>
       </div>
-      <div class="field">
-        <label>Bracing</label>
-        <select id="bracing">
-          <option value="none">None</option>
-          <option value="single" selected>Single shelf brace</option>
-          <option value="cross">Cross brace (window pane)</option>
-          <option value="multi">Multiple shelf braces</option>
-        </select>
-      </div>
-    </div>
-    <div class="row">
-      <div class="field">
-        <label>Tweeter mounting</label>
-        <select id="twMount">
-          <option value="flush" selected>Flush-mounted (recessed)</option>
-          <option value="surface">Surface-mounted (on baffle)</option>
-        </select>
-      </div>
-      <div class="field" id="portPlacementField">
-        <label>Port placement</label>
-        <select id="portPlacement">
-          <option value="front" selected>Front baffle</option>
-          <option value="rear">Rear panel</option>
-        </select>
-      </div>
-    </div>
-    <div class="readout" id="materialReadout"></div>
-    <div class="note" id="materialNote"></div>
+    </main>
+
   </div>
-</div>
 
-<!-- 3D PREVIEW MODULE -->
-<div class="module">
-  <div class="module-head">
-    <div><div class="tag">07 · Preview</div><h2>3D cabinet model</h2></div>
-  </div>
-  <div class="module-body tight">
-    <div class="seg" id="viewModeSeg">
-      <button data-v="solid" class="active">Exterior</button>
-      <button data-v="cutaway">Cutaway (see inside)</button>
-    </div>
-    <div id="threeContainer" style="width:100%; aspect-ratio:4/3; margin-top:12px; border:1px solid var(--line-bright); border-radius:8px; overflow:hidden; background:#0A0C10; position:relative;">
-      <div id="threeHint" style="position:absolute; bottom:8px; left:50%; transform:translateX(-50%); font-family:var(--mono); font-size:10.5px; color:var(--text-dim); background:rgba(15,18,23,0.7); padding:4px 10px; border-radius:12px; pointer-events:none;">drag to rotate · scroll/pinch to zoom</div>
-    </div>
-    <div class="row" style="margin-top:10px;">
-      <div class="stat" style="flex:1;"><div class="k" style="display:flex; align-items:center; gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:#4FD1C5;display:inline-block;"></span>Woofer cutout</div></div>
-      <div class="stat" style="flex:1;"><div class="k" style="display:flex; align-items:center; gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:#E8A33D;display:inline-block;"></span>Tweeter cutout</div></div>
-      <div class="stat" style="flex:1;"><div class="k" style="display:flex; align-items:center; gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:#8892A3;display:inline-block;"></span>Port</div></div>
-    </div>
-    <div class="note">Illustrative geometry — driver/port positions use standard layout rules (tweeter upper third, port clear of the woofer basket), not a stress or airflow simulation. Confirm baffle clearances against your actual driver's cutout diameter and mounting depth before drilling.</div>
-  </div>
-</div>
+  <script>
+    // --- Application State & TS Calculations Engine ---
+    const presets = {
+      dayton_rs180: { fs: 39, qts: 0.38, vas: 28.5 },
+      peerless_830869: { fs: 35, qts: 0.33, vas: 38.0 },
+      sb_acoustic_sb17: { fs: 31, qts: 0.31, vas: 34.0 }
+    };
 
-<div class="footer-note">
-  Estimator, not a substitute for measurement. Cross-check final designs in WinISD, Hornresp, or VituixCAD before building.
-</div>
+    let state = {
+      fs: 39, qts: 0.38, vas: 28.5,
+      woodThick: 24, // mm
+      matrixBracing: true,
+      isolatedChamber: true,
+      slopedBaffle: true,
+      flushMount: true,
+      baffleEdge: 'chamfer',
+      viewMode: 'solid', // solid, xray
+      // Derived CAD Specs (mm)
+      vbLitres: 22.4,
+      fbHz: 41.2,
+      extW: 220, extH: 460, extD: 320
+    };
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js"></script>
+    function recalculateAcoustics() {
+      // Extended SBB4 / BB4 Bass-Reflex Alignment formulas
+      const vas = parseFloat(document.getElementById('tsVas').value);
+      const qts = parseFloat(document.getElementById('tsQts').value);
+      const fs = parseFloat(document.getElementById('tsFs').value);
 
-<script>
-const $ = id => document.getElementById(id);
-const C_SOUND = 343; // m/s
+      // Vb = 20 * Qts^3.3 * Vas
+      let vb = 20 * Math.pow(qts, 3.3) * vas;
+      if (vb < 5) vb = 5; if (vb > 150) vb = 150;
+      
+      // Tuning Frequency fb = (Vas / Vb)^0.32 * fs
+      let fb = Math.pow(vas / vb, 0.32) * fs;
+      let f3 = fs * Math.pow(vas / vb, 0.44);
 
-const PRESETS = {
-  w5:  {Fs:45, Qts:0.40, Vas:15, Xmax:4.0, Sd:90,  Re:6.0, dia:133},
-  w65: {Fs:38, Qts:0.35, Vas:25, Xmax:4.5, Sd:132, Re:5.5, dia:165},
-  w8:  {Fs:28, Qts:0.38, Vas:55, Xmax:6.0, Sd:210, Re:5.8, dia:200},
-  w10: {Fs:24, Qts:0.42, Vas:80, Xmax:7.5, Sd:330, Re:6.2, dia:255},
-};
+      // Port Calculation for 68mm internal diameter flared port
+      const portDiam = 6.8; // cm
+      const portArea = Math.PI * Math.pow(portDiam / 2, 2);
+      let portLen = ((23600 * portArea) / (Math.pow(fb, 2) * vb)) - (0.825 * portDiam);
+      if (portLen < 5) portLen = 5;
 
-$('driverPreset').addEventListener('change', e=>{
-  const v = e.target.value;
-  if(v==='custom') return;
-  const p = PRESETS[v];
-  $('Fs').value=p.Fs; $('Qts').value=p.Qts; $('Vas').value=p.Vas;
-  $('Xmax').value=p.Xmax; $('Sd').value=p.Sd; $('Re').value=p.Re; $('dia').value=p.dia;
-  recalcAll();
-});
+      state.vbLitres = vb.toFixed(1);
+      state.fbHz = fb.toFixed(1);
 
-document.querySelectorAll('#roomInputSeg button').forEach(b=>{
-  b.addEventListener('click', ()=>{
-    document.querySelectorAll('#roomInputSeg button').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');
-    const scanMode = b.dataset.v==='scan';
-    $('scanEntry').style.display = scanMode ? '' : 'none';
-    $('manualEntry').style.display = scanMode ? 'none' : '';
-    $('scanHeightField').style.display = scanMode ? '' : 'none';
-  });
-});
-$('roomH_scan').addEventListener('input', ()=>{ $('roomH').value = $('roomH_scan').value; recalcAll(); });
+      document.getElementById('calcVb').textContent = `${state.vbLitres} L`;
+      document.getElementById('calcFb').textContent = `${state.fbHz} Hz`;
+      document.getElementById('calcPortLen').textContent = `${portLen.toFixed(1)} cm`;
+      document.getElementById('calcF3').textContent = `${f3.toFixed(1)} Hz`;
 
-// ---------- ROOM SCAN (camera aim + tilt trig) ----------
-const DIRECTIONS = [
-  {key:'front', label:'Front wall'},
-  {key:'back',  label:'Back wall'},
-  {key:'left',  label:'Left wall'},
-  {key:'right', label:'Right wall'},
-];
-const scanState = { calibBeta: null, liveBeta: null, captures: {} };
+      // Update Enclosure External Dimensions based on Vb (including internal displacements)
+      const internalVolCm3 = (vb + 3.5) * 1000; // Add 3.5L for drivers/bracing displacement
+      const t = state.woodThick;
+      
+      // Proportional ratio: H:W:D = 1.618 : 1 : 1.2
+      const internalW = Math.cbrt(internalVolCm3 / (1.618 * 1.2));
+      const internalH = internalW * 1.8; // Elevated slightly for isolated chamber
+      const internalD = internalW * 1.25;
 
-function buildScanGrid(){
-  const grid = $('scanGrid');
-  grid.innerHTML = DIRECTIONS.map(d => `
-    <div class="cap-item" id="cap-${d.key}">
-      <div class="label">${d.label}</div>
-      <div class="dist" id="dist-${d.key}">not captured</div>
-      <button data-dir="${d.key}" class="capdirbtn">Capture</button>
-    </div>
-  `).join('');
-  grid.querySelectorAll('.capdirbtn').forEach(btn=>{
-    btn.addEventListener('click', ()=>captureDirection(btn.dataset.dir));
-  });
-}
-buildScanGrid();
+      state.extW = Math.round(internalW + (t * 2));
+      state.extH = Math.round(internalH + (t * 2));
+      state.extD = Math.round(internalD + (t * 2));
 
-$('startScanBtn').addEventListener('click', async ()=>{
-  const noteEl = $('scanPermNote');
-  noteEl.style.display='';
-  try{
-    const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}, audio:false});
-    $('camVideo').srcObject = stream;
+      document.getElementById('dimReadout').textContent = `${state.extW}W x ${state.extH}H x ${state.extD}D mm`;
 
-    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function'){
-      const perm = await DeviceOrientationEvent.requestPermission();
-      if(perm !== 'granted') throw new Error('Motion sensor permission denied.');
+      build3DSpeaker();
     }
-    window.addEventListener('deviceorientation', onOrientation, true);
 
-    $('scanStartBlock').style.display='none';
-    $('scanLiveBlock').style.display='';
-  }catch(err){
-    noteEl.innerHTML = `Couldn't get camera/motion access here (${err.message||'blocked by this preview'}). Download the file and open it directly in your phone's browser, or switch to Manual entry above.`;
-  }
-});
+    // --- Three.js 3D Viewport Engine ---
+    let scene, camera, renderer, controls;
+    let speakerGroup;
 
-function onOrientation(e){
-  if(e.beta===null || e.beta===undefined) return;
-  scanState.liveBeta = e.beta;
-  if(scanState.calibBeta!==null){
-    const delta = Math.abs(scanState.liveBeta - scanState.calibBeta);
-    $('angleReadout').textContent = delta.toFixed(1)+'° down';
-  } else {
-    $('angleReadout').textContent = 'not calibrated';
-  }
-}
+    function init3D() {
+      const container = document.getElementById('webglContainer');
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x020617);
 
-$('calibrateBtn').addEventListener('click', ()=>{
-  if(scanState.liveBeta===null){
-    $('calStatus').textContent = 'No sensor reading yet — move the phone slightly and try again.';
-    return;
-  }
-  scanState.calibBeta = scanState.liveBeta;
-  $('calStatus').textContent = 'Calibrated. Now tilt down toward each wall\'s base and capture.';
-});
+      camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 10, 5000);
+      camera.position.set(500, 400, 700);
 
-function captureDirection(dir){
-  if(scanState.calibBeta===null){
-    $('calStatus').textContent = 'Calibrate level first (step 1) before capturing.';
-    return;
-  }
-  const deltaDeg = Math.abs(scanState.liveBeta - scanState.calibBeta);
-  const deltaRad = deltaDeg * Math.PI/180;
-  const h = parseFloat($('deviceHeight').value);
-  if(deltaDeg < 3){
-    $(`dist-${dir}`).textContent = 'tilt more';
-    return;
-  }
-  const dist = h / Math.tan(deltaRad);
-  scanState.captures[dir] = dist;
-  $(`dist-${dir}`).textContent = dist.toFixed(2)+' m';
-  $(`cap-${dir}`).classList.add('done');
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.shadowMap.enabled = true;
+      container.appendChild(renderer.domElement);
 
-  const allDone = DIRECTIONS.every(d => scanState.captures[d.key]!==undefined);
-  $('applyScanBtn').disabled = !allDone;
-}
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
 
-$('applyScanBtn').addEventListener('click', ()=>{
-  const c = scanState.captures;
-  const L = c.front + c.back;
-  const W = c.left + c.right;
-  $('roomL').value = L.toFixed(2);
-  $('roomW').value = W.toFixed(2);
-  recalcAll();
-  $('calStatus').textContent = `Applied: length ${L.toFixed(2)}m, width ${W.toFixed(2)}m. Re-scan any wall and hit Apply again to update.`;
-});
+      // Lights
+      const ambient = new THREE.AmbientLight(0xffffff, 0.6);
+      scene.add(ambient);
 
-// ---------- MATERIALS ----------
-const MATERIALS = {
-  mdf:      {label:'MDF',              density:750, color:0xC9A876, note:"Dense, uniform, easy to cut cleanly — the standard choice for sealed/vented hi-fi cabinets. Heavier and less stiff per kg than plywood."},
-  ply:      {label:'Birch plywood',    density:650, color:0xE0C79A, note:"Better stiffness-to-weight than MDF, holds screws better, resists moisture better — costs more and shows grain if left unveneered."},
-  hardwood: {label:'Solid hardwood',   density:720, color:0x8B5A2B, note:"Best looks and edge-detailing, but seasonal movement (expansion/contraction) needs to be designed for — usually used as veneer over MDF/ply rather than solid panels for full cabinets."},
-};
+      const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+      dirLight.position.set(300, 500, 400);
+      dirLight.castShadow = true;
+      scene.add(dirLight);
 
-function computeMaterial(cabExt, t){
-  const mat = MATERIALS[$('material').value];
-  // approximate panel surface area (6 sides) - 2*(wh+wd+hd), times thickness times density
-  const area = 2*(cabExt.w*cabExt.h + cabExt.w*cabExt.d + cabExt.h*cabExt.d);
-  const volumeM3 = area * t;
-  const massKg = volumeM3 * mat.density;
-  return {mat, massKg};
-}
+      const fillLight = new THREE.DirectionalLight(0x6366f1, 0.4);
+      fillLight.position.set(-300, -100, -400);
+      scene.add(fillLight);
 
-document.querySelectorAll('#viewModeSeg button').forEach(b=>{
-  b.addEventListener('click', ()=>{
-    document.querySelectorAll('#viewModeSeg button').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');
-    viewState.cutaway = b.dataset.v==='cutaway';
-    rebuildScene();
-  });
-});
+      const grid = new THREE.GridHelper(2000, 40, 0x334155, 0x1e293b);
+      grid.position.y = -250;
+      scene.add(grid);
 
-// ---------- THREE.JS SCENE ----------
-let scene, camera, renderer, controls, sceneGroup;
-const viewState = {cutaway:false};
+      speakerGroup = new THREE.Group();
+      scene.add(speakerGroup);
 
-function initThree(){
-  const container = $('threeContainer');
-  const w = container.clientWidth, h = container.clientHeight;
-  scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(35, w/h, 0.01, 50);
-  camera.position.set(0.9, 0.7, 1.3);
-  renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
-  renderer.setSize(w, h);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
-  container.insertBefore(renderer.domElement, container.firstChild);
-
-  const amb = new THREE.AmbientLight(0xffffff, 0.55);
-  scene.add(amb);
-  const dir = new THREE.DirectionalLight(0xffffff, 0.8);
-  dir.position.set(2,3,2);
-  scene.add(dir);
-  const dir2 = new THREE.DirectionalLight(0x4fd1c5, 0.25);
-  dir2.position.set(-2,-1,-2);
-  scene.add(dir2);
-
-  if (typeof THREE.OrbitControls === 'function'){
-    controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.08;
-    controls.minDistance = 0.3;
-    controls.maxDistance = 4;
-  }
-
-  sceneGroup = new THREE.Group();
-  scene.add(sceneGroup);
-
-  window.addEventListener('resize', onThreeResize);
-  animateThree();
-}
-
-function onThreeResize(){
-  const container = $('threeContainer');
-  const w = container.clientWidth, h = container.clientHeight;
-  if(!w || !h) return;
-  camera.aspect = w/h;
-  camera.updateProjectionMatrix();
-  renderer.setSize(w,h);
-}
-
-function animateThree(){
-  requestAnimationFrame(animateThree);
-  if(controls) controls.update();
-  if(renderer) renderer.render(scene, camera);
-}
-
-function clearGroup(g){
-  while(g.children.length){
-    const c = g.children.pop();
-    if(c.geometry) c.geometry.dispose();
-    if(c.material) c.material.dispose();
-  }
-}
-
-function makeBraceFrame(width, depth, y, thickness, group, color){
-  // rectangular ring brace made of 4 box segments, sitting at height y inside the cabinet
-  const barW = Math.min(width, depth) * 0.12;
-  const mat = new THREE.MeshStandardMaterial({color, roughness:0.85});
-  const segs = [
-    {w: width, d: barW, x:0, z: depth/2 - barW/2},
-    {w: width, d: barW, x:0, z: -(depth/2 - barW/2)},
-    {w: barW, d: depth - 2*barW, x: width/2 - barW/2, z:0},
-    {w: barW, d: depth - 2*barW, x: -(width/2 - barW/2), z:0},
-  ];
-  segs.forEach(s=>{
-    const geo = new THREE.BoxGeometry(s.w, thickness, s.d);
-    const mesh = new THREE.Mesh(geo, mat);
-    mesh.position.set(s.x, y, s.z);
-    group.add(mesh);
-  });
-}
-
-function rebuildScene(){
-  if(!sceneGroup) return;
-  clearGroup(sceneGroup);
-
-  const cab = window.__lastCab, driver = window.__lastDriver, enc = window.__lastEnc;
-  if(!cab) return;
-
-  const w = cab.ext.w, h = cab.ext.h, d = cab.ext.d, t = cab.t;
-  const matDef = MATERIALS[$('material').value];
-  const useTweeter = $('useTweeter').checked;
-  const cutaway = viewState.cutaway;
-
-  // --- outer shell ---
-  const shellMat = new THREE.MeshStandardMaterial({
-    color: matDef.color, roughness:0.75, metalness:0.05,
-    transparent: cutaway, opacity: cutaway ? 0.25 : 1,
-    side: THREE.DoubleSide,
-  });
-  const shellGeo = new THREE.BoxGeometry(w,h,d);
-  const shell = new THREE.Mesh(shellGeo, shellMat);
-  sceneGroup.add(shell);
-
-  const edges = new THREE.LineSegments(new THREE.EdgesGeometry(shellGeo), new THREE.LineBasicMaterial({color:0x0A0C10, linewidth:1}));
-  sceneGroup.add(edges);
-
-  // --- driver layout on baffle (front = +z face) ---
-  const woofDia = driver.dia/1000; // m
-  const twDia = useTweeter ? parseFloat($('twDia').value)/1000 : 0;
-  const twMount = $('twMount').value;
-
-  const twY = useTweeter ? h*0.5 - h*0.30 : 0;
-  const woofY = useTweeter ? -h*0.5 + h*0.30 : 0;
-  const frontZ = d/2;
-
-  function addDriverCutout(radius, y, color, depthInset){
-    const ringMat = new THREE.MeshStandardMaterial({color, roughness:0.5});
-    const ring = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, t*0.6, 32), ringMat);
-    ring.rotation.x = Math.PI/2;
-    ring.position.set(0, y, frontZ - depthInset);
-    sceneGroup.add(ring);
-    // basket cone suggestion (darker inner circle)
-    const cone = new THREE.Mesh(new THREE.CylinderGeometry(radius*0.55, radius*0.55, t*0.3, 24), new THREE.MeshStandardMaterial({color:0x14161B, roughness:0.9}));
-    cone.rotation.x = Math.PI/2;
-    cone.position.set(0, y, frontZ - depthInset + t*0.18);
-    sceneGroup.add(cone);
-  }
-
-  addDriverCutout(woofDia/2, woofY, 0x4FD1C5, t*0.1);
-  if(useTweeter){
-    const inset = twMount==='flush' ? t*0.35 : -t*0.05; // flush sits recessed, surface sits proud
-    addDriverCutout(twDia/2, twY, 0xE8A33D, inset);
-  }
-
-  // --- port ---
-  if(enc && enc.boxType==='vented'){
-    const portR = (enc.portDia/100)/2; // cm -> m
-    const placement = $('portPlacement').value;
-    const portY = -h*0.5 + h*0.10;
-    const portMat = new THREE.MeshStandardMaterial({color:0x8892A3, roughness:0.6});
-    const portLen = Math.min(enc.Lv/100, d*0.8); // cm -> m, clamp
-    const portMesh = new THREE.Mesh(new THREE.CylinderGeometry(portR, portR, Math.max(portLen,0.02), 24), portMat);
-    portMesh.rotation.x = Math.PI/2;
-    if(placement==='front'){
-      portMesh.position.set(w*0.28, portY, d/2 - (Math.max(portLen,0.02))/2);
-    } else {
-      portMesh.position.set(0, portY, -d/2 + (Math.max(portLen,0.02))/2);
+      window.addEventListener('resize', onWindowResize);
+      animate();
     }
-    sceneGroup.add(portMesh);
-  }
 
-  // --- bracing (only visible / meaningful in cutaway) ---
-  const bracing = $('bracing').value;
-  const innerW = w - 2*t, innerD = d - 2*t;
-  const braceColor = 0x2B303C;
-  if(bracing==='single'){
-    makeBraceFrame(innerW, innerD, 0, t*0.8, sceneGroup, braceColor);
-  } else if(bracing==='cross'){
-    makeBraceFrame(innerW, innerD, 0, t*0.8, sceneGroup, braceColor);
-    // vertical brace as a frame rotated conceptually: approximate with a vertical panel pair
-    const vMat = new THREE.MeshStandardMaterial({color:braceColor, roughness:0.85});
-    const vGeo = new THREE.BoxGeometry(t*0.8, h - 2*t, innerD*0.12);
-    const vMesh = new THREE.Mesh(vGeo, vMat);
-    vMesh.position.set(0,0,0);
-    sceneGroup.add(vMesh);
-  } else if(bracing==='multi'){
-    makeBraceFrame(innerW, innerD, h*0.18, t*0.8, sceneGroup, braceColor);
-    makeBraceFrame(innerW, innerD, -h*0.18, t*0.8, sceneGroup, braceColor);
-  }
-
-  // scale camera target roughly to cabinet size
-  if(controls){
-    controls.target.set(0,0,0);
-  }
-  const maxDim = Math.max(w,h,d);
-  camera.position.set(maxDim*1.1, maxDim*0.85, maxDim*1.5);
-  camera.lookAt(0,0,0);
-}
-
-function update3D(cab, driver, enc){
-  window.__lastCab = cab;
-  window.__lastDriver = driver;
-  window.__lastEnc = enc;
-  if(!scene) initThree();
-  rebuildScene();
-
-  const matResult = computeMaterial(cab.ext, cab.t);
-  renderStat($('materialReadout'), [
-    ['Est. panel weight', fmt(matResult.massKg,1), 'kg'],
-    ['Panel thickness', fmt(cab.t*1000,0), 'mm'],
-  ]);
-  $('materialNote').textContent = matResult.mat.note;
-}
-
-document.querySelectorAll('#material, #bracing, #twMount, #portPlacement').forEach(el=>{
-  el.addEventListener('change', recalcAll);
-});
-
-document.querySelectorAll('#boxTypeSeg button').forEach(b=>{
-  b.addEventListener('click', ()=>{
-    document.querySelectorAll('#boxTypeSeg button').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');
-    $('sealedControls').style.display = b.dataset.v==='sealed' ? '' : 'none';
-    $('ventedControls').style.display = b.dataset.v==='vented' ? '' : 'none';
-    recalcAll();
-  });
-});
-
-$('useTweeter').addEventListener('change', ()=>{
-  $('tweeterBlock').style.display = $('useTweeter').checked ? '' : 'none';
-  recalcAll();
-});
-
-document.querySelectorAll('input, select').forEach(el=>{
-  el.addEventListener('input', recalcAll);
-});
-
-function fmt(n, d=2){ if(!isFinite(n)) return '—'; return n.toFixed(d); }
-
-// ---------- ROOM ----------
-function computeRoom(){
-  const L = parseFloat($('roomL').value), W = parseFloat($('roomW').value), H = parseFloat($('roomH').value);
-  const furnish = parseFloat($('roomFurnish').value);
-  const V = L*W*H;
-  // rough surface area & absorption estimate using furnish coefficient as blanket avg alpha
-  const S = 2*(L*W + L*H + W*H);
-  const A = S * (1-furnish) * 0.5 + S*furnish*0.05; // crude blend, avoids needing per-surface input
-  // Simplify: use furnish value directly as target RT60 (it's already labelled that way in the dropdown)
-  const RT60 = furnish; // 0.9 / 0.55 / 0.35 / 0.2 -> used directly as seconds estimate
-  const schroeder = 2000 * Math.sqrt(RT60 / V);
-
-  const dims = [['L',L],['W',W],['H',H]];
-  const modes = [];
-  dims.forEach(([axis, d])=>{
-    for(let n=1;n<=4;n++){
-      modes.push({axis, n, f: (C_SOUND/2) * (n/d)});
-    }
-  });
-  modes.sort((a,b)=>a.f-b.f);
-
-  // render mode list (first 8, scaled 0-200Hz)
-  const maxF = 200;
-  const list = $('modeChart');
-  list.innerHTML = '';
-  modes.slice(0,8).forEach(m=>{
-    const pct = Math.min(100, (m.f/maxF)*100);
-    const row = document.createElement('div');
-    row.className='mode-row';
-    row.innerHTML = `<span class="ax">${m.axis}${m.n}</span><span class="bar"><span style="left:${pct}%"></span></span><span class="f">${m.f.toFixed(1)} Hz</span>`;
-    list.appendChild(row);
-  });
-
-  $('schroeder').textContent = schroeder.toFixed(0)+' Hz';
-  $('rt60').textContent = RT60.toFixed(2)+' s';
-  const listenPct = 0.38;
-  $('listenPos').textContent = (L*listenPct).toFixed(2)+' m';
-  $('speakerPos').textContent = (L*0.20).toFixed(2)+' m';
-
-  // clustering warning: check for modes within 5Hz of each other below 300Hz
-  let clustered = false;
-  for(let i=0;i<modes.length-1;i++){
-    if(modes[i].f<300 && Math.abs(modes[i].f-modes[i+1].f)<4 && modes[i].axis!==modes[i+1].axis){ clustered=true; break; }
-  }
-  let msg = `Below ${schroeder.toFixed(0)} Hz the room's own dimensions dominate response more than the speaker does — placement matters more than gear here. `;
-  msg += clustered
-    ? `<strong>Two axes share a close mode frequency</strong> — expect a pronounced bass buildup near that frequency; avoid seating or placing a speaker at the exact midpoint of the room on those axes.`
-    : `Mode spacing looks reasonably even — no single frequency should dominate too badly.`;
-  $('roomNote').innerHTML = msg;
-
-  return {L,W,H,V,RT60,schroeder};
-}
-
-// ---------- ENCLOSURE MATH ----------
-function sealedMagDb(f, Fc, Qtc){
-  const O = f/Fc;
-  const num = Math.pow(O,4);
-  const den = Math.pow(O*O-1,2) + (O*O)/(Qtc*Qtc);
-  return 10*Math.log10(num/den);
-}
-function ventedMagDb(f, Fs, h, alpha, Qts){
-  const O = f/Fs;
-  const term1 = Math.pow(O,4) - (1+alpha+h*h)*O*O + h*h;
-  const term2 = (O*O/(Qts*Qts)) * Math.pow(O*O-h*h,2);
-  const den = term1*term1 + term2;
-  const num = Math.pow(O,8);
-  return 10*Math.log10(num/Math.max(den,1e-12));
-}
-
-function findF3(fn, fHigh, fLow){
-  // scan downward from fHigh looking for first crossing below -3dB
-  let prevF = fHigh, prevDb = fn(fHigh);
-  for(let f=fHigh; f>=fLow; f*=0.98){
-    const db = fn(f);
-    if(prevDb > -3 && db <= -3){
-      // linear interp
-      const t = (-3-prevDb)/(db-prevDb);
-      return prevF + t*(f-prevF);
-    }
-    prevF = f; prevDb = db;
-  }
-  return fLow;
-}
-
-function solveVented(Fs, Qts, Vas){
-  let best = null;
-  for(let h=0.80; h<=1.40; h+=0.02){
-    for(let alpha=0.4; alpha<=5.0; alpha+=0.1){
-      // sample passband ripple between 1.1*Fs and 3.5*Fs
-      let maxDb=-999, minDb=999;
-      for(let m=1.1; m<=3.5; m+=0.15){
-        const db = ventedMagDb(Fs*m, Fs, h, alpha, Qts);
-        if(db>maxDb) maxDb=db;
-        if(db<minDb) minDb=db;
+    function build3DSpeaker() {
+      while(speakerGroup.children.length > 0){ 
+        speakerGroup.remove(speakerGroup.children[0]); 
       }
-      const ripple = maxDb-minDb;
-      const overshoot = Math.max(0, maxDb); // penalize peaking above 0dB
-      const score = ripple*2 + overshoot*3;
-      if(!best || score<best.score){
-        best = {h, alpha, score, ripple};
+
+      const w = state.extW;
+      const h = state.extH;
+      const d = state.extD;
+      const t = state.woodThick;
+
+      const isXray = state.viewMode === 'xray';
+      const woodMat = new THREE.MeshStandardMaterial({
+        color: isXray ? 0x6366f1 : 0x334155,
+        roughness: 0.4,
+        metalness: 0.1,
+        wireframe: false,
+        transparent: isXray,
+        opacity: isXray ? 0.25 : 1.0
+      });
+
+      const braceMat = new THREE.MeshStandardMaterial({
+        color: 0xf59e0b,
+        roughness: 0.5,
+        transparent: isXray,
+        opacity: isXray ? 0.6 : 0.95
+      });
+
+      const driverMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.2 });
+      const coneMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.3 });
+
+      // Outer Shell Group
+      const enclosure = new THREE.Group();
+
+      // Sloped Baffle Transformation Angle
+      const slopeAngle = state.slopedBaffle ? (5 * Math.PI / 180) : 0;
+
+      // 1. External Cabinet Geometry
+      const cabGeo = new THREE.BoxGeometry(w, h, d);
+      const cabinetMesh = new THREE.Mesh(cabGeo, woodMat);
+      enclosure.add(cabinetMesh);
+
+      // 2. Beveled / Chamfered Edge Emulation (Front Baffle)
+      if (state.baffleEdge === 'chamfer' && !isXray) {
+        const chamferGeo = new THREE.CylinderGeometry(15, 15, h, 4);
+        const chamferMat = new THREE.MeshStandardMaterial({ color: 0x1e293b });
+        const leftChamfer = new THREE.Mesh(chamferGeo, chamferMat);
+        leftChamfer.position.set(-w/2 + 5, 0, d/2 - 5);
+        leftChamfer.rotation.y = Math.PI / 4;
+        enclosure.add(leftChamfer);
+
+        const rightChamfer = leftChamfer.clone();
+        rightChamfer.position.set(w/2 - 5, 0, d/2 - 5);
+        enclosure.add(rightChamfer);
       }
+
+      // 3. Parametric Window Matrix Bracing Panels
+      if (state.matrixBracing) {
+        const braceCount = 2;
+        const braceSpacing = (h - (t * 2)) / (braceCount + 1);
+        
+        for (let i = 1; i <= braceCount; i++) {
+          const yPos = -h/2 + t + (i * braceSpacing);
+          
+          // Horizontal Matrix Board with asymmetric window cutouts
+          const braceShape = new THREE.Shape();
+          const bw = w - (t * 2);
+          const bd = d - (t * 2);
+          
+          braceShape.moveTo(-bw/2, -bd/2);
+          braceShape.lineTo(bw/2, -bd/2);
+          braceShape.lineTo(bw/2, bd/2);
+          braceShape.lineTo(-bw/2, bd/2);
+          braceShape.closePath();
+
+          // Asymmetric cutout windows
+          const hole1 = new THREE.Path();
+          hole1.absellipse(-bw/4, -bd/4, bw/5, bd/5, 0, Math.PI * 2, true);
+          braceShape.holes.push(hole1);
+
+          const hole2 = new THREE.Path();
+          hole2.absellipse(bw/4, bd/4, bw/6, bd/6, 0, Math.PI * 2, true);
+          braceShape.holes.push(hole2);
+
+          const extrudeSettings = { depth: t, bevelEnabled: false };
+          const braceGeo = new THREE.ExtrudeGeometry(braceShape, extrudeSettings);
+          const braceMesh = new THREE.Mesh(braceGeo, braceMat);
+          braceMesh.rotation.x = Math.PI / 2;
+          braceMesh.position.set(0, yPos, 0);
+          enclosure.add(braceMesh);
+        }
+      }
+
+      // 4. Isolated Midrange / Tweeter Acoustic Chamber
+      if (state.isolatedChamber) {
+        const chamberW = w - (t * 2);
+        const chamberH = 120;
+        const chamberD = 140;
+
+        const chamberGeo = new THREE.BoxGeometry(chamberW, chamberH, chamberD);
+        const chamberMesh = new THREE.Mesh(chamberGeo, braceMat);
+        chamberMesh.position.set(0, h/2 - t - (chamberH/2) - 10, d/2 - (chamberD/2) - t);
+        enclosure.add(chamberMesh);
+      }
+
+      // 5. Driver Cutouts & Cones
+      // Woofer
+      const wooferRadius = 85;
+      const wooferMesh = new THREE.Mesh(new THREE.CylinderGeometry(wooferRadius, wooferRadius*0.7, 40, 32), driverMat);
+      wooferMesh.rotation.x = Math.PI / 2;
+      wooferMesh.position.set(0, -h/6, d/2 + (state.flushMount ? -5 : 10));
+      
+      const wooferCone = new THREE.Mesh(new THREE.ConeGeometry(wooferRadius*0.8, 25, 32), coneMat);
+      wooferCone.rotation.x = -Math.PI / 2;
+      wooferCone.position.set(0, -h/6, d/2 + 10);
+      enclosure.add(wooferMesh, wooferCone);
+
+      // Tweeter
+      const tweeterRadius = 35;
+      const tweeterMesh = new THREE.Mesh(new THREE.CylinderGeometry(tweeterRadius, tweeterRadius*0.8, 20, 32), driverMat);
+      tweeterMesh.rotation.x = Math.PI / 2;
+      tweeterMesh.position.set(0, h/4, d/2 + (state.flushMount ? -2 : 5));
+      enclosure.add(tweeterMesh);
+
+      // Flared Bass Reflex Port Tube
+      const portGeo = new THREE.CylinderGeometry(35, 30, 180, 32);
+      const portMesh = new THREE.Mesh(portGeo, driverMat);
+      portMesh.rotation.x = Math.PI / 2;
+      portMesh.position.set(0, -h/3, -d/2 + 90);
+      enclosure.add(portMesh);
+
+      // Apply Sloped Baffle tilt if active
+      if (state.slopedBaffle) {
+        enclosure.rotation.x = slopeAngle;
+      }
+
+      speakerGroup.add(enclosure);
     }
-  }
-  return best;
-}
 
-function computeEnclosure(driver){
-  const {Fs, Qts, Vas, Xmax, Sd, Re} = driver;
-  const boxType = document.querySelector('#boxTypeSeg button.active').dataset.v;
-  let result = {};
+    function onWindowResize() {
+      const container = document.getElementById('webglContainer');
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    }
 
-  if(boxType==='sealed'){
-    const Qtc = parseFloat($('targetQtc').value);
-    const alpha = Math.pow(Qtc/Qts,2) - 1;
-    const Vb = Vas/Math.max(alpha,0.01);
-    const Fc = Fs*Math.sqrt(1+alpha);
-    const f3 = findF3(f=>sealedMagDb(f,Fc,Qtc), 400, 15);
-    result = {boxType, Vb, Fc, Qtc, f3, plot: f=>sealedMagDb(f,Fc,Qtc)};
-  } else {
-    const sol = solveVented(Fs, Qts, Vas);
-    const Vb = Vas/sol.alpha;
-    const Fb = sol.h*Fs;
-    const f3 = findF3(f=>ventedMagDb(f,Fs,sol.h,sol.alpha,Qts), 400, 10);
-    const portDia = parseFloat($('portDia').value);
-    const portN = parseFloat($('portN').value);
-    // port length formula (Small): Lv(cm) = 23562.5*Dv^2*N / (Vb(L)*Fb^2) - 0.732*Dv
-    const Lv = (23562.5 * portDia*portDia * portN) / (Vb * Fb*Fb) - 0.732*portDia;
-    const portArea = Math.PI*Math.pow(portDia/2,2)*portN;
-    const areaRatio = portArea / Sd; // port area vs cone area
-    result = {boxType, Vb, Fb, f3, ripple:sol.ripple, Lv, portDia, portN, areaRatio, plot: f=>ventedMagDb(f,Fs,sol.h,sol.alpha,Qts)};
-  }
-  return result;
-}
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
 
-function drawChart(plotFn, f3, extra){
-  const svg = $('respChart');
-  const W=640,H=220, padL=36,padR=10,padT=14,padB=24;
-  const fMin=15, fMax=400;
-  const dbMin=-24, dbMax=3;
-  const x = f => padL + (Math.log10(f)-Math.log10(fMin))/(Math.log10(fMax)-Math.log10(fMin)) * (W-padL-padR);
-  const y = db => padT + (dbMax-db)/(dbMax-dbMin) * (H-padT-padB);
+    // --- CNC SVG Cut Sheet Generator ---
+    function exportCncSvg() {
+      const w = state.extW;
+      const h = state.extH;
+      const d = state.extD;
+      const t = state.woodThick;
 
-  let path = '';
-  for(let i=0;i<=120;i++){
-    const f = fMin*Math.pow(fMax/fMin, i/120);
-    const db = Math.max(dbMin, plotFn(f));
-    path += (i===0?'M':'L') + x(f).toFixed(1) + ' ' + y(db).toFixed(1) + ' ';
-  }
+      // Calculate Net Panel Dimensions
+      const sideW = d;
+      const sideH = h;
+      const frontW = w - (2 * t);
+      const frontH = h - (2 * t);
+      const topW = w - (2 * t);
+      const topD = d;
 
-  let gridlines='', labels='';
-  [20,50,100,200].forEach(f=>{
-    gridlines += `<line x1="${x(f)}" y1="${padT}" x2="${x(f)}" y2="${H-padB}" stroke="#2B303C" stroke-width="1"/>`;
-    labels += `<text x="${x(f)}" y="${H-6}" fill="#767C8A" font-family="IBM Plex Mono" font-size="9" text-anchor="middle">${f}</text>`;
-  });
-  [0,-6,-12,-18].forEach(db=>{
-    gridlines += `<line x1="${padL}" y1="${y(db)}" x2="${W-padR}" y2="${y(db)}" stroke="#2B303C" stroke-width="1"/>`;
-    labels += `<text x="${padL-6}" y="${y(db)+3}" fill="#767C8A" font-family="IBM Plex Mono" font-size="9" text-anchor="end">${db}</text>`;
-  });
+      const svgContent = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" style="background:#0f172a; color:#f8fafc; font-family:sans-serif;">
+          <style>
+            .panel { fill: #1e293b; stroke: #6366f1; stroke-width: 2; }
+            .cutout { fill: #0f172a; stroke: #f59e0b; stroke-width: 2; stroke-dasharray: 4; }
+            .text { fill: #94a3b8; font-size: 12px; font-family: monospace; }
+            .title { fill: #f8fafc; font-size: 18px; font-weight: bold; }
+          </style>
 
-  const f3x = x(f3);
-  svg.innerHTML = `
-    ${gridlines}
-    <line x1="${f3x}" y1="${padT}" x2="${f3x}" y2="${H-padB}" stroke="#E8664F" stroke-width="1" stroke-dasharray="3,3"/>
-    <path d="${path}" fill="none" stroke="#E8A33D" stroke-width="2.2"/>
-    ${labels}
-    <text x="${f3x}" y="${padT+10}" fill="#E8664F" font-family="IBM Plex Mono" font-size="9" text-anchor="middle">f3 ${f3.toFixed(0)}Hz</text>
-  `;
-}
+          <text x="30" y="40" class="title">Acoustic3D CNC Flat-Pack Cut Sheet - ${w}x${h}x${d}mm (Stock: ${t}mm)</text>
+          
+          <!-- Side Panel Left -->
+          <g transform="translate(30, 70)">
+            <rect width="${sideW}" height="${sideH}" class="panel" />
+            <text x="10" y="25" class="text">LEFT SIDE (${sideW}x${sideH}mm)</text>
+          </g>
 
-function computeCabinet(Vb, driverSd){
-  const t = parseFloat($('panelThick').value)/1000; // m
-  const ratio = $('ratioMode').value.split(',').map(Number);
-  const VbM3 = Vb/1000; // liters -> m3
-  const k = ratio[0]*ratio[1]*ratio[2];
-  const x = Math.cbrt(VbM3/k);
-  const dims = {w: x*ratio[0], h: x*ratio[1], d: x*ratio[2]};
-  const ext = {w: dims.w+2*t, h: dims.h+2*t, d: dims.d+2*t};
-  return {int:dims, ext, t};
-}
+          <!-- Side Panel Right -->
+          <g transform="translate(${sideW + 50}, 70)">
+            <rect width="${sideW}" height="${sideH}" class="panel" />
+            <text x="10" y="25" class="text">RIGHT SIDE (${sideW}x${sideH}mm)</text>
+          </g>
 
-function renderStat(container, items){
-  container.innerHTML = items.map(([k,v,u,cls])=>
-    `<div class="stat"><div class="k">${k}</div><div class="v ${cls||''}">${v}<span class="u">${u||''}</span></div></div>`
-  ).join('');
-}
+          <!-- Front Baffle with Driver Rebates -->
+          <g transform="translate(${sideW * 2 + 70}, 70)">
+            <rect width="${frontW}" height="${frontH}" class="panel" />
+            <circle cx="${frontW/2}" cy="${frontH * 0.3}" r="35" class="cutout" />
+            <circle cx="${frontW/2}" cy="${frontH * 0.65}" r="85" class="cutout" />
+            <text x="10" y="25" class="text">FRONT BAFFLE (${frontW}x${frontH}mm)</text>
+            <text x="10" y="40" class="text">Dual Rebate Counter-Bores</text>
+          </g>
 
-function driverParams(){
-  return {
-    Fs: parseFloat($('Fs').value), Qts: parseFloat($('Qts').value), Vas: parseFloat($('Vas').value),
-    Xmax: parseFloat($('Xmax').value), Sd: parseFloat($('Sd').value), Re: parseFloat($('Re').value),
-    dia: parseFloat($('dia').value)
-  };
-}
+          <!-- Rear Panel with Port Cutout -->
+          <g transform="translate(30, ${sideH + 100})">
+            <rect width="${frontW}" height="${frontH}" class="panel" />
+            <circle cx="${frontW/2}" cy="${frontH * 0.75}" r="35" class="cutout" />
+            <text x="10" y="25" class="text">REAR PANEL (${frontW}x${frontH}mm)</text>
+          </g>
 
-// ---------- CROSSOVER ----------
-function computeCrossover(driver){
-  if(!$('useTweeter').checked) return;
-  const woofDia = driver.dia/1000; // m
-  const suggestUpper = C_SOUND/(Math.PI*woofDia); // beaming limit
-  const twFs = parseFloat($('twFs').value);
-  const suggestLower = twFs*2.5;
-  $('fcSuggest').textContent = `Suggested range: ${suggestLower.toFixed(0)}–${suggestUpper.toFixed(0)} Hz (above tweeter's safe excursion floor, below woofer beaming)`;
+          <!-- Top/Bottom Panels & Matrix Braces -->
+          <g transform="translate(${frontW + 60}, ${sideH + 100})">
+            <rect width="${topW}" height="${topD}" class="panel" />
+            <text x="10" y="25" class="text">TOP CAP (${topW}x${topD}mm)</text>
 
-  const fc = parseFloat($('fc').value);
-  const order = parseInt($('xoOrder').value);
-  const Zw = driver.Re;
-  const Zt = parseFloat($('twRe').value);
+            <rect y="${topD + 20}" width="${topW}" height="${topD}" class="panel" />
+            <text x="10" y="${topD + 45}" class="text">BOTTOM CAP (${topW}x${topD}mm)</text>
+          </g>
+        </svg>
+      `;
 
-  const table = $('xoTable');
-  let rows = '';
-  if(order===1){
-    const Lw = Zw/(2*Math.PI*fc);
-    const Ct = 1/(2*Math.PI*fc*Zt);
-    rows = `
-      <tr><th>Part</th><th>Driver</th><th>Value</th></tr>
-      <tr><td>Series inductor L1</td><td class="val">Woofer</td><td class="val">${(Lw*1000).toFixed(3)} mH</td></tr>
-      <tr><td>Series capacitor C1</td><td class="val">Tweeter</td><td class="val">${(Ct*1e6).toFixed(2)} µF</td></tr>
-    `;
-  } else {
-    const Lw = (Zw*Math.SQRT2)/(2*Math.PI*fc);
-    const Cw = 1/(2*Math.PI*fc*Zw*Math.SQRT2);
-    const Ct = 1/(2*Math.PI*fc*Zt*Math.SQRT2);
-    const Lt = (Zt*Math.SQRT2)/(2*Math.PI*fc);
-    rows = `
-      <tr><th>Part</th><th>Driver</th><th>Value</th></tr>
-      <tr><td>Series inductor L1</td><td class="val">Woofer</td><td class="val">${(Lw*1000).toFixed(3)} mH</td></tr>
-      <tr><td>Shunt capacitor C1</td><td class="val">Woofer</td><td class="val">${(Cw*1e6).toFixed(2)} µF</td></tr>
-      <tr><td>Series capacitor C2</td><td class="val">Tweeter</td><td class="val">${(Ct*1e6).toFixed(2)} µF</td></tr>
-      <tr><td>Shunt inductor L2</td><td class="val">Tweeter</td><td class="val">${(Lt*1000).toFixed(3)} mH</td></tr>
-    `;
-  }
-  table.innerHTML = rows;
-}
+      const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `speaker_cnc_cutsheet_${w}x${h}x${d}.svg`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
 
-function recalcAll(){
-  computeRoom();
-  const driver = driverParams();
-  const enc = computeEnclosure(driver);
-  drawChart(enc.plot, enc.f3);
+    // --- Event Listeners & Binding ---
+    function setupEvents() {
+      // Inputs
+      ['tsFs', 'tsQts', 'tsVas', 'roomVolume', 'targetSpl'].forEach(id => {
+        document.getElementById(id).addEventListener('input', recalculateAcoustics);
+      });
 
-  if(enc.boxType==='sealed'){
-    renderStat($('boxReadout'), [
-      ['Box volume', fmt(enc.Vb,1), 'L'],
-      ['Fc', fmt(enc.Fc,1), 'Hz'],
-      ['Qtc', fmt(enc.Qtc,2), ''],
-      ['-3dB point', fmt(enc.f3,0), 'Hz', 'teal'],
-    ]);
-    $('boxNote').innerHTML = `Sealed alignment solved directly from target Qtc — this one's exact, no approximation.`;
-  } else {
-    renderStat($('boxReadout'), [
-      ['Box volume', fmt(enc.Vb,1), 'L'],
-      ['Tuning Fb', fmt(enc.Fb,1), 'Hz'],
-      ['Port length', fmt(enc.Lv,1), 'cm'],
-      ['-3dB point', fmt(enc.f3,0), 'Hz', 'teal'],
-    ]);
-    let warn = '';
-    if(enc.Lv < 2){ warn = `<div class="note warn">Solved port is under 2cm long or negative — increase port diameter or use multiple ports; a too-short port isn't physically buildable.</div>`; }
-    else if(enc.areaRatio < 0.10){ warn = `<div class="note warn">Port area is small relative to cone area (${(enc.areaRatio*100).toFixed(0)}%) — risk of port noise ("chuffing") at high excursion. Consider a larger diameter or a second port.</div>`; }
-    $('boxNote').innerHTML = `Numerically solved for the flattest alignment at this driver's Qts (passband ripple ≈ ${fmt(enc.ripple,2)} dB). This ignores box/port air losses — treat as a strong starting point, verify in Hornresp.` + warn;
-  }
+      document.getElementById('driverPreset').addEventListener('change', (e) => {
+        const val = e.target.value;
+        if (presets[val]) {
+          document.getElementById('tsFs').value = presets[val].fs;
+          document.getElementById('tsQts').value = presets[val].qts;
+          document.getElementById('tsVas').value = presets[val].vas;
+          recalculateAcoustics();
+        }
+      });
 
-  const cab = computeCabinet(enc.Vb, driver.Sd);
-  renderStat($('cabReadout'), [
-    ['Internal W', fmt(cab.int.w*100,1), 'cm'],
-    ['Internal H', fmt(cab.int.h*100,1), 'cm'],
-    ['Internal D', fmt(cab.int.d*100,1), 'cm'],
-    ['External W', fmt(cab.ext.w*100,1), 'cm', 'teal'],
-    ['External H', fmt(cab.ext.h*100,1), 'cm', 'teal'],
-    ['External D', fmt(cab.ext.d*100,1), 'cm', 'teal'],
-  ]);
+      document.getElementById('woodThickness').addEventListener('change', (e) => {
+        state.woodThick = parseFloat(e.target.value);
+        recalculateAcoustics();
+      });
 
-  computeCrossover(driver);
+      document.getElementById('baffleEdge').addEventListener('change', (e) => {
+        state.baffleEdge = e.target.value;
+        build3DSpeaker();
+      });
 
-  $('portPlacementField').style.display = enc.boxType==='vented' ? '' : 'none';
-  update3D(cab, driver, enc);
-}
+      ['matrixBracing', 'isolatedChamber', 'slopedBaffle', 'flushMount'].forEach(id => {
+        document.getElementById(id).addEventListener('change', (e) => {
+          state[id] = e.target.checked;
+          build3DSpeaker();
+        });
+      });
 
-recalcAll();
-</script>
+      // View Buttons
+      document.getElementById('viewSolid').addEventListener('click', () => {
+        state.viewMode = 'solid';
+        document.getElementById('viewSolid').className = "bg-indigo-600 text-white py-1.5 rounded font-medium";
+        document.getElementById('viewXray').className = "bg-slate-800 hover:bg-slate-700 text-slate-300 py-1.5 rounded font-medium";
+        build3DSpeaker();
+      });
+
+      document.getElementById('viewXray').addEventListener('click', () => {
+        state.viewMode = 'xray';
+        document.getElementById('viewXray').className = "bg-indigo-600 text-white py-1.5 rounded font-medium";
+        document.getElementById('viewSolid').className = "bg-slate-800 hover:bg-slate-700 text-slate-300 py-1.5 rounded font-medium";
+        build3DSpeaker();
+      });
+
+      document.getElementById('exportSvgBtn').addEventListener('click', exportCncSvg);
+    }
+
+    // --- Initialization ---
+    window.addEventListener('DOMContentLoaded', () => {
+      init3D();
+      setupEvents();
+      recalculateAcoustics();
+    });
+  </script>
 </body>
 </html>
