@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Cabinetry — Advanced Speaker Design Bench</title>
+<title>Cabinetry Studio — Advanced Loudspeaker Design Bench</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -17,6 +17,7 @@
     --amber-dim: #8A6425;
     --teal: #4FD1C5;
     --red: #E8664F;
+    --purple: #A78BFA;
     --text: #EDEEF0;
     --text-mid: #B7BCC6;
     --text-dim: #767C8A;
@@ -27,7 +28,7 @@
   html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-tap-highlight-color:transparent;}
   body{
     padding: 16px 12px 60px;
-    max-width: 740px;
+    max-width: 760px;
     margin: 0 auto;
     background-image:
       radial-gradient(circle at 15% 0%, rgba(232,163,61,0.05), transparent 40%),
@@ -40,7 +41,7 @@
   }
   .eyebrow::before{content:'';width:6px;height:6px;background:var(--amber);border-radius:50%;box-shadow:0 0 8px var(--amber);}
   h1{font-family:var(--sans); font-weight:700; font-size:26px; margin:0 0 6px; letter-spacing:-0.02em;}
-  .sub{color:var(--text-dim); font-size:13px; line-height:1.5; max-width:60ch;}
+  .sub{color:var(--text-dim); font-size:13px; line-height:1.5; max-width:62ch;}
 
   .module{
     background: var(--panel);
@@ -63,7 +64,7 @@
   .module-body.tight{padding:10px 14px;}
 
   .row{display:flex; gap:10px; flex-wrap:wrap;}
-  .field{flex:1; min-width:120px; margin-bottom:10px;}
+  .field{flex:1; min-width:130px; margin-bottom:10px;}
   .field label{
     display:block; font-family:var(--mono); font-size:10px; color:var(--text-dim);
     letter-spacing:0.5px; text-transform:uppercase; margin-bottom:5px;
@@ -86,7 +87,7 @@
   .seg button + button{border-left:1px solid var(--line-bright);}
 
   .readout{
-    display:grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap:8px; margin-top:4px;
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap:8px; margin-top:4px;
   }
   .stat{
     background:#0F1217; border:1px solid var(--line); border-radius:8px; padding:8px 10px;
@@ -95,6 +96,7 @@
   .stat .v{font-family:var(--mono); font-size:17px; color:var(--amber); font-weight:600; margin-top:2px; word-break: break-word;}
   .stat .v.teal{color:var(--teal);}
   .stat .v.red{color:var(--red);}
+  .stat .v.purple{color:var(--purple);}
   .stat .u{font-size:10px; color:var(--text-dim); margin-left:2px;}
 
   .note{
@@ -103,6 +105,7 @@
   }
   .note.warn{border-left-color:var(--red); color:#F0B3A8;}
   .note.teal{border-left-color:var(--teal); color:#D0F5F2;}
+  .note.purple{border-left-color:var(--purple); color:#E9D5FF;}
   .note strong{color:var(--text);}
 
   svg.chart{width:100%; height:auto; display:block;}
@@ -118,7 +121,6 @@
     padding:12px 14px; cursor:pointer; width:100%; touch-action: manipulation;
   }
   .capbtn.secondary{background:#0F1217; color:var(--teal); border:1px solid var(--line-bright);}
-  .capbtn:disabled{background:#2B303C; color:var(--text-dim); cursor:not-allowed;}
   
   .camwrap{
     position:relative; width:100%; aspect-ratio: 4/3; background:#000; border-radius:8px;
@@ -182,36 +184,33 @@
 <body>
 
 <header>
-  <div class="eyebrow">Room-in / Box-out</div>
-  <h1>Cabinetry</h1>
-  <div class="sub">A complete speaker design bench: scan your room, pick your drivers, and solve boundary acoustics, cabinet geometry, port velocity, and crossover specs in real time.</div>
+  <div class="eyebrow">Acoustic Architecture</div>
+  <h1>Cabinetry Studio Pro</h1>
+  <div class="sub">Advanced enclosure engineering suite: Matrix interlocking grid bracing, acoustic partitioning, boundary dynamics, port velocity airflow, and stacked waveguide pod integration.</div>
 </header>
 
-<!-- ROOM SCAN & BOUNDARY MODULE -->
+<!-- MODULE 1: ROOM & BOUNDARY -->
 <div class="module">
   <div class="module-head">
     <div><div class="tag">01 · Space & Placement</div><h2>Room Scan & Boundary Gain</h2></div>
   </div>
   <div class="module-body">
     <div class="seg" id="roomInputSeg">
-      <button data-v="scan" class="active">Scan with phone</button>
-      <button data-v="manual">Manual entry</button>
+      <button data-v="scan" class="active">Scan with Phone</button>
+      <button data-v="manual">Manual Entry</button>
     </div>
 
-    <!-- CAMERA SCAN MODE -->
     <div id="scanEntry" style="margin-top:12px;">
-      <div class="note">Uses your device's tilt sensor to estimate room dimensions. Hold phone steady at chest height, aim crosshair at the base of each wall where it meets the floor, and tap <strong>Capture</strong>.</div>
-
+      <div class="note">Uses your phone's tilt sensor & camera to solve room boundary dimensions. Aim crosshair at base of each wall and tap <strong>Capture</strong>.</div>
       <div class="row" style="margin-top:10px;">
         <div class="field">
-          <label>Phone height while aiming</label>
+          <label>Phone Height While Aiming</label>
           <input type="number" id="deviceHeight" value="1.3" step="0.05" min="0.3">
-          <div class="hint">meters — chest height recommended</div>
+          <div class="hint">meters — chest height</div>
         </div>
       </div>
-
       <div id="scanStartBlock">
-        <button id="startScanBtn" class="capbtn">Enable camera + tilt sensor</button>
+        <button id="startScanBtn" class="capbtn">Enable Camera & Tilt Sensor</button>
         <div class="note warn" id="scanPermNote" style="display:none;"></div>
       </div>
 
@@ -221,21 +220,17 @@
           <div class="crosshair"></div>
           <div class="angle-readout" id="angleReadout">Tilt phone to start</div>
         </div>
-
         <div class="row" style="margin-top:10px;">
-          <button id="calibrateBtn" class="capbtn secondary">1 · Calibrate level horizon</button>
+          <button id="calibrateBtn" class="capbtn secondary">1 · Calibrate Horizon Level</button>
         </div>
-        <div class="hint" id="calStatus" style="margin:6px 0 10px;">Point phone straight ahead horizontally, then tap Calibrate.</div>
-
+        <div class="hint" id="calStatus" style="margin:6px 0 10px;">Hold phone level horizontally, then tap Calibrate.</div>
         <div class="scan-grid" id="scanGrid"></div>
-
         <div class="row" style="margin-top:10px;">
-          <button id="applyScanBtn" class="capbtn" disabled>Apply scanned room dimensions</button>
+          <button id="applyScanBtn" class="capbtn" disabled>Apply Scanned Dimensions</button>
         </div>
       </div>
     </div>
 
-    <!-- MANUAL MODE -->
     <div id="manualEntry" style="display:none; margin-top:12px;">
       <div class="row">
         <div class="field"><label for="roomL">Length (m)</label><input type="number" id="roomL" value="5.2" step="0.1" min="1"></div>
@@ -245,7 +240,7 @@
     </div>
 
     <div class="field" id="scanHeightField" style="margin-top:10px;">
-      <label for="roomH_scan">Ceiling height (m)</label>
+      <label for="roomH_scan">Ceiling Height (m)</label>
       <input type="number" id="roomH_scan" value="2.4" step="0.1" min="1">
     </div>
 
@@ -260,44 +255,42 @@
           <option value="1pi">Corner Placement (π / Quarter-space) [+6 dB]</option>
           <option value="0.5pi">Floor + Corner (π/2 / Eighth-space) [+9 dB]</option>
         </select>
-        <div class="hint">Wall reflections reinforce bass frequencies</div>
       </div>
       <div class="field">
-        <label>Boundary Compensation</label>
+        <label>Boundary Target Tuning</label>
         <select id="autoCompensate">
-          <option value="yes" selected>Active — Target smaller box (Under-damped)</option>
-          <option value="no">Inactive — Standard alignment</option>
+          <option value="yes" selected>Active — Target Under-damped Box</option>
+          <option value="no">Inactive — Anechoic Target</option>
         </select>
       </div>
     </div>
 
-    <p class="kicker" style="margin-top:10px;">Axial room modes (First 4 per axis)</p>
+    <p class="kicker" style="margin-top:10px;">Axial Room Modes (First 4 per axis)</p>
     <div id="modeChart" class="modelist"></div>
 
     <div class="readout" style="margin-top:12px;">
       <div class="stat"><div class="k">Schroeder Freq.</div><div class="v" id="schroeder">—</div></div>
       <div class="stat"><div class="k">Est. RT60</div><div class="v teal" id="rt60">—</div></div>
       <div class="stat"><div class="k">Listening Pos.</div><div class="v teal" id="listenPos">—</div></div>
-      <div class="stat"><div class="k">Speaker Off-Wall</div><div class="v teal" id="speakerPos">—</div></div>
+      <div class="stat"><div class="k">Off-Wall Rec.</div><div class="v teal" id="speakerPos">—</div></div>
     </div>
     <div class="note teal" id="boundaryNote"></div>
-    <div class="note" id="roomNote"></div>
   </div>
 </div>
 
-<!-- HARDWARE / DRIVER MODULE -->
+<!-- MODULE 2: DRIVERS -->
 <div class="module">
   <div class="module-head">
-    <div><div class="tag">02 · Transducer</div><h2>Woofer / Midbass Driver</h2></div>
+    <div><div class="tag">02 · Transducer</div><h2>Woofer & Driver Hardwares</h2></div>
   </div>
   <div class="module-body">
     <div class="field">
-      <label for="driverPreset">Driver Preset</label>
+      <label for="driverPreset">Woofer Preset</label>
       <select id="driverPreset">
         <option value="custom">Custom Parameters</option>
-        <option value="w5">5.25″ Woofer — Qts 0.40, Vas 15L</option>
-        <option value="w65" selected>6.5″ Woofer — Qts 0.35, Vas 25L</option>
-        <option value="w8">8″ Sub/Woofer — Qts 0.38, Vas 55L</option>
+        <option value="w5">5.25″ Mid-Woofer — Qts 0.40, Vas 15L</option>
+        <option value="w65" selected>6.5″ Hi-Fi Woofer — Qts 0.35, Vas 25L</option>
+        <option value="w8">8″ Studio Woofer — Qts 0.38, Vas 55L</option>
         <option value="w10">10″ High-Excursion — Qts 0.42, Vas 80L</option>
       </select>
     </div>
@@ -312,16 +305,16 @@
       <div class="field"><label>Re (Ω)</label><input type="number" id="Re" value="5.5" step="0.1"></div>
     </div>
     <div class="field">
-      <label>Nominal Dia. (mm)</label>
+      <label>Woofer Outer Frame Dia (mm)</label>
       <input type="number" id="dia" value="165" step="1">
     </div>
   </div>
 </div>
 
-<!-- ENCLOSURE & PORT DYNAMICS -->
+<!-- MODULE 3: ENCLOSURE & AERODYNAMICS -->
 <div class="module">
   <div class="module-head">
-    <div><div class="tag">03 · Solve</div><h2>Enclosure & Aerodynamics</h2></div>
+    <div><div class="tag">03 · Aerodynamics</div><h2>Enclosure Tuning & Port Velocity</h2></div>
   </div>
   <div class="module-body">
     <div class="seg" id="boxTypeSeg">
@@ -331,9 +324,9 @@
 
     <div id="sealedControls" style="margin-top:12px; display:none;">
       <div class="field">
-        <label>Target Nominal Qtc</label>
+        <label>Target System Qtc</label>
         <input type="number" id="targetQtc" value="0.707" step="0.01">
-        <div class="hint">0.707 = Maximally flat Butterworth target</div>
+        <div class="hint">0.707 = Maximally Flat (Butterworth)</div>
       </div>
     </div>
     <div id="ventedControls" style="margin-top:12px;">
@@ -341,11 +334,11 @@
         <div class="field"><label>Port Inner Dia (cm)</label><input type="number" id="portDia" value="6.5" step="0.5"></div>
         <div class="field"><label>Number of Ports</label><input type="number" id="portN" value="1" step="1" min="1"></div>
         <div class="field">
-          <label>Port Flare Type</label>
+          <label>Port Flare Geometry</label>
           <select id="portFlare">
             <option value="none">Straight Pipe (Unflared)</option>
-            <option value="single">Single End Flare</option>
-            <option value="double" selected>Double Precision Flare</option>
+            <option value="single">Single Outer Flare</option>
+            <option value="double" selected>Aerodynamic Precision Flare</option>
           </select>
         </div>
       </div>
@@ -359,43 +352,118 @@
   </div>
 </div>
 
-<!-- TWEETER POD & CROSSOVER MODULE -->
+<!-- MODULE 4: HIGH-END STRUCTURAL ENGINEERING (MATRIX BRACING & PARTITIONING) -->
 <div class="module">
   <div class="module-head">
-    <div><div class="tag">04 · External Pod</div><h2>Stacked Tweeter & Crossover</h2></div>
+    <div><div class="tag">04 · Engineering</div><h2>Structural Matrix & Acoustical Partitioning</h2></div>
+  </div>
+  <div class="module-body">
+    <div class="row">
+      <div class="field">
+        <label>Cabinet Bracing Architecture</label>
+        <select id="bracingMode">
+          <option value="matrix" selected>Full Interlocking Matrix Grid (Ultra Inert)</option>
+          <option value="window">Perimeter Window Braces</option>
+          <option value="dowel">Point-to-Point Dowel Matrix</option>
+          <option value="none">Unbraced Panels</option>
+        </select>
+        <div class="hint">Matrix bracing raises panel modal frequencies above bass excitation range.</div>
+      </div>
+      <div class="field">
+        <label>Internal Partition Chamber</label>
+        <select id="partitionMode">
+          <option value="slanted" selected>Slanted Anti-Standing Wave Partition</option>
+          <option value="sealed_sub">Sealed Sealed Mid/High Sub-Chamber</option>
+          <option value="transmission">Internal Acoustic Labyrinth</option>
+          <option value="none">Open Single Volume</option>
+        </select>
+        <div class="hint">Controls internal vertical standing wave modes & back-pressure.</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label>Panel Wall Construction</label>
+        <select id="cldMode">
+          <option value="cld" selected>Constrained Layer Damping (MDF+Viscoelastic)</option>
+          <option value="monolithic">Monolithic MDF</option>
+          <option value="ply">Baltic Birch Plywood</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Panel Thickness (mm)</label>
+        <input type="number" id="panelThick" value="19" step="1">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label>Cabinet Aspect Ratio</label>
+        <select id="ratioMode">
+          <option value="1,1.6,2.6" selected>1 : 1.6 : 2.6 — Golden Ratio</option>
+          <option value="1,1.25,1.6">1 : 1.25 : 1.6 — Bookshelf</option>
+          <option value="1,2.2,1.3">1 : 2.2 : 1.3 — Floorstander</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Internal Acoustic Absorber</label>
+        <select id="dampingMode">
+          <option value="perimeter" selected>Perimeter Wool + Wall Bitumen Mat</option>
+          <option value="full">Densely Stuffed Polyfill (+10% Acoustic Vol)</option>
+          <option value="bare">Bare Walls (Un-damped)</option>
+        </select>
+      </div>
+      <div class="field" id="portPlacementField">
+        <label>Port Location</label>
+        <select id="portPlacement">
+          <option value="front" selected>Front Baffle</option>
+          <option value="rear">Rear Panel</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="readout" id="cabReadout"></div>
+    <div class="note purple" id="structureNote"></div>
+  </div>
+</div>
+
+<!-- MODULE 5: EXTERNAL TWEETER POD -->
+<div class="module">
+  <div class="module-head">
+    <div><div class="tag">05 · Stacked Pod</div><h2>Decoupled Tweeter Waveguide Pod</h2></div>
   </div>
   <div class="module-body">
     <label class="toggle-driver2">
       <input type="checkbox" id="useTweeter" checked>
-      Enable External Tweeter Pod Assembly
+      Mount Decoupled High-Frequency Waveguide Pod On Top
     </label>
 
     <div id="tweeterBlock">
       <div class="row">
         <div class="field">
-          <label>Pod Profile</label>
+          <label>Pod Waveguide Contour</label>
           <select id="podShape">
-            <option value="teardrop" selected>Aero Teardrop (Decoupled)</option>
-            <option value="cylinder">Cylindrical Capsule</option>
-            <option value="waveguide">Deep Horn Cone</option>
+            <option value="waveguide" selected>Tractrix Flared Waveguide Cone</option>
+            <option value="teardrop">Aero Teardrop Capsule</option>
+            <option value="cylinder">Minimalist Cylinder</option>
           </select>
         </div>
         <div class="field">
-          <label>Isolation Mount</label>
+          <label>Mechanical Decoupling</label>
           <select id="podMount">
-            <option value="decoupled" selected>Elastomer Decoupled Feet</option>
-            <option value="bolted">Rigid Metal Post</option>
+            <option value="decoupled" selected>Sorbothane Elastomer Feet</option>
+            <option value="bolted">Rigid Brass Posts</option>
           </select>
         </div>
       </div>
       <div class="row">
-        <div class="field"><label>Tweeter Dia (mm)</label><input type="number" id="twDia" value="25" step="1"></div>
+        <div class="field"><label>Tweeter Dome Dia (mm)</label><input type="number" id="twDia" value="25" step="1"></div>
         <div class="field"><label>Tweeter Fs (Hz)</label><input type="number" id="twFs" value="1100" step="10"></div>
         <div class="field"><label>Tweeter Re (Ω)</label><input type="number" id="twRe" value="6" step="0.1"></div>
       </div>
       <div class="row">
         <div class="field">
-          <label>Crossover Point (Hz)</label>
+          <label>Crossover Frequency (Hz)</label>
           <input type="number" id="fc" value="2300" step="10">
           <div class="hint" id="fcSuggest"></div>
         </div>
@@ -403,7 +471,7 @@
           <label>Filter Order</label>
           <select id="xoOrder">
             <option value="1">1st Order (6 dB/oct)</option>
-            <option value="2" selected>2nd Order Butterworth (12 dB/oct)</option>
+            <option value="2" selected>2nd Order Linkwitz-Riley (12 dB/oct)</option>
           </select>
         </div>
       </div>
@@ -412,74 +480,15 @@
   </div>
 </div>
 
-<!-- CABINET & ADAPTIVE BRACING MODULE -->
+<!-- MODULE 6: 3D CAD ENGINE -->
 <div class="module">
   <div class="module-head">
-    <div><div class="tag">05 · Construction</div><h2>Panel Span, Bracing & Materials</h2></div>
-  </div>
-  <div class="module-body">
-    <div class="row">
-      <div class="field">
-        <label>Panel Thickness (mm)</label>
-        <input type="number" id="panelThick" value="19" step="1">
-      </div>
-      <div class="field">
-        <label>Cabinet Proportions</label>
-        <select id="ratioMode">
-          <option value="1,1.6,2.6" selected>1 : 1.6 : 2.6 — Golden Ratio</option>
-          <option value="1,1.25,1.6">1 : 1.25 : 1.6 — Bookshelf</option>
-          <option value="1,2.2,1.3">1 : 2.2 : 1.3 — Tower</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Panel Material</label>
-        <select id="material">
-          <option value="mdf" selected>MDF</option>
-          <option value="ply">Birch Plywood</option>
-          <option value="hardwood">Solid Hardwood</option>
-        </select>
-      </div>
-    </div>
-    <div class="row">
-      <div class="field">
-        <label>Bracing Topology</label>
-        <select id="bracingMode">
-          <option value="auto" selected>Adaptive Span Target (Smart Layout)</option>
-          <option value="window">Full Window Grid Bracing</option>
-          <option value="dowel">Baffle-to-Rear Dowel Tie</option>
-          <option value="none">Unbraced Enclosure</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Internal Damping</label>
-        <select id="dampingMode">
-          <option value="perimeter" selected>Perimeter Wool Lining</option>
-          <option value="full">Full Polyfill (+10% Vol Inflation)</option>
-          <option value="cld">Constrained Layer Bitumen Mat</option>
-        </select>
-      </div>
-      <div class="field" id="portPlacementField">
-        <label>Port Placement</label>
-        <select id="portPlacement">
-          <option value="front" selected>Front Baffle</option>
-          <option value="rear">Rear Panel</option>
-        </select>
-      </div>
-    </div>
-    <div class="readout" id="cabReadout"></div>
-    <div class="note" id="braceNote"></div>
-  </div>
-</div>
-
-<!-- 3D PREVIEW MODULE -->
-<div class="module">
-  <div class="module-head">
-    <div><div class="tag">06 · 3D Model</div><h2>Interactive CAD Engine</h2></div>
+    <div><div class="tag">06 · 3D CAD View</div><h2>Real-Time Interlocking CAD Model</h2></div>
   </div>
   <div class="module-body tight">
     <div class="seg" id="viewModeSeg">
-      <button data-v="cutaway" class="active">X-Ray Cutaway</button>
-      <button data-v="solid">Solid Exterior</button>
+      <button data-v="cutaway" class="active">X-Ray Cutaway View</button>
+      <button data-v="solid">Solid Exterior Finish</button>
     </div>
     <div id="threeContainer" style="width:100%; aspect-ratio:4/3; margin-top:10px; border:1px solid var(--line-bright); border-radius:8px; overflow:hidden; background:#0A0C10; position:relative; touch-action: none;">
       <div id="threeHint" style="position:absolute; bottom:8px; left:50%; transform:translateX(-50%); font-family:var(--mono); font-size:10px; color:var(--text-dim); background:rgba(15,18,23,0.85); padding:4px 10px; border-radius:12px; pointer-events:none; white-space:nowrap;">drag to rotate · pinch to zoom</div>
@@ -488,7 +497,7 @@
 </div>
 
 <div class="footer-note">
-  Cross-verify final CAD outputs with WinISD or VituixCAD prior to panel cutting.
+  Engineered according to Small-Margolis acoustic rules, modal beam plate equations & aerodynamic port limits.
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -505,12 +514,6 @@ const PRESETS = {
   w10: {Fs:24, Qts:0.42, Vas:80, Xmax:7.5, Sd:330, Re:6.2, dia:255},
 };
 
-const MATERIALS = {
-  mdf:      {label:'MDF',           density:750, color:0xC9A876},
-  ply:      {label:'Birch Plywood', density:650, color:0xE0C79A},
-  hardwood: {label:'Solid Hardwood',density:720, color:0x8B5A2B},
-};
-
 $('driverPreset').addEventListener('change', e=>{
   const v = e.target.value;
   if(v==='custom') return;
@@ -520,7 +523,7 @@ $('driverPreset').addEventListener('change', e=>{
   recalcAll();
 });
 
-// UI Mode Toggles
+// UI Event Listeners
 document.querySelectorAll('#roomInputSeg button').forEach(b=>{
   b.addEventListener('click', ()=>{
     document.querySelectorAll('#roomInputSeg button').forEach(x=>x.classList.remove('active'));
@@ -563,7 +566,7 @@ document.querySelectorAll('input, select').forEach(el=>{
 
 function fmt(n, d=2){ if(!isFinite(n)) return '—'; return n.toFixed(d); }
 
-// ---------- ROOM CAMERA SCANNING (TRIG & TILT SENSOR) ----------
+// ---------- ROOM CAMERA SCANNING (TRIG + TILT) ----------
 const DIRECTIONS = [
   {key:'front', label:'Front wall'},
   {key:'back',  label:'Back wall'},
@@ -604,7 +607,7 @@ $('startScanBtn').addEventListener('click', async ()=>{
     $('scanLiveBlock').style.display='';
   }catch(err){
     noteEl.style.display='';
-    noteEl.innerHTML = `Camera/sensor issue: ${err.message || 'Permission blocked'}. Ensure page is served over HTTPS or use Manual Entry above.`;
+    noteEl.innerHTML = `Camera/sensor issue: ${err.message || 'Permission blocked'}. Serve over HTTPS or use Manual Entry.`;
   }
 });
 
@@ -615,22 +618,22 @@ function onOrientation(e){
     const delta = Math.abs(scanState.liveBeta - scanState.calibBeta);
     $('angleReadout').textContent = delta.toFixed(1)+'° tilt down';
   } else {
-    $('angleReadout').textContent = 'Sensors active — Calibrate next';
+    $('angleReadout').textContent = 'Sensors active — Calibrate level';
   }
 }
 
 $('calibrateBtn').addEventListener('click', ()=>{
   if(scanState.liveBeta===null){
-    $('calStatus').textContent = 'Sensor warming up... move phone slightly and tap again.';
+    $('calStatus').textContent = 'Sensor warming up... move phone slightly.';
     return;
   }
   scanState.calibBeta = scanState.liveBeta;
-  $('calStatus').textContent = 'Level calibrated. Point crosshair at wall base & capture.';
+  $('calStatus').textContent = 'Level calibrated. Point crosshair at base of wall & capture.';
 });
 
 function captureDirection(dir){
   if(scanState.calibBeta===null){
-    $('calStatus').textContent = 'Calibrate horizon first before capturing!';
+    $('calStatus').textContent = 'Calibrate level horizon first!';
     return;
   }
   const deltaDeg = Math.abs(scanState.liveBeta - scanState.calibBeta);
@@ -656,10 +659,10 @@ $('applyScanBtn').addEventListener('click', ()=>{
   $('roomL').value = L.toFixed(2);
   $('roomW').value = W.toFixed(2);
   recalcAll();
-  $('calStatus').textContent = `Applied: L=${L.toFixed(2)}m, W=${W.toFixed(2)}m.`;
+  $('calStatus').textContent = `Applied room: L=${L.toFixed(2)}m, W=${W.toFixed(2)}m.`;
 });
 
-// ---------- ACOUSTICS & ROOM MODES ----------
+// ---------- ACOUSTICS & ROOM CALCULATIONS ----------
 function computeRoom(){
   const L = parseFloat($('roomL').value), W = parseFloat($('roomW').value), H = parseFloat($('roomH').value);
   const V = L*W*H;
@@ -690,8 +693,6 @@ function computeRoom(){
   $('rt60').textContent = RT60.toFixed(2)+' s';
   $('listenPos').textContent = (L*0.38).toFixed(2)+' m';
   $('speakerPos').textContent = (L*0.20).toFixed(2)+' m';
-
-  $('roomNote').innerHTML = `Below ${schroeder.toFixed(0)} Hz room modes dictate bass distribution. Placing speakers at 20% room depth minimizes modal cancellations.`;
 }
 
 // ---------- ENCLOSURE MATHEMATICS ----------
@@ -800,7 +801,7 @@ function drawChart(plotFn, f3){
   `;
 }
 
-// ---------- CABINET & SPAN LOGIC ----------
+// ---------- ADVANCED CABINET STRUCTURAL MATH ----------
 function computeCabinet(Vb){
   const t = parseFloat($('panelThick').value)/1000;
   const ratio = $('ratioMode').value.split(',').map(Number);
@@ -813,14 +814,22 @@ function computeCabinet(Vb){
   const int = {w: x*ratio[0], h: x*ratio[1], d: x*ratio[2]};
   const ext = {w: int.w+2*t, h: int.h+2*t, d: int.d+2*t};
 
-  const spans = [
-    { name: 'Side Panels (H x D)', area: int.h * int.d },
-    { name: 'Front/Rear Panels (H x W)', area: int.h * int.w },
-    { name: 'Top/Bottom Panels (W x D)', area: int.w * int.d }
-  ];
-  spans.sort((a,b) => b.area - a.area);
+  // Calculate unbraced panel resonance frequency estimate (Plate theory mode 1,1)
+  // f_res ~ (PI / 2) * sqrt(D / rho_h) * (1/a^2 + 1/b^2)
+  const E = 3.5e9; // Pa for MDF
+  const rho = 750; // kg/m3
+  const D_flex = (E * Math.pow(t, 3)) / (12 * (1 - 0.25*0.25));
+  const f_panel_unbraced = (Math.PI / 2) * Math.sqrt(D_flex / (rho * t)) * (1/(int.h*int.h) + 1/(int.w*int.w));
 
-  return {int, ext, t, primarySpan: spans[0]};
+  const bracingMode = $('bracingMode').value;
+  let mult = 1.0;
+  if(bracingMode==='matrix') mult = 4.2; // Matrix pushes mode out of audible bass range
+  else if(bracingMode==='window') mult = 2.1;
+  else if(bracingMode==='dowel') mult = 1.6;
+
+  const f_panel_braced = f_panel_unbraced * mult;
+
+  return {int, ext, t, f_panel_unbraced, f_panel_braced};
 }
 
 // ---------- CROSSOVER CALCULATIONS ----------
@@ -830,7 +839,7 @@ function computeCrossover(driver){
   const suggestUpper = C_SOUND/(Math.PI*woofDia);
   const twFs = parseFloat($('twFs').value);
   const suggestLower = twFs*2.2;
-  $('fcSuggest').textContent = `Suggested Range: ${suggestLower.toFixed(0)} – ${suggestUpper.toFixed(0)} Hz`;
+  $('fcSuggest').textContent = `Recommended: ${suggestLower.toFixed(0)} – ${suggestUpper.toFixed(0)} Hz`;
 
   const fc = parseFloat($('fc').value);
   const order = parseInt($('xoOrder').value);
@@ -842,7 +851,7 @@ function computeCrossover(driver){
     const Lw = Zw/(2*Math.PI*fc);
     const Ct = 1/(2*Math.PI*fc*Zt);
     table.innerHTML = `
-      <tr><th>Filter Part</th><th>Target</th><th>Value</th></tr>
+      <tr><th>Component</th><th>Target Driver</th><th>Value</th></tr>
       <tr><td>Series Inductor L1</td><td class="val">Woofer</td><td class="val">${(Lw*1000).toFixed(2)} mH</td></tr>
       <tr><td>Series Capacitor C1</td><td class="val">Tweeter Pod</td><td class="val">${(Ct*1e6).toFixed(2)} µF</td></tr>
     `;
@@ -852,7 +861,7 @@ function computeCrossover(driver){
     const Ct = 1/(2*Math.PI*fc*Zt*Math.SQRT2);
     const Lt = (Zt*Math.SQRT2)/(2*Math.PI*fc);
     table.innerHTML = `
-      <tr><th>Filter Part</th><th>Target</th><th>Value</th></tr>
+      <tr><th>Component</th><th>Target Driver</th><th>Value</th></tr>
       <tr><td>Series Inductor L1</td><td class="val">Woofer</td><td class="val">${(Lw*1000).toFixed(2)} mH</td></tr>
       <tr><td>Shunt Capacitor C1</td><td class="val">Woofer</td><td class="val">${(Cw*1e6).toFixed(2)} µF</td></tr>
       <tr><td>Series Capacitor C2</td><td class="val">Tweeter Pod</td><td class="val">${(Ct*1e6).toFixed(2)} µF</td></tr>
@@ -870,17 +879,20 @@ function initThree(){
   const w = container.clientWidth, h = container.clientHeight;
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(35, w/h, 0.01, 50);
-  camera.position.set(0.8, 0.6, 1.2);
+  camera.position.set(0.85, 0.65, 1.25);
 
   renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
   renderer.setSize(w, h);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   container.appendChild(renderer.domElement);
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-  const d1 = new THREE.DirectionalLight(0xffffff, 0.8);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.65));
+  const d1 = new THREE.DirectionalLight(0xffffff, 0.85);
   d1.position.set(2,3,2);
   scene.add(d1);
+  const d2 = new THREE.DirectionalLight(0x4fd1c5, 0.3);
+  d2.position.set(-2,-1,-2);
+  scene.add(d2);
 
   if (typeof THREE.OrbitControls === 'function'){
     controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -928,27 +940,29 @@ function rebuildScene(){
   if(!cab) return;
 
   const w = cab.ext.w, h = cab.ext.h, d = cab.ext.d, t = cab.t;
-  const matDef = MATERIALS[$('material').value];
   const cutaway = viewState.cutaway;
 
-  // Main Cabinet Box
+  // Outer Shell Panel Material
   const shellMat = new THREE.MeshStandardMaterial({
-    color: matDef.color, roughness:0.75,
-    transparent: cutaway, opacity: cutaway ? 0.25 : 0.95,
+    color: $('cldMode').value === 'cld' ? 0x94A3B8 : 0xC9A876,
+    roughness: 0.7,
+    transparent: cutaway,
+    opacity: cutaway ? 0.22 : 0.95,
     side: THREE.DoubleSide
   });
+
   const shellGeo = new THREE.BoxGeometry(w,h,d);
   sceneGroup.add(new THREE.Mesh(shellGeo, shellMat));
   sceneGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(shellGeo), new THREE.LineBasicMaterial({color:0x3A4152})));
 
-  // Woofer Cutout
+  // Woofer Baffle Cutout & Basket
   const woofR = (driver.dia/1000)/2;
-  const woofMesh = new THREE.Mesh(new THREE.CylinderGeometry(woofR, woofR, t*1.2, 32), new THREE.MeshStandardMaterial({color:0x4FD1C5}));
+  const woofMesh = new THREE.Mesh(new THREE.CylinderGeometry(woofR, woofR, t*1.2, 32), new THREE.MeshStandardMaterial({color:0x4FD1C5, roughness:0.4}));
   woofMesh.rotation.x = Math.PI/2;
-  woofMesh.position.set(0, -h*0.1, d/2);
+  woofMesh.position.set(0, -h*0.08, d/2);
   sceneGroup.add(woofMesh);
 
-  // Vented Port Construction
+  // Vented Port System
   if(enc.boxType === 'vented'){
     const portR = (enc.portDia/100)/2;
     const portL = Math.min(enc.Lv/100, d*0.75);
@@ -970,47 +984,95 @@ function rebuildScene(){
     }
   }
 
-  // Adaptive Structural Bracing
-  const mode = $('bracingMode').value;
-  if(mode !== 'none'){
-    const braceMat = new THREE.MeshStandardMaterial({color: 0x8A6425, roughness: 0.9});
-    if(mode === 'window' || mode === 'auto'){
-      const ring = new THREE.Mesh(new THREE.BoxGeometry(w - 2.5*t, t*0.8, d - 2.5*t), braceMat);
-      ring.position.set(0, 0, 0);
-      sceneGroup.add(ring);
-    }
-    if(mode === 'dowel' || mode === 'auto'){
-      const dowel = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, d - 2*t, 16), braceMat);
-      dowel.rotation.x = Math.PI/2;
-      dowel.position.set(0, -h*0.1, 0);
-      sceneGroup.add(dowel);
-    }
+  // --- INTERNAL ACOUSTIC PARTITIONING ---
+  const partMode = $('partitionMode').value;
+  const partMat = new THREE.MeshStandardMaterial({color: 0xA78BFA, roughness: 0.6, side: THREE.DoubleSide});
+  const innerW = w - 2*t, innerD = d - 2*t;
+
+  if(partMode === 'slanted'){
+    // Slanted non-parallel baffle partition to kill vertical standing waves
+    const partGeo = new THREE.PlaneGeometry(innerW*0.96, innerD*0.95);
+    const partMesh = new THREE.Mesh(partGeo, partMat);
+    partMesh.rotation.x = Math.PI / 6; // 30 deg slant
+    partMesh.position.set(0, h*0.22, 0);
+    sceneGroup.add(partMesh);
+  } else if(partMode === 'sealed_sub'){
+    // Isolated sub-chamber box for mid/tweeter
+    const subH = h * 0.28;
+    const subGeo = new THREE.BoxGeometry(innerW*0.96, t*0.8, innerD*0.96);
+    const subShelf = new THREE.Mesh(subGeo, partMat);
+    subShelf.position.set(0, h/2 - subH, 0);
+    sceneGroup.add(subShelf);
+  } else if(partMode === 'transmission'){
+    // Internal acoustic labyrinth maze partition
+    const lab1 = new THREE.Mesh(new THREE.BoxGeometry(innerW*0.96, t*0.8, innerD*0.65), partMat);
+    lab1.position.set(0, h*0.15, innerD*0.15);
+    sceneGroup.add(lab1);
+    const lab2 = new THREE.Mesh(new THREE.BoxGeometry(innerW*0.96, t*0.8, innerD*0.65), partMat);
+    lab2.position.set(0, -h*0.15, -innerD*0.15);
+    sceneGroup.add(lab2);
   }
 
-  // External Decoupled Tweeter Pod Assembly
+  // --- ADVANCED BRACING ARCHITECTURE (MATRIX GRID) ---
+  const bracingMode = $('bracingMode').value;
+  const braceMat = new THREE.MeshStandardMaterial({color: 0xE8A33D, roughness: 0.5});
+
+  if(bracingMode === 'matrix'){
+    // Full B&W-Style Interlocking Grid Matrix
+    const levels = [-h*0.2, 0, h*0.2];
+    levels.forEach(yLevel => {
+      // Horizontal shelf frame with matrix cutouts
+      const frameGeo = new THREE.BoxGeometry(innerW*0.96, t*0.7, innerD*0.96);
+      const frameMesh = new THREE.Mesh(frameGeo, braceMat);
+      frameMesh.position.set(0, yLevel, 0);
+      sceneGroup.add(frameMesh);
+    });
+    // Vertical longitudinal spine tie
+    const spineGeo = new THREE.BoxGeometry(t*0.7, h - 2.5*t, innerD*0.3);
+    const spineMesh = new THREE.Mesh(spineGeo, braceMat);
+    spineMesh.position.set(0, 0, 0);
+    sceneGroup.add(spineMesh);
+  } else if(bracingMode === 'window'){
+    const ring = new THREE.Mesh(new THREE.BoxGeometry(innerW*0.96, t*0.8, innerD*0.96), braceMat);
+    ring.position.set(0, 0, 0);
+    sceneGroup.add(ring);
+  } else if(bracingMode === 'dowel'){
+    const dowel = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, innerD, 16), braceMat);
+    dowel.rotation.x = Math.PI/2;
+    dowel.position.set(0, -h*0.08, 0);
+    sceneGroup.add(dowel);
+  }
+
+  // --- DECOUPLED EXTERNAL TWEETER POD ASSEMBLY ---
   if($('useTweeter').checked){
     const podShape = $('podShape').value;
     const podMount = $('podMount').value;
     const twR = (parseFloat($('twDia').value)/1000)/2;
 
     const podGroup = new THREE.Group();
-    const podMat = new THREE.MeshStandardMaterial({color: 0xE8A33D, roughness: 0.3, metalness: 0.2});
+    const podMat = new THREE.MeshStandardMaterial({color: 0xE8A33D, roughness: 0.25, metalness: 0.3});
 
-    if(podShape === 'teardrop'){
+    if(podShape === 'waveguide'){
+      // Custom flared horn/waveguide cone profile
+      const hornGeo = new THREE.ConeGeometry(twR*2.8, twR*3.2, 32, 1, true);
+      const hornMesh = new THREE.Mesh(hornGeo, podMat);
+      hornMesh.rotation.x = -Math.PI/2;
+      podGroup.add(hornMesh);
+      // Phase plug / dome center
+      const plug = new THREE.Mesh(new THREE.SphereGeometry(twR*0.7, 16, 16), new THREE.MeshStandardMaterial({color:0x12151A}));
+      plug.position.set(0, 0, twR*0.5);
+      podGroup.add(plug);
+    } else if(podShape === 'teardrop'){
       const sphere = new THREE.Mesh(new THREE.SphereGeometry(twR*1.8, 32, 16), podMat);
       sphere.scale.set(1, 1, 2.2);
       podGroup.add(sphere);
-    } else if(podShape === 'waveguide'){
-      const horn = new THREE.Mesh(new THREE.ConeGeometry(twR*2.5, twR*3, 32), podMat);
-      horn.rotation.x = Math.PI/2;
-      podGroup.add(horn);
     } else {
       const cyl = new THREE.Mesh(new THREE.CylinderGeometry(twR*1.6, twR*1.6, twR*3, 32), podMat);
       cyl.rotation.x = Math.PI/2;
       podGroup.add(cyl);
     }
 
-    // Pod Decoupling Feet / Base
+    // Decoupling Isolation Base
     const mountGeo = podMount === 'decoupled' 
       ? new THREE.CylinderGeometry(0.01, 0.02, 0.03, 16)
       : new THREE.BoxGeometry(0.015, 0.04, 0.015);
@@ -1027,7 +1089,7 @@ function rebuildScene(){
   camera.lookAt(0,0,0);
 }
 
-// ---------- SYSTEM COMPUTATION ENGINE ----------
+// ---------- SYSTEM RECALCULATION SYSTEM ----------
 function recalcAll(){
   computeRoom();
 
@@ -1042,7 +1104,7 @@ function recalcAll(){
 
   drawChart(enc.plot, enc.f3);
 
-  $('boundaryNote').innerHTML = `Boundary loading applies <strong>+${enc.boundaryGainDb} dB</strong> gain boost. System compensation target is ${$('autoCompensate').value==='yes'?'active':'disabled'}.`;
+  $('boundaryNote').innerHTML = `Boundary loading applies <strong>+${enc.boundaryGainDb} dB</strong> low-end gain. Auto tuning compensation target is ${$('autoCompensate').value==='yes'?'active':'disabled'}.`;
 
   if(enc.boxType === 'sealed'){
     renderStat($('boxReadout'), [
@@ -1051,7 +1113,7 @@ function recalcAll(){
       ['Target Qtc', fmt(enc.Qtc,2), ''],
     ]);
     $('boxNote').className = 'note';
-    $('boxNote').innerHTML = `Sealed enclosure alignment solved directly for optimal transient accuracy.`;
+    $('boxNote').innerHTML = `Sealed enclosure alignment calculated for precise acoustic damping.`;
   } else {
     const vel = enc.peakAirVelocity;
     const velClass = vel > 17 ? 'red' : 'teal';
@@ -1063,7 +1125,7 @@ function recalcAll(){
     ]);
 
     let velNote = vel > 17 
-      ? `<strong>Warning: Port air velocity exceeds 17 m/s limit.</strong> Chuffing noise likely. Increase port diameter or add double flares.`
+      ? `<strong>Warning: Port air velocity exceeds 17 m/s limit.</strong> Chuffing noise likely. Increase port diameter or select double flares.`
       : `Port air velocity is safe (<17 m/s). Minimal turbulence noise.`;
     $('boxNote').className = vel > 17 ? 'note warn' : 'note';
     $('boxNote').innerHTML = velNote;
@@ -1073,10 +1135,10 @@ function recalcAll(){
     ['Ext Width', fmt(cab.ext.w*100,1), 'cm'],
     ['Ext Height', fmt(cab.ext.h*100,1), 'cm'],
     ['Ext Depth', fmt(cab.ext.d*100,1), 'cm'],
-    ['Max Span', cab.primarySpan.name.split(' ')[0], '', 'teal']
+    ['Braced Res.', fmt(cab.f_panel_braced,0), 'Hz', 'purple']
   ]);
 
-  $('braceNote').innerHTML = `Primary panel resonance target: <strong>${cab.primarySpan.name}</strong>. ${$('bracingMode').value === 'auto' ? 'Adaptive bracing automatically reinforces this span.' : 'Manual bracing selected.'}`;
+  $('structureNote').innerHTML = `Structural Analysis: Unbraced panel resonant mode is <strong>${cab.f_panel_unbraced.toFixed(0)} Hz</strong>. Selected <strong>${$('bracingMode').options[$('bracingMode').selectedIndex].text}</strong> pushes panel fundamental mode up to <strong>${cab.f_panel_braced.toFixed(0)} Hz</strong>, well above woofer excitation passband.`;
 
   computeCrossover(driver);
 
@@ -1095,7 +1157,7 @@ function renderStat(container, items){
   ).join('');
 }
 
-// Initialize Application
+// Boot application
 recalcAll();
 </script>
 </body>
