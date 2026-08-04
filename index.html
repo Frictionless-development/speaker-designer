@@ -2,296 +2,90 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Cabinetry Studio — Advanced Loudspeaker Design Bench</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artisan Cabinetry — Professional Speaker Design Bench</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg: #12151A;
-    --panel: #1A1E26;
-    --panel-raised: #20242E;
-    --line: #2B303C;
-    --line-bright: #3A4152;
-    --amber: #E8A33D;
-    --amber-dim: #8A6425;
-    --teal: #4FD1C5;
-    --red: #E8664F;
-    --purple: #A78BFA;
-    --text: #EDEEF0;
-    --text-mid: #B7BCC6;
-    --text-dim: #767C8A;
-    --mono: 'IBM Plex Mono', monospace;
-    --sans: 'IBM Plex Sans', sans-serif;
+    --bg:#0F1115;--panel:#161A22;--panel-raised:#1F2430;--line:#2A3140;--line-bright:#3D4659;
+    --amber:#E8A33D;--amber-dim:#8A6425;--teal:#4FD1C5;--red:#E8664F;--wood:#C9A876;
+    --text:#EDEEF0;--text-mid:#B7BCC6;--text-dim:#767C8A;
+    --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-tap-highlight-color:transparent;}
-  body{
-    padding: 16px 12px 60px;
-    max-width: 760px;
-    margin: 0 auto;
-    background-image:
-      radial-gradient(circle at 15% 0%, rgba(232,163,61,0.05), transparent 40%),
-      radial-gradient(circle at 85% 10%, rgba(79,209,197,0.04), transparent 40%);
-  }
-  header{margin-bottom:20px;}
-  .eyebrow{
-    font-family:var(--mono); font-size:11px; letter-spacing:2px; text-transform:uppercase;
-    color:var(--amber); display:flex; align-items:center; gap:8px; margin-bottom:6px;
-  }
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--sans);}
+  body{padding:24px 16px 80px;max-width:760px;margin:0 auto;
+    background-image:radial-gradient(circle at 15% 0%,rgba(232,163,61,0.06),transparent 40%),radial-gradient(circle at 85% 10%,rgba(79,209,197,0.05),transparent 40%);}
+  header{margin-bottom:28px;}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--amber);display:flex;align-items:center;gap:8px;margin-bottom:6px;}
   .eyebrow::before{content:'';width:6px;height:6px;background:var(--amber);border-radius:50%;box-shadow:0 0 8px var(--amber);}
-  h1{font-family:var(--sans); font-weight:700; font-size:26px; margin:0 0 6px; letter-spacing:-0.02em;}
-  .sub{color:var(--text-dim); font-size:13px; line-height:1.5; max-width:62ch;}
-
-  .module{
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    margin-bottom: 16px;
-    overflow: hidden;
-  }
-  .module-head{
-    display:flex; align-items:center; justify-content:space-between;
-    padding: 12px 14px;
-    border-bottom: 1px solid var(--line);
-    background: linear-gradient(180deg, var(--panel-raised), var(--panel));
-  }
-  .module-head .tag{
-    font-family:var(--mono); font-size:10px; letter-spacing:1.5px; color:var(--text-dim); text-transform:uppercase;
-  }
-  .module-head h2{font-size:15px; margin:2px 0 0; font-weight:600;}
-  .module-body{padding:14px;}
-  .module-body.tight{padding:10px 14px;}
-
-  .row{display:flex; gap:10px; flex-wrap:wrap;}
-  .field{flex:1; min-width:130px; margin-bottom:10px;}
-  .field label{
-    display:block; font-family:var(--mono); font-size:10px; color:var(--text-dim);
-    letter-spacing:0.5px; text-transform:uppercase; margin-bottom:5px;
-  }
-  .field .hint{font-size:10px; color:var(--text-dim); margin-top:4px; font-family:var(--mono);}
-  input[type=number], input[type=text], select{
-    width:100%; background:#0F1217; border:1px solid var(--line-bright); color:var(--text);
-    font-family:var(--mono); font-size:14px; padding:10px; border-radius:6px; outline:none;
-    -webkit-appearance: none;
-  }
-  input[type=number]:focus, select:focus{border-color:var(--amber);}
-  select{appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23767C8A'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center;}
-
-  .seg{display:flex; border:1px solid var(--line-bright); border-radius:6px; overflow:hidden;}
-  .seg button{
-    flex:1; background:#0F1217; color:var(--text-mid); border:none; padding:10px 6px;
-    font-family:var(--mono); font-size:11.5px; cursor:pointer; letter-spacing:0.4px;
-  }
-  .seg button.active{background:var(--amber); color:#1A1200; font-weight:600;}
-  .seg button + button{border-left:1px solid var(--line-bright);}
-
-  .readout{
-    display:grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap:8px; margin-top:4px;
-  }
-  .stat{
-    background:#0F1217; border:1px solid var(--line); border-radius:8px; padding:8px 10px;
-  }
-  .stat .k{font-family:var(--mono); font-size:9px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.8px;}
-  .stat .v{font-family:var(--mono); font-size:17px; color:var(--amber); font-weight:600; margin-top:2px; word-break: break-word;}
+  h1{font-family:var(--sans);font-weight:700;font-size:28px;margin:0 0 6px;letter-spacing:-0.02em;}
+  .sub{color:var(--text-dim);font-size:13.5px;line-height:1.5;max-width:60ch;}
+  .module{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin-bottom:14px;overflow:hidden;}
+  .module-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,var(--panel-raised),var(--panel));cursor:pointer;user-select:none;}
+  .module.collapsed .module-head{border-bottom:none;}
+  .module-head .tag{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--text-dim);text-transform:uppercase;}
+  .module-head h2{font-size:15px;margin:2px 0 0;font-weight:600;}
+  .module-head .chev{color:var(--text-dim);font-size:12px;transition:transform .15s ease;margin-left:8px;}
+  .module.collapsed .module-head .chev{transform:rotate(-90deg);}
+  .module-body{padding:16px;}
+  .module-body.tight{padding:12px 16px;}
+  .module.collapsed .module-body{display:none;}
+  .row{display:flex;gap:12px;flex-wrap:wrap;}
+  .field{flex:1;min-width:120px;margin-bottom:12px;}
+  .field label{display:block;font-family:var(--mono);font-size:10.5px;color:var(--text-dim);letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;}
+  .field .hint{font-size:10.5px;color:var(--text-dim);margin-top:4px;font-family:var(--mono);}
+  input[type=number],input[type=text],select{width:100%;background:#0B0D11;border:1px solid var(--line-bright);color:var(--text);
+    font-family:var(--mono);font-size:14px;padding:9px 10px;border-radius:6px;outline:none;}
+  input[type=number]:focus,select:focus{border-color:var(--amber);}
+  select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23767C8A'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+  .seg{display:flex;border:1px solid var(--line-bright);border-radius:6px;overflow:hidden;}
+  .seg button{flex:1;background:#0B0D11;color:var(--text-mid);border:none;padding:9px 8px;font-family:var(--mono);font-size:12px;cursor:pointer;letter-spacing:.4px;}
+  .seg button.active{background:var(--amber);color:#1A1200;font-weight:600;}
+  .seg button+button{border-left:1px solid var(--line-bright);}
+  .readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-top:4px;}
+  .stat{background:#0B0D11;border:1px solid var(--line);border-radius:8px;padding:10px 12px;}
+  .stat .k{font-family:var(--mono);font-size:9.5px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;}
+  .stat .v{font-family:var(--mono);font-size:19px;color:var(--amber);font-weight:600;margin-top:3px;}
   .stat .v.teal{color:var(--teal);}
-  .stat .v.red{color:var(--red);}
-  .stat .v.purple{color:var(--purple);}
-  .stat .u{font-size:10px; color:var(--text-dim); margin-left:2px;}
-
-  .note{
-    font-size:12px; color:var(--text-mid); line-height:1.5; background:#0F1217;
-    border-left:2px solid var(--amber-dim); padding:8px 10px; border-radius:0 6px 6px 0; margin-top:10px;
-  }
-  .note.warn{border-left-color:var(--red); color:#F0B3A8;}
-  .note.teal{border-left-color:var(--teal); color:#D0F5F2;}
-  .note.purple{border-left-color:var(--purple); color:#E9D5FF;}
+  .stat .u{font-size:11px;color:var(--text-dim);margin-left:3px;}
+  .note{font-size:12.5px;color:var(--text-mid);line-height:1.6;background:#0B0D11;border-left:2px solid var(--amber-dim);padding:9px 12px;border-radius:0 6px 6px 0;margin-top:10px;}
+  .note.warn{border-left-color:var(--red);color:#F0B3A8;}
+  .note.good{border-left-color:var(--teal);color:#BFEFEA;}
   .note strong{color:var(--text);}
-
-  svg.chart{width:100%; height:auto; display:block;}
-
-  .divider{border:none; border-top:1px dashed var(--line); margin:12px 0;}
-  .kicker{font-family:var(--mono); font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; margin:0 0 8px;}
-
-  .footer-note{text-align:center; font-size:11px; color:var(--text-dim); margin-top:20px; line-height:1.5;}
-
-  .capbtn{
-    background: var(--amber); color:#1A1200; border:none; border-radius:7px;
-    font-family:var(--mono); font-size:12px; font-weight:700; letter-spacing:0.3px;
-    padding:12px 14px; cursor:pointer; width:100%; touch-action: manipulation;
-  }
-  .capbtn.secondary{background:#0F1217; color:var(--teal); border:1px solid var(--line-bright);}
-  
-  .camwrap{
-    position:relative; width:100%; aspect-ratio: 4/3; background:#000; border-radius:8px;
-    overflow:hidden; border:1px solid var(--line-bright); margin-top: 8px;
-  }
-  .camwrap video{width:100%; height:100%; object-fit:cover;}
-  .crosshair{
-    position:absolute; top:50%; left:50%; width:40px; height:40px; transform:translate(-50%,-50%);
-    border:2px solid var(--amber); border-radius:50%; box-shadow:0 0 0 2000px rgba(0,0,0,0.25);
-    pointer-events:none;
-  }
-  .crosshair::before, .crosshair::after{ content:''; position:absolute; background:var(--amber); }
-  .crosshair::before{ top:50%; left:-8px; right:-8px; height:1px; transform:translateY(-50%);}
-  .crosshair::after{ left:50%; top:-8px; bottom:-8px; width:1px; transform:translateX(-50%);}
-  
-  .angle-readout{
-    position:absolute; bottom:10px; left:50%; transform:translateX(-50%);
-    background:rgba(15,18,23,0.9); color:var(--amber); font-family:var(--mono); font-size:12px;
-    padding:4px 10px; border-radius:20px; border:1px solid var(--line-bright); white-space: nowrap;
-  }
-  .scan-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px;}
-  .cap-item{
-    background:#0F1217; border:1px solid var(--line); border-radius:8px; padding:8px;
-    display:flex; flex-direction:column; gap:4px;
-  }
-  .cap-item .label{font-family:var(--mono); font-size:9.5px; color:var(--text-dim); text-transform:uppercase;}
-  .cap-item .dist{font-family:var(--mono); font-size:15px; color:var(--teal); font-weight:600;}
-  .cap-item button{
-    background:#1A1E26; color:var(--text); border:1px solid var(--line-bright); border-radius:5px;
-    font-family:var(--mono); font-size:11px; padding:8px; cursor:pointer; touch-action: manipulation;
-  }
-  .cap-item.done{border-color:var(--teal);}
-
-  .modelist{display:flex; flex-direction:column; gap:5px; margin-top:6px;}
-  .mode-row{display:flex; align-items:center; gap:6px; font-family:var(--mono); font-size:11px;}
-  .mode-row .ax{width:16px; color:var(--text-dim);}
-  .mode-row .bar{flex:1; height:6px; background:#0F1217; border-radius:3px; position:relative; overflow:hidden;}
-  .mode-row .bar span{position:absolute; top:0; bottom:0; width:3px; background:var(--teal);}
-  .mode-row .f{width:50px; text-anchor:end; text-align:right; color:var(--text-mid);}
-
-  .toggle-driver2{
-    display:flex; align-items:center; gap:8px; font-family:var(--mono); font-size:11.5px; color:var(--text-mid);
-    cursor:pointer; user-select:none; margin-bottom:10px;
-  }
-  .toggle-driver2 input{accent-color:var(--amber); width: 16px; height: 16px;}
-
-  .comp-table{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:11.5px; margin-top:8px;}
-  .comp-table th{text-align:left; font-size:9.5px; color:var(--text-dim); text-transform:uppercase; padding:4px 6px; border-bottom:1px solid var(--line);}
-  .comp-table td{padding:6px; border-bottom:1px solid var(--line); color:var(--text-mid);}
-  .comp-table td.val{color:var(--amber); font-weight:600;}
-  .comp-table tr:last-child td{border-bottom:none;}
-
-  @media (max-width:480px){
-    h1{font-size:22px;}
-    .field{min-width:100%;}
-    .scan-grid{grid-template-columns:1fr 1fr;}
-    .readout{grid-template-columns: 1fr 1fr;}
-  }
+  svg.chart{width:100%;height:auto;display:block;}
+  .divider{border:none;border-top:1px dashed var(--line);margin:14px 0;}
+  .toggle-driver2{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11.5px;color:var(--text-mid);cursor:pointer;user-select:none;margin-bottom:12px;}
+  .toggle-driver2 input{accent-color:var(--amber);}
+  .comp-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12.5px;margin-top:8px;}
+  .comp-table th{text-align:left;font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;padding:4px 8px;border-bottom:1px solid var(--line);}
+  .comp-table td{padding:6px 8px;border-bottom:1px solid var(--line);color:var(--text-mid);}
+  .comp-table td.val{color:var(--amber);font-weight:600;}
+  .legend-row{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:10.5px;color:var(--text-mid);margin-top:10px;}
+  .legend-row span.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;}
+  @media (max-width:420px){h1{font-size:23px;}.stat .v{font-size:17px;}}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="eyebrow">Acoustic Architecture</div>
-  <h1>Cabinetry Studio Pro</h1>
-  <div class="sub">Advanced enclosure engineering suite: Matrix interlocking grid bracing, acoustic partitioning, boundary dynamics, port velocity airflow, and stacked waveguide pod integration.</div>
+  <div class="eyebrow">Acoustic Engineering Workbench</div>
+  <h1>Artisan Speaker Designer</h1>
+  <div class="sub">Engineered schematics for high-end audio enclosures. Calculates T/S parameters, precise cabinet volumes, curved deflectors, matrix internal bracing, wooden horns, and crossover circuits in real time.</div>
 </header>
 
-<!-- MODULE 1: ROOM & BOUNDARY -->
-<div class="module">
-  <div class="module-head">
-    <div><div class="tag">01 · Space & Placement</div><h2>Room Scan & Boundary Gain</h2></div>
-  </div>
+<div class="module" data-module="driver">
+  <div class="module-head"><div><div class="tag">01 · Transducer</div><h2>Woofer / Midbass Selection</h2></div><span class="chev">▾</span></div>
   <div class="module-body">
-    <div class="seg" id="roomInputSeg">
-      <button data-v="scan" class="active">Scan with Phone</button>
-      <button data-v="manual">Manual Entry</button>
-    </div>
-
-    <div id="scanEntry" style="margin-top:12px;">
-      <div class="note">Uses your phone's tilt sensor & camera to solve room boundary dimensions. Aim crosshair at base of each wall and tap <strong>Capture</strong>.</div>
-      <div class="row" style="margin-top:10px;">
-        <div class="field">
-          <label>Phone Height While Aiming</label>
-          <input type="number" id="deviceHeight" value="1.3" step="0.05" min="0.3">
-          <div class="hint">meters — chest height</div>
-        </div>
-      </div>
-      <div id="scanStartBlock">
-        <button id="startScanBtn" class="capbtn">Enable Camera & Tilt Sensor</button>
-        <div class="note warn" id="scanPermNote" style="display:none;"></div>
-      </div>
-
-      <div id="scanLiveBlock" style="display:none;">
-        <div class="camwrap">
-          <video id="camVideo" autoplay playsinline muted></video>
-          <div class="crosshair"></div>
-          <div class="angle-readout" id="angleReadout">Tilt phone to start</div>
-        </div>
-        <div class="row" style="margin-top:10px;">
-          <button id="calibrateBtn" class="capbtn secondary">1 · Calibrate Horizon Level</button>
-        </div>
-        <div class="hint" id="calStatus" style="margin:6px 0 10px;">Hold phone level horizontally, then tap Calibrate.</div>
-        <div class="scan-grid" id="scanGrid"></div>
-        <div class="row" style="margin-top:10px;">
-          <button id="applyScanBtn" class="capbtn" disabled>Apply Scanned Dimensions</button>
-        </div>
-      </div>
-    </div>
-
-    <div id="manualEntry" style="display:none; margin-top:12px;">
-      <div class="row">
-        <div class="field"><label for="roomL">Length (m)</label><input type="number" id="roomL" value="5.2" step="0.1" min="1"></div>
-        <div class="field"><label for="roomW">Width (m)</label><input type="number" id="roomW" value="3.8" step="0.1" min="1"></div>
-        <div class="field"><label for="roomH">Height (m)</label><input type="number" id="roomH" value="2.4" step="0.1" min="1"></div>
-      </div>
-    </div>
-
-    <div class="field" id="scanHeightField" style="margin-top:10px;">
-      <label for="roomH_scan">Ceiling Height (m)</label>
-      <input type="number" id="roomH_scan" value="2.4" step="0.1" min="1">
-    </div>
-
-    <hr class="divider">
-
-    <div class="row">
-      <div class="field">
-        <label>Placement / Boundary Loading</label>
-        <select id="boundaryMode">
-          <option value="4pi">Free Space (4π / Mid-room) [0 dB]</option>
-          <option value="2pi" selected>Near Wall (2π / Half-space) [+3 dB]</option>
-          <option value="1pi">Corner Placement (π / Quarter-space) [+6 dB]</option>
-          <option value="0.5pi">Floor + Corner (π/2 / Eighth-space) [+9 dB]</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Boundary Target Tuning</label>
-        <select id="autoCompensate">
-          <option value="yes" selected>Active — Target Under-damped Box</option>
-          <option value="no">Inactive — Anechoic Target</option>
-        </select>
-      </div>
-    </div>
-
-    <p class="kicker" style="margin-top:10px;">Axial Room Modes (First 4 per axis)</p>
-    <div id="modeChart" class="modelist"></div>
-
-    <div class="readout" style="margin-top:12px;">
-      <div class="stat"><div class="k">Schroeder Freq.</div><div class="v" id="schroeder">—</div></div>
-      <div class="stat"><div class="k">Est. RT60</div><div class="v teal" id="rt60">—</div></div>
-      <div class="stat"><div class="k">Listening Pos.</div><div class="v teal" id="listenPos">—</div></div>
-      <div class="stat"><div class="k">Off-Wall Rec.</div><div class="v teal" id="speakerPos">—</div></div>
-    </div>
-    <div class="note teal" id="boundaryNote"></div>
-  </div>
-</div>
-
-<!-- MODULE 2: DRIVERS -->
-<div class="module">
-  <div class="module-head">
-    <div><div class="tag">02 · Transducer</div><h2>Woofer & Driver Hardwares</h2></div>
-  </div>
-  <div class="module-body">
-    <div class="field">
-      <label for="driverPreset">Woofer Preset</label>
+    <div class="field"><label for="driverPreset">Driver Preset</label>
       <select id="driverPreset">
+        <option value="w65" selected>6.5″ Audiophile Midbass (Qts 0.35, Fs 38Hz)</option>
+        <option value="w8">8″ High-Output Woofer (Qts 0.38, Fs 28Hz)</option>
+        <option value="bcs12">B&C 12″ Professional Woofer (Qts 0.28, Fs 45Hz)</option>
+        <option value="ojas15">OJAS/Altec-Style 15″ High-Efficiency Woofer (Qts 0.27, Fs 30Hz)</option>
         <option value="custom">Custom Parameters</option>
-        <option value="w5">5.25″ Mid-Woofer — Qts 0.40, Vas 15L</option>
-        <option value="w65" selected>6.5″ Hi-Fi Woofer — Qts 0.35, Vas 25L</option>
-        <option value="w8">8″ Studio Woofer — Qts 0.38, Vas 55L</option>
-        <option value="w10">10″ High-Excursion — Qts 0.42, Vas 80L</option>
       </select>
     </div>
     <div class="row">
@@ -304,860 +98,415 @@
       <div class="field"><label>Sd (cm²)</label><input type="number" id="Sd" value="132" step="1"></div>
       <div class="field"><label>Re (Ω)</label><input type="number" id="Re" value="5.5" step="0.1"></div>
     </div>
-    <div class="field">
-      <label>Woofer Outer Frame Dia (mm)</label>
-      <input type="number" id="dia" value="165" step="1">
-    </div>
+    <div class="field" style="max-width:220px;"><label>Nominal Diameter (mm)</label><input type="number" id="dia" value="165" step="1"></div>
   </div>
 </div>
 
-<!-- MODULE 3: ENCLOSURE & AERODYNAMICS -->
-<div class="module">
-  <div class="module-head">
-    <div><div class="tag">03 · Aerodynamics</div><h2>Enclosure Tuning & Port Velocity</h2></div>
-  </div>
+<div class="module" data-module="enclosure">
+  <div class="module-head"><div><div class="tag">02 · Alignment</div><h2>Acoustic Alignment &amp; Response</h2></div><span class="chev">▾</span></div>
   <div class="module-body">
     <div class="seg" id="boxTypeSeg">
       <button data-v="sealed">Sealed</button>
       <button data-v="vented" class="active">Vented (Ported)</button>
+      <button data-v="tline">Transmission Line / Labyrinth</button>
     </div>
-
-    <div id="sealedControls" style="margin-top:12px; display:none;">
-      <div class="field">
-        <label>Target System Qtc</label>
-        <input type="number" id="targetQtc" value="0.707" step="0.01">
-        <div class="hint">0.707 = Maximally Flat (Butterworth)</div>
-      </div>
+    <div id="sealedControls" style="margin-top:14px;display:none;">
+      <div class="field" style="max-width:280px;"><label>Target Qtc</label><input type="number" id="targetQtc" value="0.707" step="0.01"></div>
     </div>
-    <div id="ventedControls" style="margin-top:12px;">
+    <div id="tlineControls" style="margin-top:14px;display:none;">
       <div class="row">
-        <div class="field"><label>Port Inner Dia (cm)</label><input type="number" id="portDia" value="6.5" step="0.5"></div>
-        <div class="field"><label>Number of Ports</label><input type="number" id="portN" value="1" step="1" min="1"></div>
-        <div class="field">
-          <label>Port Flare Geometry</label>
-          <select id="portFlare">
-            <option value="none">Straight Pipe (Unflared)</option>
-            <option value="single">Single Outer Flare</option>
-            <option value="double" selected>Aerodynamic Precision Flare</option>
-          </select>
-        </div>
+        <div class="field"><label>Labyrinth Folds</label><select id="tlFolds"><option value="1">1 (Straight Track)</option><option value="2">2 (S-Fold)</option><option value="3" selected>3 (Triple Labyrinth)</option></select></div>
+        <div class="field"><label>Wooden Deflectors</label><select id="tlDeflectors"><option value="curved" selected>Smooth Curved Wooden Guides</option><option value="angled">45° Angled Wooden Wedges</option></select></div>
       </div>
     </div>
-
     <hr class="divider">
     <svg class="chart" id="respChart" viewBox="0 0 640 220" preserveAspectRatio="xMidYMid meet"></svg>
-
     <div class="readout" id="boxReadout" style="margin-top:6px;"></div>
-    <div class="note" id="boxNote"></div>
   </div>
 </div>
 
-<!-- MODULE 4: HIGH-END STRUCTURAL ENGINEERING (MATRIX BRACING & PARTITIONING) -->
-<div class="module">
-  <div class="module-head">
-    <div><div class="tag">04 · Engineering</div><h2>Structural Matrix & Acoustical Partitioning</h2></div>
-  </div>
+<div class="module" id="portModule" data-module="port">
+  <div class="module-head"><div><div class="tag">03 · Airflow</div><h2 id="portModuleTitle">Wooden Vent / Slot Port</h2></div><span class="chev">▾</span></div>
   <div class="module-body">
     <div class="row">
-      <div class="field">
-        <label>Cabinet Bracing Architecture</label>
-        <select id="bracingMode">
-          <option value="matrix" selected>Full Interlocking Matrix Grid (Ultra Inert)</option>
-          <option value="window">Perimeter Window Braces</option>
-          <option value="dowel">Point-to-Point Dowel Matrix</option>
-          <option value="none">Unbraced Panels</option>
-        </select>
-        <div class="hint">Matrix bracing raises panel modal frequencies above bass excitation range.</div>
-      </div>
-      <div class="field">
-        <label>Internal Partition Chamber</label>
-        <select id="partitionMode">
-          <option value="slanted" selected>Slanted Anti-Standing Wave Partition</option>
-          <option value="sealed_sub">Sealed Sealed Mid/High Sub-Chamber</option>
-          <option value="transmission">Internal Acoustic Labyrinth</option>
-          <option value="none">Open Single Volume</option>
-        </select>
-        <div class="hint">Controls internal vertical standing wave modes & back-pressure.</div>
-      </div>
+      <div class="field"><label>Port Type</label><select id="portType"><option value="slot" selected>Built-in Wooden Slot Port</option><option value="tube">Precision Cylindrical Duct</option></select></div>
+      <div class="field"><label>Port Placement</label><select id="portPlacement"><option value="front" selected>Front Baffle (Direct)</option><option value="rear">Rear Panel</option></select></div>
     </div>
-
     <div class="row">
-      <div class="field">
-        <label>Panel Wall Construction</label>
-        <select id="cldMode">
-          <option value="cld" selected>Constrained Layer Damping (MDF+Viscoelastic)</option>
-          <option value="monolithic">Monolithic MDF</option>
-          <option value="ply">Baltic Birch Plywood</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Panel Thickness (mm)</label>
-        <input type="number" id="panelThick" value="19" step="1">
-      </div>
+      <div class="field"><label>Width / Diameter (cm)</label><input type="number" id="portDia" value="7" step="0.5"></div>
+      <div class="field"><label>Airflow Radius / Flare</label><select id="portFlare"><option value="none">Straight Cut</option><option value="flared" selected>Aerodynamic Wooden Radius</option></select></div>
     </div>
+    <div class="readout" id="portReadout"></div>
+  </div>
+</div>
 
+<div class="module" data-module="cabinet">
+  <div class="module-head"><div><div class="tag">04 · Architecture</div><h2>Cabinet Dimensions &amp; Style</h2></div><span class="chev">▾</span></div>
+  <div class="module-body">
     <div class="row">
-      <div class="field">
-        <label>Cabinet Aspect Ratio</label>
+      <div class="field"><label>Panel Thickness (mm)</label><input type="number" id="panelThick" value="19" step="1"></div>
+      <div class="field"><label>Cabinet Style</label>
         <select id="ratioMode">
-          <option value="1,1.6,2.6" selected>1 : 1.6 : 2.6 — Golden Ratio</option>
-          <option value="1,1.25,1.6">1 : 1.25 : 1.6 — Bookshelf</option>
-          <option value="1,2.2,1.3">1 : 2.2 : 1.3 — Floorstander</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Internal Acoustic Absorber</label>
-        <select id="dampingMode">
-          <option value="perimeter" selected>Perimeter Wool + Wall Bitumen Mat</option>
-          <option value="full">Densely Stuffed Polyfill (+10% Acoustic Vol)</option>
-          <option value="bare">Bare Walls (Un-damped)</option>
-        </select>
-      </div>
-      <div class="field" id="portPlacementField">
-        <label>Port Location</label>
-        <select id="portPlacement">
-          <option value="front" selected>Front Baffle</option>
-          <option value="rear">Rear Panel</option>
+          <option value="compact" selected>Artisan Stand-Mount Monitor</option>
+          <option value="tower">Floorstanding Tower</option>
+          <option value="wideHorn">OJAS / Vintage Wide-Baffle Horn Style</option>
         </select>
       </div>
     </div>
-
     <div class="readout" id="cabReadout"></div>
-    <div class="note purple" id="structureNote"></div>
   </div>
 </div>
 
-<!-- MODULE 5: EXTERNAL TWEETER POD -->
-<div class="module">
-  <div class="module-head">
-    <div><div class="tag">05 · Stacked Pod</div><h2>Decoupled Tweeter Waveguide Pod</h2></div>
-  </div>
+<div class="module" data-module="materials">
+  <div class="module-head"><div><div class="tag">05 · Internal Airflow &amp; Bracing</div><h2>Woodwork Matrix &amp; Chamber Dividers</h2></div><span class="chev">▾</span></div>
   <div class="module-body">
-    <label class="toggle-driver2">
-      <input type="checkbox" id="useTweeter" checked>
-      Mount Decoupled High-Frequency Waveguide Pod On Top
-    </label>
-
-    <div id="tweeterBlock">
-      <div class="row">
-        <div class="field">
-          <label>Pod Waveguide Contour</label>
-          <select id="podShape">
-            <option value="waveguide" selected>Tractrix Flared Waveguide Cone</option>
-            <option value="teardrop">Aero Teardrop Capsule</option>
-            <option value="cylinder">Minimalist Cylinder</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Mechanical Decoupling</label>
-          <select id="podMount">
-            <option value="decoupled" selected>Sorbothane Elastomer Feet</option>
-            <option value="bolted">Rigid Brass Posts</option>
-          </select>
-        </div>
+    <div class="row">
+      <div class="field"><label>Timber Construction</label><select id="material"><option value="ply" selected>Baltic Birch Plywood</option><option value="hardwood">Solid Walnut / Hardwood</option><option value="mdf">High-Density MDF</option></select></div>
+      <div class="field"><label>Internal Airflow Bracing</label>
+        <select id="bracing">
+          <option value="matrix" selected>Wooden Matrix (Window Cutout Lattice)</option>
+          <option value="hbrace">H-Frame Perimeter Brace</option>
+          <option value="solid">Solid Windowed Panel Brace</option>
+        </select>
       </div>
-      <div class="row">
-        <div class="field"><label>Tweeter Dome Dia (mm)</label><input type="number" id="twDia" value="25" step="1"></div>
-        <div class="field"><label>Tweeter Fs (Hz)</label><input type="number" id="twFs" value="1100" step="10"></div>
-        <div class="field"><label>Tweeter Re (Ω)</label><input type="number" id="twRe" value="6" step="0.1"></div>
-      </div>
-      <div class="row">
-        <div class="field">
-          <label>Crossover Frequency (Hz)</label>
-          <input type="number" id="fc" value="2300" step="10">
-          <div class="hint" id="fcSuggest"></div>
-        </div>
-        <div class="field">
-          <label>Filter Order</label>
-          <select id="xoOrder">
-            <option value="1">1st Order (6 dB/oct)</option>
-            <option value="2" selected>2nd Order Linkwitz-Riley (12 dB/oct)</option>
-          </select>
-        </div>
-      </div>
-      <table class="comp-table" id="xoTable"></table>
+    </div>
+    <div class="row">
+      <div class="field"><label>Chamber Separation</label><select id="chamberDivider"><option value="solid" selected>Solid Wooden Divider Wall (Acoustic Isolation)</option><option value="none">Open Single Chamber</option></select></div>
+      <div class="field"><label>Rear Driver Chamfer</label><select id="chamfer"><option value="chamfer" selected>45° Router Chamfer (Airflow Unrestricted)</option><option value="none">Square Cut</option></select></div>
     </div>
   </div>
 </div>
 
-<!-- MODULE 6: 3D CAD ENGINE -->
-<div class="module">
-  <div class="module-head">
-    <div><div class="tag">06 · 3D CAD View</div><h2>Real-Time Interlocking CAD Model</h2></div>
+<div class="module" data-module="tweeter">
+  <div class="module-head"><div><div class="tag">06 · High-Frequency Section</div><h2>Tweeter Horn &amp; Wooden Cones</h2></div><span class="chev">▾</span></div>
+  <div class="module-body">
+    <div class="field"><label>High-Frequency Module Style</label>
+      <select id="twMount">
+        <option value="woodHorn">OJAS-Style Solid Wooden Horn Cone (Top Mounted)</option>
+        <option value="flush" selected>Flush Baffle Mount</option>
+        <option value="pod">Decoupled External Top Pod</option>
+      </select>
+    </div>
+    <div class="row">
+      <div class="field"><label>Tweeter Diameter (mm)</label><input type="number" id="twDia" value="25" step="1"></div>
+      <div class="field"><label>Sub-Chamber Volume (L)</label><input type="number" id="twChamberVol" value="0.25" step="0.05"></div>
+    </div>
   </div>
+</div>
+
+<div class="module" data-module="crossover">
+  <div class="module-head"><div><div class="tag">07 · Filter Design</div><h2>2-Way Passive Crossover Schematic</h2></div><span class="chev">▾</span></div>
+  <div class="module-body">
+    <div class="row">
+      <div class="field"><label>Crossover Point (Hz)</label><input type="number" id="fc" value="2200" step="50"></div>
+      <div class="field"><label>Filter Slope</label><select id="xoOrder"><option value="2" selected>2nd Order Linkwitz-Riley (12 dB/oct)</option><option value="1">1st Order Butterworth (6 dB/oct)</option></select></div>
+    </div>
+    <table class="comp-table" id="xoTable"></table>
+  </div>
+</div>
+
+<div class="module" data-module="preview">
+  <div class="module-head"><div><div class="tag">08 · 3D Structural CAD</div><h2>Schematic &amp; Airflow Visualizer</h2></div><span class="chev">▾</span></div>
   <div class="module-body tight">
     <div class="seg" id="viewModeSeg">
       <button data-v="cutaway" class="active">X-Ray Cutaway View</button>
-      <button data-v="solid">Solid Exterior Finish</button>
+      <button data-v="solid">Solid Enclosure Exterior</button>
     </div>
-    <div id="threeContainer" style="width:100%; aspect-ratio:4/3; margin-top:10px; border:1px solid var(--line-bright); border-radius:8px; overflow:hidden; background:#0A0C10; position:relative; touch-action: none;">
-      <div id="threeHint" style="position:absolute; bottom:8px; left:50%; transform:translateX(-50%); font-family:var(--mono); font-size:10px; color:var(--text-dim); background:rgba(15,18,23,0.85); padding:4px 10px; border-radius:12px; pointer-events:none; white-space:nowrap;">drag to rotate · pinch to zoom</div>
+    <div id="threeContainer" style="width:100%;aspect-ratio:4/3;margin-top:12px;border:1px solid var(--line-bright);border-radius:8px;overflow:hidden;background:#080A0D;position:relative;"></div>
+    <div class="legend-row">
+      <span><span class="dot" style="background:#C9A876;"></span>Timber Shell</span>
+      <span><span class="dot" style="background:#4FD1C5;"></span>Woofer Unit</span>
+      <span><span class="dot" style="background:#E8A33D;"></span>Wooden Horn Cone / Tweeter</span>
+      <span><span class="dot" style="background:#2B303C;"></span>Windowed Matrix Brace</span>
+      <span><span class="dot" style="background:#7AA2E8;"></span>Chamber Divider</span>
+      <span><span class="dot" style="background:#E8664F;"></span>Airflow Deflector / Slot Port</span>
     </div>
   </div>
-</div>
-
-<div class="footer-note">
-  Engineered according to Small-Margolis acoustic rules, modal beam plate equations & aerodynamic port limits.
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js"></script>
-
 <script>
 const $ = id => document.getElementById(id);
-const C_SOUND = 343; // m/s
+const C_SOUND = 343;
+
+document.querySelectorAll('.module-head').forEach(h=>h.addEventListener('click', ()=>h.closest('.module').classList.toggle('collapsed')));
 
 const PRESETS = {
-  w5:  {Fs:45, Qts:0.40, Vas:15, Xmax:4.0, Sd:90,  Re:6.0, dia:133},
-  w65: {Fs:38, Qts:0.35, Vas:25, Xmax:4.5, Sd:132, Re:5.5, dia:165},
-  w8:  {Fs:28, Qts:0.38, Vas:55, Xmax:6.0, Sd:210, Re:5.8, dia:200},
-  w10: {Fs:24, Qts:0.42, Vas:80, Xmax:7.5, Sd:330, Re:6.2, dia:255},
+  w65:{Fs:38,Qts:0.35,Vas:25,Xmax:4.5,Sd:132,Re:5.5,dia:165},
+  w8:{Fs:28,Qts:0.38,Vas:55,Xmax:6.0,Sd:210,Re:5.8,dia:200},
+  bcs12:{Fs:45,Qts:0.28,Vas:75,Xmax:8.0,Sd:522,Re:5.1,dia:310},
+  ojas15:{Fs:30,Qts:0.27,Vas:220,Xmax:5.0,Sd:855,Re:6.2,dia:385}
 };
 
 $('driverPreset').addEventListener('change', e=>{
-  const v = e.target.value;
-  if(v==='custom') return;
-  const p = PRESETS[v];
-  $('Fs').value=p.Fs; $('Qts').value=p.Qts; $('Vas').value=p.Vas;
-  $('Xmax').value=p.Xmax; $('Sd').value=p.Sd; $('Re').value=p.Re; $('dia').value=p.dia;
+  const p = PRESETS[e.target.value];
+  if(!p) return;
+  $('Fs').value=p.Fs; $('Qts').value=p.Qts; $('Vas').value=p.Vas; $('Xmax').value=p.Xmax; $('Sd').value=p.Sd; $('Re').value=p.Re; $('dia').value=p.dia;
   recalcAll();
 });
-
-// UI Event Listeners
-document.querySelectorAll('#roomInputSeg button').forEach(b=>{
-  b.addEventListener('click', ()=>{
-    document.querySelectorAll('#roomInputSeg button').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');
-    const scanMode = b.dataset.v==='scan';
-    $('scanEntry').style.display = scanMode ? '' : 'none';
-    $('manualEntry').style.display = scanMode ? 'none' : '';
-    $('scanHeightField').style.display = scanMode ? '' : 'none';
-  });
-});
-$('roomH_scan').addEventListener('input', ()=>{ $('roomH').value = $('roomH_scan').value; recalcAll(); });
 
 document.querySelectorAll('#boxTypeSeg button').forEach(b=>{
   b.addEventListener('click', ()=>{
     document.querySelectorAll('#boxTypeSeg button').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
-    $('sealedControls').style.display = b.dataset.v==='sealed' ? '' : 'none';
-    $('ventedControls').style.display = b.dataset.v==='vented' ? '' : 'none';
+    const v = b.dataset.v;
+    $('sealedControls').style.display = v==='sealed' ? '' : 'none';
+    $('tlineControls').style.display = v==='tline' ? '' : 'none';
     recalcAll();
   });
 });
 
+document.querySelectorAll('input, select').forEach(el=>el.addEventListener('input', recalcAll));
+
+function fmt(n,d=1){ return isFinite(n) ? n.toFixed(d) : '—'; }
+function renderStat(container, items){
+  container.innerHTML = items.map(([k,v,u,cls])=>`<div class="stat"><div class="k">${k}</div><div class="v ${cls||''}">${v}<span class="u">${u||''}</span></div></div>`).join('');
+}
+
+// ACOUSTIC FORMULAS
+function sealedMagDb(f,Fc,Qtc){ const O=f/Fc; return 10*Math.log10(Math.pow(O,4)/(Math.pow(O*O-1,2)+(O*O)/(Qtc*Qtc))); }
+function ventedMagDb(f,Fs,h,alpha,Qts){
+  const O=f/Fs;
+  const t1 = Math.pow(O,4)-(1+alpha+h*h)*O*O+h*h;
+  const t2 = (O*O/(Qts*Qts))*Math.pow(O*O-h*h,2);
+  return 10*Math.log10(Math.pow(O,8)/Math.max(t1*t1+t2,1e-12));
+}
+
+function computeEnclosure(driver){
+  const {Fs,Qts,Vas} = driver;
+  const boxType = document.querySelector('#boxTypeSeg button.active').dataset.v;
+  if(boxType==='sealed'){
+    const Qtc = parseFloat($('targetQtc').value);
+    const alpha = Math.pow(Qtc/Qts,2)-1;
+    const Vb = Vas/Math.max(alpha,0.01);
+    const Fc = Fs*Math.sqrt(1+alpha);
+    return {boxType,Vb,Fc,Qtc,f3:Fc*0.9,plot:f=>sealedMagDb(f,Fc,Qtc)};
+  } else if(boxType==='vented'){
+    const alpha = 0.8 / Math.pow(Qts, 2);
+    const Vb = Vas / alpha;
+    const Fb = Fs * Math.pow(Vas/Vb, 0.31);
+    const portDia = parseFloat($('portDia').value);
+    const Lv = (23562.5*portDia*portDia)/(Vb*Fb*Fb) - 0.732*portDia;
+    return {boxType,Vb,Fb,f3:Fb*0.92,Lv:Math.max(Lv, 3),plot:f=>ventedMagDb(f,Fs,Fb/Fs,alpha,Qts)};
+  } else {
+    const Ltl = C_SOUND/(4*Fs);
+    const folds = parseInt($('tlFolds').value);
+    return {boxType,Ltl,folds,f3:Fs*0.7,Vb:Vas*0.95,plot:f=>sealedMagDb(f,Fs*1.1,0.6)};
+  }
+}
+
+function drawChart(plotFn,f3){
+  const svg=$('respChart');
+  const W=640,H=220,padL=36,padR=10,padT=14,padB=24,fMin=15,fMax=400,dbMin=-24,dbMax=10;
+  const x=f=>padL+(Math.log10(f)-Math.log10(fMin))/(Math.log10(fMax)-Math.log10(fMin))*(W-padL-padR);
+  const y=db=>padT+(dbMax-db)/(dbMax-dbMin)*(H-padT-padB);
+  let path='';
+  for(let i=0;i<=120;i++){
+    const f=fMin*Math.pow(fMax/fMin,i/120);
+    const db=Math.max(dbMin,plotFn(f));
+    path += (i===0?'M':'L')+x(f).toFixed(1)+' '+y(db).toFixed(1)+' ';
+  }
+  let gridlines='',labels='';
+  [20,50,100,200].forEach(f=>{
+    gridlines += `<line x1="${x(f)}" y1="${padT}" x2="${x(f)}" y2="${H-padB}" stroke="#2A3140" stroke-width="1"/>`;
+    labels += `<text x="${x(f)}" y="${H-6}" fill="#767C8A" font-family="IBM Plex Mono" font-size="9" text-anchor="middle">${f}Hz</text>`;
+  });
+  const f3x=x(f3);
+  svg.innerHTML = `${gridlines}<path d="${path}" fill="none" stroke="#E8A33D" stroke-width="2.2"/>
+    <line x1="${f3x}" y1="${padT}" x2="${f3x}" y2="${H-padB}" stroke="#E8664F" stroke-width="1" stroke-dasharray="3,3"/>
+    <text x="${f3x}" y="${padT+10}" fill="#E8664F" font-family="IBM Plex Mono" font-size="9" text-anchor="middle">f3: ${f3.toFixed(0)}Hz</text>${labels}`;
+}
+
+const CAB_FAMILIES = {
+  compact:{w:1, h:1.65, d:1.2},
+  tower:{w:1, h:3.1, d:1.25},
+  wideHorn:{w:1.45, h:1.8, d:0.85}
+};
+
+function computeCabinet(Vb, driver){
+  const t = parseFloat($('panelThick').value)/1000;
+  const r = CAB_FAMILIES[$('ratioMode').value];
+  const VbM3 = Math.max(Vb, 5)/1000;
+  const k = r.w*r.h*r.d;
+  const x = Math.cbrt(VbM3/k);
+  let dims = {w:x*r.w, h:x*r.h, d:x*r.d};
+  
+  const minW = (driver.dia/1000) + 0.05;
+  if(dims.w < minW) dims.w = minW;
+
+  return {int:dims, ext:{w:dims.w+2*t, h:dims.h+2*t, d:dims.d+2*t}, t};
+}
+
+function computeCrossover(){
+  const fc = parseFloat($('fc').value);
+  const Re = parseFloat($('Re').value);
+  const L = (Re * Math.SQRT2) / (2 * Math.PI * fc);
+  const C = 1 / (2 * Math.PI * fc * Re * Math.SQRT2);
+  $('xoTable').innerHTML = `<tr><th>Part</th><th>Type</th><th>Calculated Value</th></tr>
+    <tr><td>Woofer Series Inductor (L1)</td><td>Low Pass Filter</td><td class="val">${(L*1000).toFixed(2)} mH</td></tr>
+    <tr><td>Tweeter Series Capacitor (C1)</td><td>High Pass Filter</td><td class="val">${(C*1e6).toFixed(2)} µF</td></tr>`;
+}
+
+// THREE.JS Visualizer
+let scene, camera, renderer, controls, sceneGroup;
+const viewState = {cutaway:true};
+
 document.querySelectorAll('#viewModeSeg button').forEach(b=>{
   b.addEventListener('click', ()=>{
     document.querySelectorAll('#viewModeSeg button').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');
-    viewState.cutaway = b.dataset.v==='cutaway';
-    rebuildScene();
+    b.classList.add('active'); viewState.cutaway = b.dataset.v==='cutaway'; rebuildScene();
   });
 });
-
-$('useTweeter').addEventListener('change', ()=>{
-  $('tweeterBlock').style.display = $('useTweeter').checked ? '' : 'none';
-  recalcAll();
-});
-
-document.querySelectorAll('input, select').forEach(el=>{
-  el.addEventListener('input', recalcAll);
-});
-
-function fmt(n, d=2){ if(!isFinite(n)) return '—'; return n.toFixed(d); }
-
-// ---------- ROOM CAMERA SCANNING (TRIG + TILT) ----------
-const DIRECTIONS = [
-  {key:'front', label:'Front wall'},
-  {key:'back',  label:'Back wall'},
-  {key:'left',  label:'Left wall'},
-  {key:'right', label:'Right wall'},
-];
-const scanState = { calibBeta: null, liveBeta: null, captures: {} };
-
-function buildScanGrid(){
-  const grid = $('scanGrid');
-  grid.innerHTML = DIRECTIONS.map(d => `
-    <div class="cap-item" id="cap-${d.key}">
-      <div class="label">${d.label}</div>
-      <div class="dist" id="dist-${d.key}">not captured</div>
-      <button data-dir="${d.key}" class="capdirbtn">Capture</button>
-    </div>
-  `).join('');
-  grid.querySelectorAll('.capdirbtn').forEach(btn=>{
-    btn.addEventListener('click', ()=>captureDirection(btn.dataset.dir));
-  });
-}
-buildScanGrid();
-
-$('startScanBtn').addEventListener('click', async ()=>{
-  const noteEl = $('scanPermNote');
-  noteEl.style.display='none';
-  try{
-    const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}, audio:false});
-    $('camVideo').srcObject = stream;
-
-    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function'){
-      const perm = await DeviceOrientationEvent.requestPermission();
-      if(perm !== 'granted') throw new Error('Motion sensor permission denied.');
-    }
-    window.addEventListener('deviceorientation', onOrientation, true);
-
-    $('scanStartBlock').style.display='none';
-    $('scanLiveBlock').style.display='';
-  }catch(err){
-    noteEl.style.display='';
-    noteEl.innerHTML = `Camera/sensor issue: ${err.message || 'Permission blocked'}. Serve over HTTPS or use Manual Entry.`;
-  }
-});
-
-function onOrientation(e){
-  if(e.beta===null || e.beta===undefined) return;
-  scanState.liveBeta = e.beta;
-  if(scanState.calibBeta!==null){
-    const delta = Math.abs(scanState.liveBeta - scanState.calibBeta);
-    $('angleReadout').textContent = delta.toFixed(1)+'° tilt down';
-  } else {
-    $('angleReadout').textContent = 'Sensors active — Calibrate level';
-  }
-}
-
-$('calibrateBtn').addEventListener('click', ()=>{
-  if(scanState.liveBeta===null){
-    $('calStatus').textContent = 'Sensor warming up... move phone slightly.';
-    return;
-  }
-  scanState.calibBeta = scanState.liveBeta;
-  $('calStatus').textContent = 'Level calibrated. Point crosshair at base of wall & capture.';
-});
-
-function captureDirection(dir){
-  if(scanState.calibBeta===null){
-    $('calStatus').textContent = 'Calibrate level horizon first!';
-    return;
-  }
-  const deltaDeg = Math.abs(scanState.liveBeta - scanState.calibBeta);
-  const deltaRad = deltaDeg * Math.PI/180;
-  const h = parseFloat($('deviceHeight').value);
-  if(deltaDeg < 3){
-    $(`dist-${dir}`).textContent = 'tilt lower';
-    return;
-  }
-  const dist = h / Math.tan(deltaRad);
-  scanState.captures[dir] = dist;
-  $(`dist-${dir}`).textContent = dist.toFixed(2)+' m';
-  $(`cap-${dir}`).classList.add('done');
-
-  const allDone = DIRECTIONS.every(d => scanState.captures[d.key]!==undefined);
-  $('applyScanBtn').disabled = !allDone;
-}
-
-$('applyScanBtn').addEventListener('click', ()=>{
-  const c = scanState.captures;
-  const L = c.front + c.back;
-  const W = c.left + c.right;
-  $('roomL').value = L.toFixed(2);
-  $('roomW').value = W.toFixed(2);
-  recalcAll();
-  $('calStatus').textContent = `Applied room: L=${L.toFixed(2)}m, W=${W.toFixed(2)}m.`;
-});
-
-// ---------- ACOUSTICS & ROOM CALCULATIONS ----------
-function computeRoom(){
-  const L = parseFloat($('roomL').value), W = parseFloat($('roomW').value), H = parseFloat($('roomH').value);
-  const V = L*W*H;
-  const RT60 = 0.45; 
-  const schroeder = 2000 * Math.sqrt(RT60 / V);
-
-  const dims = [['L',L],['W',W],['H',H]];
-  const modes = [];
-  dims.forEach(([axis, d])=>{
-    for(let n=1;n<=4;n++){
-      modes.push({axis, n, f: (C_SOUND/2) * (n/d)});
-    }
-  });
-  modes.sort((a,b)=>a.f-b.f);
-
-  const maxF = 200;
-  const list = $('modeChart');
-  list.innerHTML = '';
-  modes.slice(0,6).forEach(m=>{
-    const pct = Math.min(100, (m.f/maxF)*100);
-    const row = document.createElement('div');
-    row.className='mode-row';
-    row.innerHTML = `<span class="ax">${m.axis}${m.n}</span><span class="bar"><span style="left:${pct}%"></span></span><span class="f">${m.f.toFixed(1)} Hz</span>`;
-    list.appendChild(row);
-  });
-
-  $('schroeder').textContent = schroeder.toFixed(0)+' Hz';
-  $('rt60').textContent = RT60.toFixed(2)+' s';
-  $('listenPos').textContent = (L*0.38).toFixed(2)+' m';
-  $('speakerPos').textContent = (L*0.20).toFixed(2)+' m';
-}
-
-// ---------- ENCLOSURE MATHEMATICS ----------
-function computeEnclosure(driver){
-  const {Fs, Qts, Vas, Xmax, Sd} = driver;
-  const boxType = document.querySelector('#boxTypeSeg button.active').dataset.v;
-  const boundary = $('boundaryMode').value;
-  const autoComp = $('autoCompensate').value === 'yes';
-
-  let boundaryGainDb = 0;
-  if (boundary === '2pi') boundaryGainDb = 3;
-  if (boundary === '1pi') boundaryGainDb = 6;
-  if (boundary === '0.5pi') boundaryGainDb = 9;
-
-  let effectiveQts = Qts;
-  if(autoComp && boundaryGainDb > 0){
-    effectiveQts = Qts * Math.pow(10, -boundaryGainDb / 20);
-  }
-
-  let result = {};
-
-  if(boxType === 'sealed'){
-    let targetQtc = parseFloat($('targetQtc').value);
-    if(autoComp && boundaryGainDb > 0){
-      targetQtc = Math.max(0.5, targetQtc - (boundaryGainDb * 0.03));
-    }
-    const alpha = Math.pow(targetQtc / effectiveQts, 2) - 1;
-    const Vb = Vas / Math.max(alpha, 0.05);
-    const Fc = Fs * Math.sqrt(1 + alpha);
-    const f3 = Fc * Math.sqrt(( (1/ (targetQtc*targetQtc) - 2) + Math.sqrt(Math.pow(1/(targetQtc*targetQtc) - 2, 2) + 4) ) / 2);
-    result = {boxType, Vb, Fc, Qtc: targetQtc, f3, boundaryGainDb, plot: f => sealedMagDb(f, Fc, targetQtc) + (f < 100 ? boundaryGainDb * (1 - f/100) : 0)};
-  } else {
-    const alpha = 20 * Math.pow(effectiveQts, 3.3);
-    const h = 0.8 * Math.pow(effectiveQts, -0.9);
-    const Vb = Vas / Math.max(alpha, 0.1);
-    const Fb = Fs * h;
-    const f3 = Fs * Math.pow(effectiveQts, -1.4) * 0.9;
-
-    const portDia = parseFloat($('portDia').value);
-    const portN = parseFloat($('portN').value);
-    const flare = $('portFlare').value;
-
-    const endCorr = flare === 'double' ? 1.70 : (flare === 'single' ? 1.46 : 1.22);
-    const Lv = (23562.5 * Math.pow(portDia, 2) * portN) / (Vb * Math.pow(Fb, 2)) - (endCorr * portDia / 2);
-
-    const portAreaM2 = portN * Math.PI * Math.pow((portDia / 100) / 2, 2);
-    const sdM2 = Sd / 10000;
-    const xmaxM = Xmax / 1000;
-
-    const peakVolumeVelocity = 2 * Math.PI * Fb * sdM2 * xmaxM;
-    let flareFactor = flare === 'double' ? 0.55 : (flare === 'single' ? 0.75 : 1.0);
-    const peakAirVelocity = (peakVolumeVelocity / portAreaM2) * flareFactor;
-
-    result = {boxType, Vb, Fb, f3, Lv, portDia, portN, peakAirVelocity, boundaryGainDb, plot: f => ventedMagDb(f, Fs, h, alpha, effectiveQts) + (f < 100 ? boundaryGainDb * (1 - f/100) : 0)};
-  }
-  return result;
-}
-
-function sealedMagDb(f, Fc, Qtc){
-  const O = f/Fc;
-  const num = Math.pow(O,4);
-  const den = Math.pow(O*O-1,2) + (O*O)/(Qtc*Qtc);
-  return 10*Math.log10(num/Math.max(den, 1e-12));
-}
-
-function ventedMagDb(f, Fs, h, alpha, Qts){
-  const O = f/Fs;
-  const term1 = Math.pow(O,4) - (1+alpha+h*h)*O*O + h*h;
-  const term2 = (O*O/(Qts*Qts)) * Math.pow(O*O-h*h,2);
-  const den = term1*term1 + term2;
-  return 10*Math.log10(Math.pow(O,8)/Math.max(den,1e-12));
-}
-
-// ---------- GRAPH RENDERING ----------
-function drawChart(plotFn, f3){
-  const svg = $('respChart');
-  const W=640,H=220, padL=36,padR=10,padT=14,padB=24;
-  const fMin=15, fMax=400, dbMin=-24, dbMax=12;
-  const x = f => padL + (Math.log10(f)-Math.log10(fMin))/(Math.log10(fMax)-Math.log10(fMin)) * (W-padL-padR);
-  const y = db => padT + (dbMax-db)/(dbMax-dbMin) * (H-padT-padB);
-
-  let path = '';
-  for(let i=0;i<=120;i++){
-    const f = fMin*Math.pow(fMax/fMin, i/120);
-    const db = Math.min(dbMax, Math.max(dbMin, plotFn(f)));
-    path += (i===0?'M':'L') + x(f).toFixed(1) + ' ' + y(db).toFixed(1) + ' ';
-  }
-
-  let gridlines='', labels='';
-  [20,50,100,200].forEach(f=>{
-    gridlines += `<line x1="${x(f)}" y1="${padT}" x2="${x(f)}" y2="${H-padB}" stroke="#2B303C" stroke-width="1"/>`;
-    labels += `<text x="${x(f)}" y="${H-6}" fill="#767C8A" font-family="IBM Plex Mono" font-size="9" text-anchor="middle">${f}</text>`;
-  });
-  [6,0,-6,-12,-18].forEach(db=>{
-    gridlines += `<line x1="${padL}" y1="${y(db)}" x2="${W-padR}" y2="${y(db)}" stroke="#2B303C" stroke-width="1"/>`;
-    labels += `<text x="${padL-6}" y="${y(db)+3}" fill="#767C8A" font-family="IBM Plex Mono" font-size="9" text-anchor="end">${db}</text>`;
-  });
-
-  const f3x = x(f3);
-  svg.innerHTML = `
-    ${gridlines}
-    <line x1="${f3x}" y1="${padT}" x2="${f3x}" y2="${H-padB}" stroke="#E8664F" stroke-width="1" stroke-dasharray="3,3"/>
-    <path d="${path}" fill="none" stroke="#E8A33D" stroke-width="2.2"/>
-    ${labels}
-    <text x="${f3x}" y="${padT+10}" fill="#E8664F" font-family="IBM Plex Mono" font-size="9" text-anchor="middle">f3 ${f3.toFixed(0)}Hz</text>
-  `;
-}
-
-// ---------- ADVANCED CABINET STRUCTURAL MATH ----------
-function computeCabinet(Vb){
-  const t = parseFloat($('panelThick').value)/1000;
-  const ratio = $('ratioMode').value.split(',').map(Number);
-  const damp = $('dampingMode').value;
-  const volMult = damp === 'full' ? 1.10 : 1.0;
-
-  const VbM3 = (Vb / volMult) / 1000;
-  const k = ratio[0]*ratio[1]*ratio[2];
-  const x = Math.cbrt(VbM3/k);
-  const int = {w: x*ratio[0], h: x*ratio[1], d: x*ratio[2]};
-  const ext = {w: int.w+2*t, h: int.h+2*t, d: int.d+2*t};
-
-  // Calculate unbraced panel resonance frequency estimate (Plate theory mode 1,1)
-  // f_res ~ (PI / 2) * sqrt(D / rho_h) * (1/a^2 + 1/b^2)
-  const E = 3.5e9; // Pa for MDF
-  const rho = 750; // kg/m3
-  const D_flex = (E * Math.pow(t, 3)) / (12 * (1 - 0.25*0.25));
-  const f_panel_unbraced = (Math.PI / 2) * Math.sqrt(D_flex / (rho * t)) * (1/(int.h*int.h) + 1/(int.w*int.w));
-
-  const bracingMode = $('bracingMode').value;
-  let mult = 1.0;
-  if(bracingMode==='matrix') mult = 4.2; // Matrix pushes mode out of audible bass range
-  else if(bracingMode==='window') mult = 2.1;
-  else if(bracingMode==='dowel') mult = 1.6;
-
-  const f_panel_braced = f_panel_unbraced * mult;
-
-  return {int, ext, t, f_panel_unbraced, f_panel_braced};
-}
-
-// ---------- CROSSOVER CALCULATIONS ----------
-function computeCrossover(driver){
-  if(!$('useTweeter').checked) return;
-  const woofDia = driver.dia/1000;
-  const suggestUpper = C_SOUND/(Math.PI*woofDia);
-  const twFs = parseFloat($('twFs').value);
-  const suggestLower = twFs*2.2;
-  $('fcSuggest').textContent = `Recommended: ${suggestLower.toFixed(0)} – ${suggestUpper.toFixed(0)} Hz`;
-
-  const fc = parseFloat($('fc').value);
-  const order = parseInt($('xoOrder').value);
-  const Zw = driver.Re;
-  const Zt = parseFloat($('twRe').value);
-
-  const table = $('xoTable');
-  if(order===1){
-    const Lw = Zw/(2*Math.PI*fc);
-    const Ct = 1/(2*Math.PI*fc*Zt);
-    table.innerHTML = `
-      <tr><th>Component</th><th>Target Driver</th><th>Value</th></tr>
-      <tr><td>Series Inductor L1</td><td class="val">Woofer</td><td class="val">${(Lw*1000).toFixed(2)} mH</td></tr>
-      <tr><td>Series Capacitor C1</td><td class="val">Tweeter Pod</td><td class="val">${(Ct*1e6).toFixed(2)} µF</td></tr>
-    `;
-  } else {
-    const Lw = (Zw*Math.SQRT2)/(2*Math.PI*fc);
-    const Cw = 1/(2*Math.PI*fc*Zw*Math.SQRT2);
-    const Ct = 1/(2*Math.PI*fc*Zt*Math.SQRT2);
-    const Lt = (Zt*Math.SQRT2)/(2*Math.PI*fc);
-    table.innerHTML = `
-      <tr><th>Component</th><th>Target Driver</th><th>Value</th></tr>
-      <tr><td>Series Inductor L1</td><td class="val">Woofer</td><td class="val">${(Lw*1000).toFixed(2)} mH</td></tr>
-      <tr><td>Shunt Capacitor C1</td><td class="val">Woofer</td><td class="val">${(Cw*1e6).toFixed(2)} µF</td></tr>
-      <tr><td>Series Capacitor C2</td><td class="val">Tweeter Pod</td><td class="val">${(Ct*1e6).toFixed(2)} µF</td></tr>
-      <tr><td>Shunt Inductor L2</td><td class="val">Tweeter Pod</td><td class="val">${(Lt*1000).toFixed(2)} mH</td></tr>
-    `;
-  }
-}
-
-// ---------- THREE.JS CAD ENGINE ----------
-let scene, camera, renderer, controls, sceneGroup;
-const viewState = {cutaway: true};
 
 function initThree(){
-  const container = $('threeContainer');
-  const w = container.clientWidth, h = container.clientHeight;
+  const c = $('threeContainer'); const w=c.clientWidth, h=c.clientHeight;
   scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(35, w/h, 0.01, 50);
-  camera.position.set(0.85, 0.65, 1.25);
-
+  camera = new THREE.PerspectiveCamera(38, w/h, 0.01, 50);
+  camera.position.set(0.8, 0.6, 1.2);
   renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
-  renderer.setSize(w, h);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  container.appendChild(renderer.domElement);
-
-  scene.add(new THREE.AmbientLight(0xffffff, 0.65));
-  const d1 = new THREE.DirectionalLight(0xffffff, 0.85);
-  d1.position.set(2,3,2);
-  scene.add(d1);
-  const d2 = new THREE.DirectionalLight(0x4fd1c5, 0.3);
-  d2.position.set(-2,-1,-2);
-  scene.add(d2);
-
-  if (typeof THREE.OrbitControls === 'function'){
-    controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.08;
-    controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
-  }
-
-  sceneGroup = new THREE.Group();
-  scene.add(sceneGroup);
+  renderer.setSize(w,h); renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  c.appendChild(renderer.domElement);
   
-  window.addEventListener('resize', onThreeResize);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+  const d1 = new THREE.DirectionalLight(0xffffff, 0.8); d1.position.set(3,4,3); scene.add(d1);
+  const d2 = new THREE.DirectionalLight(0x4fd1c5, 0.3); d2.position.set(-3,-2,-2); scene.add(d2);
+
+  if(typeof THREE.OrbitControls==='function'){
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping=true; controls.dampingFactor=0.08;
+  }
+  sceneGroup = new THREE.Group(); scene.add(sceneGroup);
   animateThree();
 }
 
-function onThreeResize(){
-  const container = $('threeContainer');
-  const w = container.clientWidth, h = container.clientHeight;
-  if(!w || !h) return;
-  camera.aspect = w/h;
-  camera.updateMatrixWorld();
-  camera.updateProjectionMatrix();
-  renderer.setSize(w,h);
-}
+function animateThree(){ requestAnimationFrame(animateThree); if(controls) controls.update(); if(renderer) renderer.render(scene,camera); }
 
-function animateThree(){
-  requestAnimationFrame(animateThree);
-  if(controls) controls.update();
-  if(renderer) renderer.render(scene, camera);
-}
+function createMatrixPanel(width, height, thickness) {
+  const shape = new THREE.Shape();
+  shape.moveTo(-width/2, -height/2);
+  shape.lineTo(width/2, -height/2);
+  shape.lineTo(width/2, height/2);
+  shape.lineTo(-width/2, height/2);
+  shape.closePath();
 
-function clearGroup(g){
-  while(g.children.length){
-    const c = g.children.pop();
-    if(c.geometry) c.geometry.dispose();
-    if(c.material) c.material.dispose();
-  }
+  // Create internal airflow window cutouts
+  const holeRadius = Math.min(width, height) * 0.22;
+  const offsets = [
+    [-width*0.22, -height*0.22], [width*0.22, -height*0.22],
+    [-width*0.22, height*0.22], [width*0.22, height*0.22]
+  ];
+
+  offsets.forEach(([ox, oy]) => {
+    const hole = new THREE.Path();
+    hole.absarc(ox, oy, holeRadius, 0, Math.PI * 2, true);
+    shape.holes.push(hole);
+  });
+
+  const extrudeSettings = { depth: thickness, bevelEnabled: true, bevelThickness: 0.002, bevelSize: 0.002 };
+  return new THREE.ExtrudeGeometry(shape, extrudeSettings);
 }
 
 function rebuildScene(){
   if(!sceneGroup) return;
-  clearGroup(sceneGroup);
-
+  while(sceneGroup.children.length){ const c=sceneGroup.children.pop(); if(c.geometry) c.geometry.dispose(); }
+  
   const cab = window.__lastCab, driver = window.__lastDriver, enc = window.__lastEnc;
   if(!cab) return;
 
-  const w = cab.ext.w, h = cab.ext.h, d = cab.ext.d, t = cab.t;
+  const w=cab.ext.w, h=cab.ext.h, d=cab.ext.d, t=cab.t;
   const cutaway = viewState.cutaway;
 
-  // Outer Shell Panel Material
-  const shellMat = new THREE.MeshStandardMaterial({
-    color: $('cldMode').value === 'cld' ? 0x94A3B8 : 0xC9A876,
-    roughness: 0.7,
-    transparent: cutaway,
-    opacity: cutaway ? 0.22 : 0.95,
-    side: THREE.DoubleSide
-  });
-
+  // Timber Shell
+  const shellMat = new THREE.MeshStandardMaterial({color:0xC9A876, roughness:0.7, transparent:cutaway, opacity:cutaway?0.25:1, side:THREE.DoubleSide});
   const shellGeo = new THREE.BoxGeometry(w,h,d);
   sceneGroup.add(new THREE.Mesh(shellGeo, shellMat));
-  sceneGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(shellGeo), new THREE.LineBasicMaterial({color:0x3A4152})));
+  sceneGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(shellGeo), new THREE.LineBasicMaterial({color:0x3D4659})));
 
-  // Woofer Baffle Cutout & Basket
+  // Woofer Driver Assembly
   const woofR = (driver.dia/1000)/2;
-  const woofMesh = new THREE.Mesh(new THREE.CylinderGeometry(woofR, woofR, t*1.2, 32), new THREE.MeshStandardMaterial({color:0x4FD1C5, roughness:0.4}));
-  woofMesh.rotation.x = Math.PI/2;
-  woofMesh.position.set(0, -h*0.08, d/2);
-  sceneGroup.add(woofMesh);
+  const woofMat = new THREE.MeshStandardMaterial({color:0x4FD1C5, roughness:0.4});
+  const woof = new THREE.Mesh(new THREE.CylinderGeometry(woofR, woofR*0.85, t*2, 32), woofMat);
+  woof.rotation.x = Math.PI/2; woof.position.set(0, -h*0.12, d/2 - t);
+  sceneGroup.add(woof);
 
-  // Vented Port System
-  if(enc.boxType === 'vented'){
-    const portR = (enc.portDia/100)/2;
-    const portL = Math.min(enc.Lv/100, d*0.75);
-    const portGeo = new THREE.CylinderGeometry(portR, portR, Math.max(portL, 0.02), 24);
-    const portMat = new THREE.MeshStandardMaterial({color:0x8892A3, roughness:0.5});
-    const portMesh = new THREE.Mesh(portGeo, portMat);
-    portMesh.rotation.x = Math.PI/2;
-    const placement = $('portPlacement').value;
-    const zPos = placement === 'front' ? d/2 - Math.max(portL,0.02)/2 : -d/2 + Math.max(portL,0.02)/2;
-    portMesh.position.set(0, -h*0.35, zPos);
-    sceneGroup.add(portMesh);
-
-    if($('portFlare').value !== 'none'){
-      const flareGeo = new THREE.ConeGeometry(portR*1.4, t*1.5, 24);
-      const flareMesh = new THREE.Mesh(flareGeo, portMat);
-      flareMesh.rotation.x = placement === 'front' ? -Math.PI/2 : Math.PI/2;
-      flareMesh.position.set(0, -h*0.35, placement === 'front' ? d/2 : -d/2);
-      sceneGroup.add(flareMesh);
-    }
+  // Tweeter Options (Wooden Cone / Horn vs Baffle)
+  const twStyle = $('twMount').value;
+  if(twStyle === 'woodHorn') {
+    // OJAS Style Wooden Horn
+    const hornGeo = new THREE.ConeGeometry(woofR*0.8, h*0.2, 32, 1, true);
+    const hornMat = new THREE.MeshStandardMaterial({color:0xE8A33D, roughness:0.5, side:THREE.DoubleSide});
+    const horn = new THREE.Mesh(hornGeo, hornMat);
+    horn.rotation.x = -Math.PI/2;
+    horn.position.set(0, h/2 + (h*0.1), 0);
+    sceneGroup.add(horn);
+  } else {
+    const twMat = new THREE.MeshStandardMaterial({color:0xE8A33D, roughness:0.3});
+    const tw = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, t, 24), twMat);
+    tw.rotation.x = Math.PI/2; tw.position.set(0, h*0.25, d/2 - t/2);
+    sceneGroup.add(tw);
   }
 
-  // --- INTERNAL ACOUSTIC PARTITIONING ---
-  const partMode = $('partitionMode').value;
-  const partMat = new THREE.MeshStandardMaterial({color: 0xA78BFA, roughness: 0.6, side: THREE.DoubleSide});
-  const innerW = w - 2*t, innerD = d - 2*t;
-
-  if(partMode === 'slanted'){
-    // Slanted non-parallel baffle partition to kill vertical standing waves
-    const partGeo = new THREE.PlaneGeometry(innerW*0.96, innerD*0.95);
-    const partMesh = new THREE.Mesh(partGeo, partMat);
-    partMesh.rotation.x = Math.PI / 6; // 30 deg slant
-    partMesh.position.set(0, h*0.22, 0);
-    sceneGroup.add(partMesh);
-  } else if(partMode === 'sealed_sub'){
-    // Isolated sub-chamber box for mid/tweeter
-    const subH = h * 0.28;
-    const subGeo = new THREE.BoxGeometry(innerW*0.96, t*0.8, innerD*0.96);
-    const subShelf = new THREE.Mesh(subGeo, partMat);
-    subShelf.position.set(0, h/2 - subH, 0);
-    sceneGroup.add(subShelf);
-  } else if(partMode === 'transmission'){
-    // Internal acoustic labyrinth maze partition
-    const lab1 = new THREE.Mesh(new THREE.BoxGeometry(innerW*0.96, t*0.8, innerD*0.65), partMat);
-    lab1.position.set(0, h*0.15, innerD*0.15);
-    sceneGroup.add(lab1);
-    const lab2 = new THREE.Mesh(new THREE.BoxGeometry(innerW*0.96, t*0.8, innerD*0.65), partMat);
-    lab2.position.set(0, -h*0.15, -innerD*0.15);
-    sceneGroup.add(lab2);
-  }
-
-  // --- ADVANCED BRACING ARCHITECTURE (MATRIX GRID) ---
-  const bracingMode = $('bracingMode').value;
-  const braceMat = new THREE.MeshStandardMaterial({color: 0xE8A33D, roughness: 0.5});
-
-  if(bracingMode === 'matrix'){
-    // Full B&W-Style Interlocking Grid Matrix
-    const levels = [-h*0.2, 0, h*0.2];
-    levels.forEach(yLevel => {
-      // Horizontal shelf frame with matrix cutouts
-      const frameGeo = new THREE.BoxGeometry(innerW*0.96, t*0.7, innerD*0.96);
-      const frameMesh = new THREE.Mesh(frameGeo, braceMat);
-      frameMesh.position.set(0, yLevel, 0);
-      sceneGroup.add(frameMesh);
-    });
-    // Vertical longitudinal spine tie
-    const spineGeo = new THREE.BoxGeometry(t*0.7, h - 2.5*t, innerD*0.3);
-    const spineMesh = new THREE.Mesh(spineGeo, braceMat);
-    spineMesh.position.set(0, 0, 0);
-    sceneGroup.add(spineMesh);
-  } else if(bracingMode === 'window'){
-    const ring = new THREE.Mesh(new THREE.BoxGeometry(innerW*0.96, t*0.8, innerD*0.96), braceMat);
-    ring.position.set(0, 0, 0);
-    sceneGroup.add(ring);
-  } else if(bracingMode === 'dowel'){
-    const dowel = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, innerD, 16), braceMat);
-    dowel.rotation.x = Math.PI/2;
-    dowel.position.set(0, -h*0.08, 0);
-    sceneGroup.add(dowel);
-  }
-
-  // --- DECOUPLED EXTERNAL TWEETER POD ASSEMBLY ---
-  if($('useTweeter').checked){
-    const podShape = $('podShape').value;
-    const podMount = $('podMount').value;
-    const twR = (parseFloat($('twDia').value)/1000)/2;
-
-    const podGroup = new THREE.Group();
-    const podMat = new THREE.MeshStandardMaterial({color: 0xE8A33D, roughness: 0.25, metalness: 0.3});
-
-    if(podShape === 'waveguide'){
-      // Custom flared horn/waveguide cone profile
-      const hornGeo = new THREE.ConeGeometry(twR*2.8, twR*3.2, 32, 1, true);
-      const hornMesh = new THREE.Mesh(hornGeo, podMat);
-      hornMesh.rotation.x = -Math.PI/2;
-      podGroup.add(hornMesh);
-      // Phase plug / dome center
-      const plug = new THREE.Mesh(new THREE.SphereGeometry(twR*0.7, 16, 16), new THREE.MeshStandardMaterial({color:0x12151A}));
-      plug.position.set(0, 0, twR*0.5);
-      podGroup.add(plug);
-    } else if(podShape === 'teardrop'){
-      const sphere = new THREE.Mesh(new THREE.SphereGeometry(twR*1.8, 32, 16), podMat);
-      sphere.scale.set(1, 1, 2.2);
-      podGroup.add(sphere);
-    } else {
-      const cyl = new THREE.Mesh(new THREE.CylinderGeometry(twR*1.6, twR*1.6, twR*3, 32), podMat);
-      cyl.rotation.x = Math.PI/2;
-      podGroup.add(cyl);
+  // Airflow Systems (Deflectors, Ports, Dividers)
+  if(cutaway) {
+    // Solid Chamber Divider Panel
+    if($('chamberDivider').value === 'solid') {
+      const divMat = new THREE.MeshStandardMaterial({color:0x7AA2E8, roughness:0.6});
+      const divider = new THREE.Mesh(new THREE.BoxGeometry(w-2*t, t, d-2*t), divMat);
+      divider.position.set(0, h*0.08, 0);
+      sceneGroup.add(divider);
     }
 
-    // Decoupling Isolation Base
-    const mountGeo = podMount === 'decoupled' 
-      ? new THREE.CylinderGeometry(0.01, 0.02, 0.03, 16)
-      : new THREE.BoxGeometry(0.015, 0.04, 0.015);
-    const mountMesh = new THREE.Mesh(mountGeo, new THREE.MeshStandardMaterial({color: 0x4FD1C5}));
-    mountMesh.position.set(0, -twR*1.8, 0);
-    podGroup.add(mountMesh);
+    // Matrix Bracing with Window Cutouts
+    if($('bracing').value === 'matrix') {
+      const matGeo = createMatrixPanel(w-2*t, d-2*t, t);
+      const braceMat = new THREE.MeshStandardMaterial({color:0x2B303C, roughness:0.8});
+      const brace = new THREE.Mesh(matGeo, braceMat);
+      brace.rotation.x = Math.PI/2;
+      brace.position.set(0, -h*0.22, -(d-2*t)/2);
+      sceneGroup.add(brace);
+    }
 
-    podGroup.position.set(0, h/2 + twR*2.2 + 0.03, 0);
-    sceneGroup.add(podGroup);
+    // Transmission Line Curved Wooden Airflow Deflectors
+    if(enc.boxType === 'tline') {
+      const curveMat = new THREE.MeshStandardMaterial({color:0xE8664F, roughness:0.5, side:THREE.DoubleSide});
+      const curveGeo = new THREE.TorusGeometry(d*0.2, t*0.6, 16, 32, Math.PI);
+      const deflector = new THREE.Mesh(curveGeo, curveMat);
+      deflector.position.set(0, -h*0.35, 0);
+      sceneGroup.add(deflector);
+    }
+
+    // Built-in Wooden Slot Port Track
+    if(enc.boxType === 'vented' && $('portType').value === 'slot') {
+      const slotMat = new THREE.MeshStandardMaterial({color:0xE8664F, roughness:0.7});
+      const slotPort = new THREE.Mesh(new THREE.BoxGeometry(w-2*t, t*1.2, d*0.6), slotMat);
+      slotPort.position.set(0, -h/2 + t*1.5, d/2 - (d*0.3));
+      sceneGroup.add(slotPort);
+    }
   }
 
   const maxDim = Math.max(w,h,d);
-  camera.position.set(maxDim*1.2, maxDim*0.9, maxDim*1.6);
+  camera.position.set(maxDim*1.2, maxDim*0.9, maxDim*1.5);
   camera.lookAt(0,0,0);
 }
 
-// ---------- SYSTEM RECALCULATION SYSTEM ----------
 function recalcAll(){
-  computeRoom();
-
-  const driver = {
-    Fs: parseFloat($('Fs').value), Qts: parseFloat($('Qts').value), Vas: parseFloat($('Vas').value),
-    Xmax: parseFloat($('Xmax').value), Sd: parseFloat($('Sd').value), Re: parseFloat($('Re').value),
-    dia: parseFloat($('dia').value)
-  };
-
+  const driver = {Fs:parseFloat($('Fs').value),Qts:parseFloat($('Qts').value),Vas:parseFloat($('Vas').value),Xmax:parseFloat($('Xmax').value),Sd:parseFloat($('Sd').value),Re:parseFloat($('Re').value),dia:parseFloat($('dia').value)};
   const enc = computeEnclosure(driver);
-  const cab = computeCabinet(enc.Vb);
+  const cab = computeCabinet(enc.Vb, driver);
 
   drawChart(enc.plot, enc.f3);
+  renderStat($('boxReadout'), [['Vol (Vb)',fmt(enc.Vb),'L'],['-3dB Point',fmt(enc.f3,0),'Hz','teal'],['Tuning (Fb)',fmt(enc.Fb||enc.Fc||0,0),'Hz']]);
+  renderStat($('portReadout'), [['Port Length',fmt(enc.Lv||12),'cm'],['Min Vent Area',fmt(driver.Sd*0.2,0),'cm²']]);
+  renderStat($('cabReadout'), [['Ext Width',fmt(cab.ext.w*100),'cm'],['Ext Height',fmt(cab.ext.h*100),'cm','teal'],['Ext Depth',fmt(cab.ext.d*100),'cm']]);
 
-  $('boundaryNote').innerHTML = `Boundary loading applies <strong>+${enc.boundaryGainDb} dB</strong> low-end gain. Auto tuning compensation target is ${$('autoCompensate').value==='yes'?'active':'disabled'}.`;
-
-  if(enc.boxType === 'sealed'){
-    renderStat($('boxReadout'), [
-      ['Volume (Vb)', fmt(enc.Vb,1), 'L'],
-      ['Cutoff (f3)', fmt(enc.f3,0), 'Hz', 'teal'],
-      ['Target Qtc', fmt(enc.Qtc,2), ''],
-    ]);
-    $('boxNote').className = 'note';
-    $('boxNote').innerHTML = `Sealed enclosure alignment calculated for precise acoustic damping.`;
-  } else {
-    const vel = enc.peakAirVelocity;
-    const velClass = vel > 17 ? 'red' : 'teal';
-    renderStat($('boxReadout'), [
-      ['Volume (Vb)', fmt(enc.Vb,1), 'L'],
-      ['Tuning (Fb)', fmt(enc.Fb,1), 'Hz'],
-      ['Port Length', fmt(enc.Lv,1), 'cm'],
-      ['Air Velocity', fmt(vel,1), 'm/s', velClass],
-    ]);
-
-    let velNote = vel > 17 
-      ? `<strong>Warning: Port air velocity exceeds 17 m/s limit.</strong> Chuffing noise likely. Increase port diameter or select double flares.`
-      : `Port air velocity is safe (<17 m/s). Minimal turbulence noise.`;
-    $('boxNote').className = vel > 17 ? 'note warn' : 'note';
-    $('boxNote').innerHTML = velNote;
-  }
-
-  renderStat($('cabReadout'), [
-    ['Ext Width', fmt(cab.ext.w*100,1), 'cm'],
-    ['Ext Height', fmt(cab.ext.h*100,1), 'cm'],
-    ['Ext Depth', fmt(cab.ext.d*100,1), 'cm'],
-    ['Braced Res.', fmt(cab.f_panel_braced,0), 'Hz', 'purple']
-  ]);
-
-  $('structureNote').innerHTML = `Structural Analysis: Unbraced panel resonant mode is <strong>${cab.f_panel_unbraced.toFixed(0)} Hz</strong>. Selected <strong>${$('bracingMode').options[$('bracingMode').selectedIndex].text}</strong> pushes panel fundamental mode up to <strong>${cab.f_panel_braced.toFixed(0)} Hz</strong>, well above woofer excitation passband.`;
-
-  computeCrossover(driver);
-
-  $('portPlacementField').style.display = enc.boxType==='vented' ? '' : 'none';
-
-  window.__lastCab = cab;
-  window.__lastDriver = driver;
-  window.__lastEnc = enc;
+  computeCrossover();
+  
+  window.__lastCab=cab; window.__lastDriver=driver; window.__lastEnc=enc;
   if(!scene) initThree();
   rebuildScene();
 }
 
-function renderStat(container, items){
-  container.innerHTML = items.map(([k,v,u,cls])=>
-    `<div class="stat"><div class="k">${k}</div><div class="v ${cls||''}">${v}<span class="u">${u||''}</span></div></div>`
-  ).join('');
-}
-
-// Boot application
 recalcAll();
 </script>
 </body>
